@@ -27,33 +27,36 @@
         renderer.setSize(window.innerWidth, window.innerHeight);
         document.body.appendChild(renderer.domElement);
 
-        // Road
+        // Texture for road (simple base64 image)
+        const roadTexture = new THREE.TextureLoader().load('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAACklEQVR4nGMAAQAABQABDQottAAAAABJRU5ErkJggg==');
+        const roadMaterial = new THREE.MeshBasicMaterial({ map: roadTexture, color: 0x666666 });
         const roadGeometry = new THREE.PlaneGeometry(10, 100);
-        const roadMaterial = new THREE.MeshBasicMaterial({ color: 0x333333 });
         const road = new THREE.Mesh(roadGeometry, roadMaterial);
         road.rotation.x = -Math.PI / 2;
         road.position.y = -0.5;
         scene.add(road);
 
-        // Car (simple box model)
-        const carGeometry = new THREE.BoxGeometry(1, 0.5, 2);
-        const carMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+        // Car (detailed shape with texture)
+        const carGeometry = new THREE.BoxGeometry(1.5, 0.7, 3);
+        const carTexture = new THREE.TextureLoader().load('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAACklEQVR4nGMAAQAABQABDQottAAAAABJRU5ErkJggg==');
+        const carMaterial = new THREE.MeshBasicMaterial({ map: carTexture, color: 0xff4500 });
         const car = new THREE.Mesh(carGeometry, carMaterial);
-        car.position.set(0, 0, -5);
+        car.position.set(0, 0.4, -5);
         scene.add(car);
 
-        // Houses (simple cubes)
-        const houseGeometry = new THREE.BoxGeometry(2, 2, 2);
-        const houseMaterial = new THREE.MeshBasicMaterial({ color: 0x888888 });
+        // Houses (cubes with texture)
+        const houseGeometry = new THREE.BoxGeometry(2, 3, 2);
+        const houseTexture = new THREE.TextureLoader().load('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAACklEQVR4nGMAAQAABQABDQottAAAAABJRU5ErkJggg==');
+        const houseMaterial = new THREE.MeshBasicMaterial({ map: houseTexture, color: 0x666666 });
         const houses = [];
         for (let i = 0; i < 5; i++) {
             const house = new THREE.Mesh(houseGeometry, houseMaterial);
-            house.position.set((Math.random() - 0.5) * 8, 1, -20 - i * 10);
+            house.position.set((Math.random() - 0.5) * 8, 1.5, -20 - i * 10);
             scene.add(house);
             houses.push(house);
         }
 
-        // Pedestrians (simple spheres)
+        // Pedestrians (spheres)
         const pedGeometry = new THREE.SphereGeometry(0.3, 32, 32);
         const pedMaterial = new THREE.MeshBasicMaterial({ color: 0xffff00 });
         const pedestrians = [];
@@ -63,6 +66,14 @@
             scene.add(ped);
             pedestrians.push(ped);
         }
+
+        // Skybox (simple planes)
+        const skyGeometry = new THREE.PlaneGeometry(100, 100);
+        const skyMaterial = new THREE.MeshBasicMaterial({ color: 0x87ceeb, side: THREE.DoubleSide });
+        const sky = new THREE.Mesh(skyGeometry, skyMaterial);
+        sky.position.y = 50;
+        sky.rotation.x = -Math.PI / 2;
+        scene.add(sky);
 
         camera.position.set(0, 5, 0);
         camera.lookAt(0, 0, -5);
@@ -100,19 +111,17 @@
             requestAnimationFrame(animate);
             if (!gameActive) return;
 
-            // Move road and objects
             road.position.z += 0.1;
             if (road.position.z > 50) road.position.z -= 100;
 
             houses.forEach(house => {
                 house.position.z += 0.1;
-                if (house.position.z > 0) house.position.set((Math.random() - 0.5) * 8, 1, -50);
+                if (house.position.z > 0) house.position.set((Math.random() - 0.5) * 8, 1.5, -50);
             });
 
             pedestrians.forEach(ped => {
                 ped.position.z += 0.1;
                 if (ped.position.z > 0) ped.position.set((Math.random() - 0.5) * 8, 0.3, -50);
-                // Simple collision detection
                 if (Math.abs(ped.position.x - carX) < 0.8 && Math.abs(ped.position.z - car.position.z) < 1) {
                     gameActive = false;
                     document.getElementById('startPage').style.display = 'flex';
@@ -127,7 +136,6 @@
         }
         animate();
 
-        // Handle window resize
         window.addEventListener('resize', () => {
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
