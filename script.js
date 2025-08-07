@@ -1,89 +1,106 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
-// 1. सीन, कैमरा, रेंडरर
+// बेसिक सेटअप
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
-// 2. लाइट
-const ambientLight = new THREE.AmbientLight(0xffffff, 1.0);
-scene.add(ambientLight);
-const directionalLight = new THREE.DirectionalLight(0xffffff, 1.5);
-directionalLight.position.set(5, 10, 7.5);
-scene.add(directionalLight);
+// कैमरे की पोज़िशन
+camera.position.set(0, 3, 6);
+camera.lookAt(0, 0, 0);
 
-// 3. ज़मीन
-const ground = new THREE.Mesh(
-    new THREE.PlaneGeometry(50, 200),
-    new THREE.MeshStandardMaterial({ color: 0x555555 })
+// लाइट
+scene.add(new THREE.AmbientLight(0xffffff, 0.7));
+const dirLight = new THREE.DirectionalLight(0xffffff, 1.5);
+dirLight.position.set(5, 10, 7);
+scene.add(dirLight);
+
+// कार वैरिएबल
+let car;
+
+// ----- गेम लॉजिक -----
+const roadWidth = 10;
+const speed = 0.2;
+let targetX = 0; // कार को कहाँ जाना है (बाएँ/दाएँ)
+
+// रोड बनाना
+const textureLoader = new THREE.TextureLoader();
+const roadTexture = textureLoader.load('https://threejs.org/examples/textures/hardwood2_diffuse.jpg');
+roadTexture.wrapS = THREE.RepeatWrapping;
+roadTexture.wrapT = THREE.RepeatWrapping;
+roadTexture.repeat.set(4, 12); // टेक्सचर को रिपीट करना
+
+const road = new THREE.Mesh(
+    new THREE.PlaneGeometry(roadWidth, 100),
+    new THREE.MeshStandardMaterial({ map: roadTexture })
 );
-ground.rotation.x = -Math.PI / 2;
-scene.add(ground);
+road.rotation.x = -Math.PI / 2;
+road.position.z = -40; // रोड को कैमरे के आगे रखना
+scene.add(road);
 
-// 4. एक ऑब्जेक्ट बनाएँ जो हमारी कार होगी (शुरू में यह खाली रहेगा)
-let car = new THREE.Object3D();
-car.position.y = 0.5;
-scene.add(car);
-
-// 5. ड्रैग कंट्रोल का लॉजिक (इसमें कोई बदलाव नहीं)
-let touchStartX = 0;
-let steering = 0;
-const steeringAmount = 0.04;
-renderer.domElement.addEventListener('touchstart', (e) => { touchStartX = e.touches[0].clientX; });
-renderer.domElement.addEventListener('touchmove', (e) => {
-    const diff = e.touches[0].clientX - touchStartX;
-    steering = Math.max(-1, Math.min(1, diff / 50)) * steeringAmount;
-});
-renderer.domElement.addEventListener('touchend', () => { steering = 0; });
-
-// 6. आसमान (Skybox) और कार मॉडल लोड करें
-// Skybox लोडर
-const skyboxLoader = new THREE.CubeTextureLoader();
-skyboxLoader.load([
-    'https://threejs.org/examples/textures/cube/Bridge2/posx.jpg', 'https://threejs.org/examples/textures/cube/Bridge2/negx.jpg',
-    'https://threejs.org/examples/textures/cube/Bridge2/posy.jpg', 'https://threejs.org/examples/textures/cube/Bridge2/negy.jpg',
-    'https://threejs.org/examples/textures/cube/Bridge2/posz.jpg', 'https://threejs.org/examples/textures/cube/Bridge2/negz.jpg',
-], (texture) => {
-    // जब आसमान लोड हो जाए, तो उसे बैकग्राउंड में सेट कर दो
-    scene.background = texture;
-});
-
-// कार मॉडल लोडर
-const modelLoader = new GLTFLoader();
-modelLoader.load(
+// कार मॉडल लोड करना
+const loader = new GLTFLoader();
+loader.load(
     'https://raw.githubusercontent.com/UX-Decoder/Resources/master/low_poly_car/scene.gltf',
     (gltf) => {
-        // जब मॉडल लोड हो जाए, तो उसे हमारे car ऑब्जेक्ट में डाल दो
-        const model = gltf.scene;
-        model.scale.set(0.6, 0.6, 0.6);
-        model.rotation.y = Math.PI;
-        car.add(model); // खाली car ऑब्जेक्ट में मॉडल को जोड़ना
+        car = gltf.scene;
+        car.scale.set(0.5, 0.5, 0.5);
+        car.rotation.y = Math.PI; // कार को सीधा करना
+        scene.add(car);
     }
 );
 
-// 7. गेम लूप (एनीमेशन)
-const speed = 0.15;
+// ----- कंट्रोल -----
+renderer.domElement.addEventListener('touchmove', (e) => {
+    // टच की पोज़िशन -1 (लेफ्ट) से 1 (राइट) के बीच में निकालना
+    let touchX = (e.touches[0].clientX / window.innerWidth) * 2 - 1;
+    targetX = touchX * (roadWidth / 2.5); // कार को रोड के अंदर रखना
+});
+
+renderer.domElement.addEventListener('touchend', (e) => {
+    targetX = 0; // टच छोड़ने पर कार बीच में आने लगेगी
+});
+
+// ----- गेम लूप -----
 function animate() {
     requestAnimationFrame(animate);
-    car.rotation.y -= steering;
-    car.position.x -= Math.sin(car.rotation.y) * speed;
-    car.position.z -= Math.cos(car.rotation.y) * speed;
-    const cameraOffset = new THREE.Vector3(0, 5, 9);
-    cameraOffset.applyAxisAngle(new THREE.Vector3(0, 1, 0), car.rotation.y);
-    camera.position.copy(car.position).add(cameraOffset);
-    camera.lookAt(car.position);
+    
+    // रोड को पीछे चलाना
+    road.position.z += speed;
+    if (road.position.z > 10) {
+        road.position.z = -40; // रोड को लूप करना
+    }
+
+    if (car) {
+        // कार को स्मूथली बाएँ-दाएँ करना
+        car.position.x += (targetX - car.position.x) * 0.1;
+
+        // कार को थोड़ा सा झुकाना जब वह मुड़े
+        car.rotation.z = (targetX - car.position.x) * -0.1;
+        car.rotation.y = Math.PI + (targetX - car.position.x) * -0.05;
+    }
+
     renderer.render(scene, camera);
 }
 
-// 8. विंडो का साइज़ बदलने पर एडजस्ट करें
-window.addEventListener('resize', () => {
+// ----- रोटेशन हैंडलिंग -----
+const rotateScreenDiv = document.getElementById('rotate-screen');
+function checkOrientation() {
+    if (window.innerHeight > window.innerWidth) {
+        // फ़ोन सीधा है (Portrait)
+        rotateScreenDiv.style.display = 'flex';
+    } else {
+        // फ़ोन लेटा हुआ है (Landscape)
+        rotateScreenDiv.style.display = 'none';
+    }
+    renderer.setSize(window.innerWidth, window.innerHeight);
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight);
-});
+}
+window.addEventListener('resize', checkOrientation);
 
-// गेम शुरू करें
+checkOrientation();
 animate();
