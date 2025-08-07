@@ -1,7 +1,24 @@
 body {
     margin: 0;
     overflow: hidden;
+    background-color: #000;
 }
 canvas {
     display: block;
+}
+#rotate-screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: black;
+    color: white;
+    display: none; /* यह शुरू में छिपा रहेगा */
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+    font-family: sans-serif;
+    text-align: center;
+    z-index: 100;
 }
