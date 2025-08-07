@@ -5,27 +5,3 @@ body {
 canvas {
     display: block;
 }
-
-/* स्टार्ट स्क्रीन की स्टाइलिंग */
-#start-screen {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.7);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 10; /* यह कैनवास के ऊपर दिखेगा */
-}
-
-#start-button {
-    padding: 20px 40px;
-    font-size: 24px;
-    color: white;
-    background-color: #ff0000;
-    border: 2px solid white;
-    border-radius: 10px;
-    cursor: pointer;
-}
