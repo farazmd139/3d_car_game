@@ -1,9 +1,11 @@
 import * as THREE from 'three';
+// GLTF लोडर को इम्पोर्ट करें, यह 3D मॉडल लोड करने के काम आता है
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
 // सीन, कैमरा, रेंडरर (कोई बदलाव नहीं)
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-camera.position.set(0, 5, 8); // कैमरा थोड़ा नज़दीक
+camera.position.set(0, 5, 8);
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
@@ -15,74 +17,91 @@ const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
 directionalLight.position.set(5, 10, 7.5);
 scene.add(directionalLight);
 
-// ऑब्जेक्ट्स (कोई बदलाव नहीं)
-const ground = new THREE.Mesh(new THREE.PlaneGeometry(50, 200), new THREE.MeshStandardMaterial({ color: 0x444444 })); // ट्रैक को लम्बा कर दिया
+// आसमान (Skybox) जोड़ें
+const loader = new THREE.CubeTextureLoader();
+const texture = loader.load([
+    'https://threejs.org/examples/textures/cube/Bridge2/posx.jpg',
+    'https://threejs.org/examples/textures/cube/Bridge2/negx.jpg',
+    'https://threejs.org/examples/textures/cube/Bridge2/posy.jpg',
+    'https://threejs.org/examples/textures/cube/Bridge2/negy.jpg',
+    'https://threejs.org/examples/textures/cube/Bridge2/posz.jpg',
+    'https://threejs.org/examples/textures/cube/Bridge2/negz.jpg',
+]);
+scene.background = texture;
+
+// ज़मीन (कोई बदलाव नहीं)
+const ground = new THREE.Mesh(new THREE.PlaneGeometry(50, 200), new THREE.MeshStandardMaterial({ color: 0x444444 }));
 ground.rotation.x = -Math.PI / 2;
 scene.add(ground);
 
-const car = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 2), new THREE.MeshStandardMaterial({ color: 0xff0000 }));
-car.position.y = 0.5;
+// --- यहाँ से बड़ा बदलाव है ---
+
+// कार के लिए एक खाली ऑब्जेक्ट बनाएँ, मॉडल इसमें लोड होगा
+let car = new THREE.Object3D(); 
 scene.add(car);
+
+// GLTF लोडर से कार का मॉडल लोड करें
+const modelLoader = new GLTFLoader();
+modelLoader.load(
+    // Sketchfab से एक मुफ़्त कार मॉडल का लिंक
+    'https://raw.githubusercontent.com/UX-Decoder/Resources/master/low_poly_car/scene.gltf', 
+    function (gltf) {
+        // मॉडल लोड होने के बाद
+        const model = gltf.scene;
+        model.scale.set(0.5, 0.5, 0.5); // मॉडल का साइज़ ठीक करें
+        model.rotation.y = Math.PI; // मॉडल को सीधा करें
+        car.add(model); // मॉडल को हमारे कार ऑब्जेक्ट में जोड़ें
+        car.position.y = 0.5;
+    },
+    undefined, // यहाँ हम लोडिंग प्रोग्रेस दिखा सकते हैं
+    function (error) {
+        console.error(error);
+    }
+);
+
 camera.lookAt(car.position);
 
-// --- नया टिल्ट कंट्रोल लॉजिक ---
-
+// टिल्ट कंट्रोल लॉजिक (कोई बदलाव नहीं)
 const startScreen = document.getElementById('start-screen');
 const startButton = document.getElementById('start-button');
-let tilt = 0; // फ़ोन के झुकाव को स्टोर करेगा
+let tilt = 0;
 
-// स्टार्ट बटन पर क्लिक करने पर गेम शुरू होगा
 startButton.addEventListener('click', () => {
-    // iPhone (iOS 13+) पर मोशन सेंसर की अनुमति माँगना
     if (typeof DeviceOrientationEvent.requestPermission === 'function') {
         DeviceOrientationEvent.requestPermission()
             .then(permissionState => {
                 if (permissionState === 'granted') {
                     window.addEventListener('deviceorientation', handleOrientation);
-                } else {
-                    alert('Tilt controls require sensor permission.');
                 }
-            })
-            .catch(console.error);
+            });
     } else {
-        // Android या अन्य डिवाइस पर सीधे लिस्नर जोड़ें
         window.addEventListener('deviceorientation', handleOrientation);
     }
-
-    // स्टार्ट स्क्रीन को छिपा दें और गेम शुरू करें
     startScreen.style.display = 'none';
     animate();
 });
 
-// यह फंक्शन फ़ोन के झुकने पर डेटा देगा
 function handleOrientation(event) {
-    // event.gamma फ़ोन का बाएँ-दाएँ झुकाव (-90 से 90) बताता है
-    if (event.gamma) {
-        tilt = event.gamma;
-    }
+    if (event.gamma) tilt = event.gamma;
 }
 
-// कार की स्पीड और घूमने की स्पीड
-const speed = 0.15; // कार की स्पीड थोड़ी बढ़ा दी
+const speed = 0.15;
 const rotationSpeed = 0.03;
 
 function animate() {
     requestAnimationFrame(animate);
-
-    // 1. कार को लगातार आगे बढ़ाएँ
-    car.position.x -= Math.sin(car.rotation.y) * speed;
-    car.position.z -= Math.cos(car.rotation.y) * speed;
-
-    // 2. टिल्ट के हिसाब से कार को घुमाएँ
-    const tiltThreshold = 5; // कम से कम इतना झुकने पर कार मुड़ेगी
+    const tiltThreshold = 5;
     if (tilt > tiltThreshold) {
-        car.rotation.y += rotationSpeed; // दाएँ घुमाएँ
+        car.rotation.y -= rotationSpeed; // ध्यान दें: मॉडल के हिसाब से डायरेक्शन उल्टा हो सकता है
     } else if (tilt < -tiltThreshold) {
-        car.rotation.y -= rotationSpeed; // बाएँ घुमाएँ
+        car.rotation.y += rotationSpeed;
     }
 
-    // कैमरे को कार के पीछे रखें
-    const cameraOffset = new THREE.Vector3(0, 4, 7); // कैमरा थोड़ा और पास
+    // कार को लगातार आगे बढ़ाएँ
+    car.position.x += Math.sin(car.rotation.y) * speed;
+    car.position.z += Math.cos(car.rotation.y) * speed;
+    
+    const cameraOffset = new THREE.Vector3(0, 4, -7); // कैमरा पीछे रखने के लिए माइनस z
     cameraOffset.applyAxisAngle(new THREE.Vector3(0, 1, 0), car.rotation.y);
     camera.position.copy(car.position).add(cameraOffset);
     camera.lookAt(car.position);
@@ -95,5 +114,3 @@ window.addEventListener('resize', () => {
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
 });
-
-// ध्यान दें: animate() अब स्टार्ट बटन क्लिक होने पर ही कॉल होगा।
