@@ -1,97 +1,90 @@
 import * as THREE from 'three';
-import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
-// सीन, कैमरा, और रेंडरर
+// 1. सीन, कैमरा, रेंडरर
 const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x333333); // गहरा ग्रे बैकग्राउंड
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-camera.position.set(0, 5, 10); // कैमरे की शुरुआती सुरक्षित पोज़िशन
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
-// लाइट
-const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
+// 2. लाइट
+const ambientLight = new THREE.AmbientLight(0xffffff, 1.0);
 scene.add(ambientLight);
-const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
 directionalLight.position.set(5, 10, 7.5);
 scene.add(directionalLight);
 
-// आसमान (Skybox)
-const skyboxLoader = new THREE.CubeTextureLoader();
-const skyboxTexture = skyboxLoader.load([
-    'https://threejs.org/examples/textures/cube/Bridge2/posx.jpg', 'https://threejs.org/examples/textures/cube/Bridge2/negx.jpg',
-    'https://threejs.org/examples/textures/cube/Bridge2/posy.jpg', 'https://threejs.org/examples/textures/cube/Bridge2/negy.jpg',
-    'https://threejs.org/examples/textures/cube/Bridge2/posz.jpg', 'https://threejs.org/examples/textures/cube/Bridge2/negz.jpg',
-]);
-scene.background = skyboxTexture;
-
-// ज़मीन
-const ground = new THREE.Mesh(new THREE.PlaneGeometry(50, 200), new THREE.MeshStandardMaterial({ color: 0x444444 }));
+// 3. ज़मीन
+const ground = new THREE.Mesh(
+    new THREE.PlaneGeometry(50, 200),
+    new THREE.MeshStandardMaterial({ color: 0x555555 })
+);
 ground.rotation.x = -Math.PI / 2;
 scene.add(ground);
 
-// कार वैरिएबल पहले से बना लें
-let car;
+// 4. कार (लाल क्यूब)
+const car = new THREE.Mesh(
+    new THREE.BoxGeometry(1, 1, 2),
+    new THREE.MeshStandardMaterial({ color: 0xff0000 })
+);
+car.position.y = 0.5;
+scene.add(car);
 
-// --- ड्रैग कंट्रोल का लॉजिक ---
+// 5. ड्रैग कंट्रोल का लॉजिक
 let touchStartX = 0;
 let steering = 0;
 const steeringAmount = 0.04;
 
-renderer.domElement.addEventListener('touchstart', (e) => { touchStartX = e.touches[0].clientX; });
-renderer.domElement.addEventListener('touchmove', (e) => {
-    const diff = e.touches[0].clientX - touchStartX;
-    steering = Math.max(-1, Math.min(1, diff / 50)) * steeringAmount;
+renderer.domElement.addEventListener('touchstart', (e) => {
+    touchStartX = e.touches[0].clientX;
 });
-renderer.domElement.addEventListener('touchend', () => { steering = 0; });
 
-// --- गेम लूप ---
+renderer.domElement.addEventListener('touchmove', (e) => {
+    const currentX = e.touches[0].clientX;
+    const difference = currentX - touchStartX;
+    
+    // एक लिमिट के बाद ही घुमाएँ
+    if (difference > 10) {
+        steering = steeringAmount; // दाएँ
+    } else if (difference < -10) {
+        steering = -steeringAmount; // बाएँ
+    } else {
+        steering = 0;
+    }
+});
+
+renderer.domElement.addEventListener('touchend', (e) => {
+    steering = 0; // सीधा
+});
+
+// 6. गेम लूप (एनीमेशन)
 const speed = 0.15;
 function animate() {
     requestAnimationFrame(animate);
 
-    if (car) { // यह सुनिश्चित करता है कि कार लोड होने के बाद ही यह कोड चले
-        // कार का घूमना
-        car.rotation.y += steering;
+    // कार को घुमाएँ
+    car.rotation.y -= steering;
 
-        // कार का आगे बढ़ना
-        car.position.x += Math.sin(car.rotation.y) * speed;
-        car.position.z += Math.cos(car.rotation.y) * speed;
+    // कार को आगे बढ़ाएँ
+    car.position.x -= Math.sin(car.rotation.y) * speed;
+    car.position.z -= Math.cos(car.rotation.y) * speed;
         
-        // कैमरे को कार के पीछे रखना
-        const cameraOffset = new THREE.Vector3(0, 4, -8);
-        cameraOffset.applyAxisAngle(new THREE.Vector3(0, 1, 0), car.rotation.y);
-        camera.position.copy(car.position).add(cameraOffset);
-        camera.lookAt(car.position);
-    }
+    // कैमरे को कार के पीछे रखें
+    const cameraOffset = new THREE.Vector3(0, 5, 9); // कैमरे की पोज़िशन
+    cameraOffset.applyAxisAngle(new THREE.Vector3(0, 1, 0), car.rotation.y);
+    camera.position.copy(car.position).add(cameraOffset);
+    camera.lookAt(car.position);
 
     renderer.render(scene, camera);
 }
 
-// --- मॉडल लोडर ---
-const modelLoader = new GLTFLoader();
-modelLoader.load(
-    'https://raw.githubusercontent.com/UX-Decoder/Resources/master/low_poly_car/scene.gltf', 
-    function (gltf) {
-        car = gltf.scene;
-        car.scale.set(0.6, 0.6, 0.6);
-        car.rotation.y = Math.PI;
-        car.position.y = 0.5;
-        scene.add(car);
-    },
-    undefined,
-    function (error) {
-        console.error('An error happened while loading the model:', error);
-    }
-);
-
-// विंडो का साइज़ बदलने पर एडजस्ट करें
+// 7. विंडो का साइज़ बदलने पर एडजस्ट करें
 window.addEventListener('resize', () => {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
 });
 
-// गेम लूप को तुरंत शुरू कर दें
+// गेम शुरू करें
 animate();
-```3.  पेज के नीचे जाकर **`Commit changes`** बटन दबा दें।
