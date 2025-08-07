@@ -3,23 +3,81 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Real 3D Racer</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Test Scene</title>
+    <!-- 1. स्टाइल को सीधे HTML में डालना -->
+    <style>
+        body { margin: 0; overflow: hidden; }
+        canvas { display: block; }
+    </style>
 </head>
 <body>
-    <!-- फ़ोन रोटेट करने का मैसेज -->
-    <div id="rotate-screen">
-        <p>Please rotate your device to play</p>
-    </div>
-
+    <!-- 2. Three.js को सीधे CDN से लोड करना (importmap की जगह) -->
+    <script async src="https://unpkg.com/es-module-shims@1.10.0"></script>
     <script type="importmap">
-        {
-            "imports": {
-                "three": "https://unpkg.com/three@0.166.1/build/three.module.js",
-                "three/addons/": "https://unpkg.com/three@0.166.1/examples/jsm/"
-            }
+    {
+        "imports": {
+            "three": "https://unpkg.com/three@0.166.1/build/three.module.js"
         }
+    }
     </script>
-    <script type="module" src="script.js"></script>
+
+    <!-- 3. सारा जावास्क्रिप्ट कोड सीधे यहाँ डालना -->
+    <script type="module">
+        import * as THREE from 'three';
+
+        // सीन, कैमरा, और रेंडरर
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x87ceeb); // आसमानी रंग का बैकग्राउंड
+
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.set(0, 5, 10); // कैमरे की फिक्स्ड पोज़िशन
+        camera.lookAt(0, 0, 0);
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        // लाइट
+        const light = new THREE.DirectionalLight(0xffffff, 3);
+        light.position.set(5, 10, 7.5);
+        scene.add(light);
+        scene.add(new THREE.AmbientLight(0xffffff, 1));
+
+        // ज़मीन (हरा प्लेन)
+        const ground = new THREE.Mesh(
+            new THREE.PlaneGeometry(100, 100),
+            new THREE.MeshStandardMaterial({ color: 0x228b22 }) // हरा रंग
+        );
+        ground.rotation.x = -Math.PI / 2;
+        scene.add(ground);
+
+        // कार (लाल क्यूब)
+        const car = new THREE.Mesh(
+            new THREE.BoxGeometry(1, 1, 2),
+            new THREE.MeshStandardMaterial({ color: 0xff0000 }) // लाल रंग
+        );
+        car.position.y = 0.5;
+        scene.add(car);
+
+        // एनीमेशन लूप
+        function animate() {
+            requestAnimationFrame(animate);
+
+            // क्यूब को धीरे-धीरे घुमाएँ ताकि पता चले कि सीन चल रहा है
+            car.rotation.y += 0.01;
+
+            renderer.render(scene, camera);
+        }
+
+        // विंडो का साइज़ बदलने पर एडजस्ट करें
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        // एनीमेशन शुरू करें
+        animate();
+    </script>
 </body>
 </html>
