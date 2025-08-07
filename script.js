@@ -4,8 +4,7 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 // सीन, कैमरा, और रेंडरर
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-// कैमरे की पोज़िशन फिक्स कर दी है ताकि कार हमेशा दिखे
-camera.position.set(0, 10, 12); 
+camera.position.set(0, 5, 10); // कैमरे की शुरुआती सुरक्षित पोज़िशन
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
@@ -31,59 +30,27 @@ const ground = new THREE.Mesh(new THREE.PlaneGeometry(50, 200), new THREE.MeshSt
 ground.rotation.x = -Math.PI / 2;
 scene.add(ground);
 
-// कार का मॉडल
-let car; // कार को बाद में डिफाइन करेंगे
-const modelLoader = new GLTFLoader();
-modelLoader.load(
-    'https://raw.githubusercontent.com/UX-Decoder/Resources/master/low_poly_car/scene.gltf', 
-    function (gltf) {
-        car = gltf.scene; // अब कार मॉडल यहाँ लोड हो रहा है
-        car.scale.set(0.6, 0.6, 0.6);
-        car.rotation.y = Math.PI;
-        car.position.y = 0.5;
-        scene.add(car);
-        camera.lookAt(car.position); // कैमरा कार की तरफ देखेगा
-        animate(); // मॉडल लोड होने के बाद ही गेम शुरू होगा
-    }
-);
+// कार वैरिएबल पहले से बना लें
+let car;
 
-// --- नया अंगूठे वाला ड्रैग कंट्रोल ---
+// --- ड्रैग कंट्रोल का लॉजिक ---
 let touchStartX = 0;
-let steering = 0; // -1 (बाएँ) से +1 (दाएँ) तक
-const steeringAmount = 0.04; // कार कितनी तेज़ी से मुड़ेगी
+let steering = 0;
+const steeringAmount = 0.04;
 
-// जब स्क्रीन पर टच शुरू हो
-renderer.domElement.addEventListener('touchstart', (event) => {
-    touchStartX = event.touches[0].clientX;
+renderer.domElement.addEventListener('touchstart', (e) => { touchStartX = e.touches[0].clientX; });
+renderer.domElement.addEventListener('touchmove', (e) => {
+    const diff = e.touches[0].clientX - touchStartX;
+    steering = Math.max(-1, Math.min(1, diff / 50)) * steeringAmount;
 });
+renderer.domElement.addEventListener('touchend', () => { steering = 0; });
 
-// जब अंगूठा स्क्रीन पर घूमे
-renderer.domElement.addEventListener('touchmove', (event) => {
-    const currentX = event.touches[0].clientX;
-    const difference = currentX - touchStartX;
-    
-    // एक लिमिट के बाद ही घुमाएँ
-    if (difference > 20) {
-        steering = steeringAmount; // दाएँ घुमाएँ
-    } else if (difference < -20) {
-        steering = -steeringAmount; // बाएँ घुमाएँ
-    } else {
-        steering = 0;
-    }
-});
-
-// जब अंगूठा स्क्रीन से उठे
-renderer.domElement.addEventListener('touchend', (event) => {
-    steering = 0; // घूमना बंद करें
-});
-
-
-// गेम लूप
+// --- गेम लूप ---
 const speed = 0.15;
 function animate() {
     requestAnimationFrame(animate);
 
-    if (car) { // अगर कार लोड हो चुकी है
+    if (car) { // यह सुनिश्चित करता है कि कार लोड होने के बाद ही यह कोड चले
         // कार का घूमना
         car.rotation.y += steering;
 
@@ -92,7 +59,7 @@ function animate() {
         car.position.z += Math.cos(car.rotation.y) * speed;
         
         // कैमरे को कार के पीछे रखना
-        const cameraOffset = new THREE.Vector3(0, 5, -9);
+        const cameraOffset = new THREE.Vector3(0, 4, -8);
         cameraOffset.applyAxisAngle(new THREE.Vector3(0, 1, 0), car.rotation.y);
         camera.position.copy(car.position).add(cameraOffset);
         camera.lookAt(car.position);
@@ -101,9 +68,30 @@ function animate() {
     renderer.render(scene, camera);
 }
 
+// --- मॉडल लोडर ---
+const modelLoader = new GLTFLoader();
+modelLoader.load(
+    'https://raw.githubusercontent.com/UX-Decoder/Resources/master/low_poly_car/scene.gltf', 
+    function (gltf) {
+        car = gltf.scene;
+        car.scale.set(0.6, 0.6, 0.6);
+        car.rotation.y = Math.PI;
+        car.position.y = 0.5;
+        scene.add(car);
+    },
+    undefined,
+    function (error) {
+        console.error('An error happened while loading the model:', error);
+    }
+);
+
 // विंडो का साइज़ बदलने पर एडजस्ट करें
 window.addEventListener('resize', () => {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
 });
+
+// गेम लूप को तुरंत शुरू कर दें
+animate();
+```3.  पेज के नीचे जाकर **`Commit changes`** बटन दबा दें।
