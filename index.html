@@ -1,204 +1,143 @@
 <!DOCTYPE html>
 <html lang="hi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>3D कार गेम</title>
-    <style>
-        body { margin: 0; overflow: hidden; background-color: #87ceeb; }
-        canvas { display: block; }
-        #info {
-            position: absolute;
-            top: 10px;
-            width: 100%;
-            text-align: center;
-            z-index: 100;
-            display:block;
-            color: white;
-            font-family: Arial, sans-serif;
-            font-size: 24px;
-            text-shadow: 2px 2px 4px #000000;
-        }
-    </style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>3D कार गेम — No Setup Needed</title>
+  <style>
+    body { margin:0; overflow:hidden; background:#87ceeb; font-family:Arial, sans-serif; }
+    #info { position:absolute; top:10px; width:100%; text-align:center; color:#fff; font-size:18px; text-shadow:1px 1px 3px #000; z-index:100; }
+    #exportBtn { position:absolute; right:10px; top:10px; padding:6px 10px; font-size:14px; background:#222; color:#fff; border:none; border-radius:4px; cursor:pointer; z-index:110; }
+    #speed { position:absolute; left:10px; top:10px; padding:6px 10px; background:rgba(0,0,0,0.5); color:#fff; font-size:14px; border-radius:4px; z-index:110; }
+    #touchControls { position:absolute; bottom:10px; left:50%; transform:translateX(-50%); display:grid; grid-template-columns:60px 60px 60px; gap:8px; z-index:110; }
+    .tg { width:60px; height:60px; background:rgba(0,0,0,0.4); color:#fff; font-size:24px; display:flex; align-items:center; justify-content:center; border-radius:8px; user-select:none; }
+  </style>
 </head>
 <body>
-    <div id="info">
-        कार चलाने के लिए एरो की (Arrow Keys) का उपयोग करें
-    </div>
+  <div id="info">Arrow Keys से चलाएँ | Mobile पर Touch Controls</div>
+  <button id="exportBtn">Export Car (.glb)</button>
+  <div id="speed">Speed: 0</div>
+  <div id="touchControls">
+    <div id="accel" class="tg">▲</div>
+    <div id="brake" class="tg">▼</div>
+    <div id="left" class="tg">◀</div>
+    <div id="right" class="tg">▶</div>
+  </div>
 
-    <script type="importmap">
-        {
-            "imports": {
-                "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
-                "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
-            }
-        }
-    </script>
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+      "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+    }
+  }
+  </script>
+  <script type="module">
+  import * as THREE from 'three';
+  import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+  import { GLTFExporter } from 'three/addons/exporters/GLTFExporter.js';
 
-    <script type="module">
-        import * as THREE from 'three';
-        import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+  // Scene setup
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x87ceeb);
 
-        // --- ज़रूरी कंपोनेंट्स: सीन, कैमरा, और रेंडरर ---
-        const scene = new THREE.Scene();
-        scene.background = new THREE.Color(0x87ceeb); // आसमान का रंग
+  const camera = new THREE.PerspectiveCamera(60, innerWidth/innerHeight, 0.1, 1000);
+  camera.position.set(0,6,12);
 
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        camera.position.set(0, 5, 10); // कैमरे की शुरुआती पोजीशन
+  const renderer = new THREE.WebGLRenderer({antialias:true});
+  renderer.setSize(innerWidth, innerHeight);
+  renderer.shadowMap.enabled = true;
+  document.body.appendChild(renderer.domElement);
 
-        const renderer = new THREE.WebGLRenderer({ antialias: true });
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.shadowMap.enabled = true; // शैडो को इनेबल करें
-        document.body.appendChild(renderer.domElement);
+  scene.add(new THREE.AmbientLight(0xffffff,0.6));
+  const dl = new THREE.DirectionalLight(0xffffff,0.8);
+  dl.position.set(30,40,10);
+  dl.castShadow = true;
+  dl.shadow.mapSize.set(2048,2048);
+  scene.add(dl);
 
-        // --- रोशनी ---
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
-        scene.add(ambientLight);
+  const ground = new THREE.Mesh(new THREE.PlaneGeometry(400,400), new THREE.MeshStandardMaterial({color:0x8db46b}));
+  ground.rotation.x = -Math.PI/2;
+  ground.receiveShadow = true;
+  scene.add(ground);
 
-        const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
-        directionalLight.position.set(20, 30, 20);
-        directionalLight.castShadow = true;
-        directionalLight.shadow.mapSize.width = 2048;
-        directionalLight.shadow.mapSize.height = 2048;
-        scene.add(directionalLight);
+  const road = new THREE.Mesh(new THREE.PlaneGeometry(400,6), new THREE.MeshStandardMaterial({color:0x333333}));
+  road.rotation.x = -Math.PI/2;
+  road.position.y = 0.01;
+  scene.add(road);
 
-        // --- ज़मीन/सड़क ---
-        const groundGeometry = new THREE.PlaneGeometry(200, 200);
-        const groundMaterial = new THREE.MeshStandardMaterial({ color: 0x556b2f }); // घास का रंग
-        const ground = new THREE.Mesh(groundGeometry, groundMaterial);
-        ground.rotation.x = -Math.PI / 2;
-        ground.receiveShadow = true;
-        scene.add(ground);
-        
-        const roadTexture = new THREE.TextureLoader().load('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAAAXNSR0IArs4c6QAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAQKADAAQAAAABAAAAQAAAAABGUUKwAAABvElEQVR4Ae3aPUtCURjA8fuHggoqLg2hB2go2jqIiG4Ci3+BExQU3NpC0GtoD1LQVrcgCDYFVxExcXH/gXN4b/d+vHfvB344B3I4xx2e5x4OAAAAAAAAAAAAAAAAAAAAAADgX6Zpmj0bNpOFIFhM5HK5PAqFwmfPIBqNXiUSifV5nldV1T8uT9eT5wRBSJIkx3GqqurrnCfKsmxZliRJyLL8aJ5Op98vA+D1eh+NRn85j8fjR0T89xGJuLzB+fn5+fn55eXldc7DbDbbyWSSZVnWdd2yrNs4jrOu6zzP4/G4arW63+8/n+cchmE+n++qqq7rOglbLBaLxWJkWRbGmLIsSZIkwpgR0alU6nQ6zWazmUwmsiyL4zgMw/v9/vV6/Xa7/Xq9vghhGIZhGIZhGIZhGIZhGIZhGIZhGIZhGIZhGIZhGIZhGIZhGIZhGIZhGIZhGIZhGIZhGIZhGIZhGIZhGIZhGIZhGIZhGIZhGIZhGIZhGIZhGIZhGIZhGIZhGIZhGIZhGIZhGIb/n/A3v9//eY6zLAvDGHM+n0+n0wghy7I4jrPZbK7r+vF4/CiK/gcEAABfS5IkxhgA4PV6VdXH4/F+v388HpfL5QghcRw/iqIoirIsDMMwxpIk7/f7VqsV5wQAAC7LsizLsixJkmVZjuNMp1OMMUIIIcuyruvDMN/v96vVasuyKIqCIAghP5/v9Xp9vV43nU7P5/NfuQMAAAAAAAAAAAAAAAAAYF/+AGFDb+WDP1xRAAAAAElFTkSuQmCC');
-        roadTexture.wrapS = THREE.RepeatWrapping;
-        roadTexture.wrapT = THREE.RepeatWrapping;
-        roadTexture.repeat.set(100, 1);
-        const roadMaterial = new THREE.MeshStandardMaterial({ map: roadTexture });
-        const road = new THREE.Mesh(new THREE.PlaneGeometry(200, 2), roadMaterial);
-        road.rotation.x = -Math.PI / 2;
-        road.position.y = 0.01; // ज़मीन से थोड़ा ऊपर
-        scene.add(road);
+  const loader = new GLTFLoader();
+  let carRoot = new THREE.Group(); scene.add(carRoot);
+  let car = null;
+  const speedEl = document.getElementById('speed');
 
-        // --- 3D मॉडल लोडर ---
-        const loader = new GLTFLoader();
-        let car = null; // कार के मॉडल को स्टोर करने के लिए
+  loader.load('https://threejs.org/examples/models/gltf/Flamingo.glb', g => {
+    // using flamingo as placeholder free model
+    car = g.scene;
+    car.scale.set(0.05,0.05,0.05);
+    car.traverse(n => { if(n.isMesh) n.castShadow = true; });
+    carRoot.add(car);
+  }, undefined, () => {
+    console.warn('Model load failed');
+  });
 
-        // !! ज़रूरी कदम !!
-        // नीचे दिए गए Base64 स्ट्रिंग प्लेसहोल्डर हैं।
-        // आपको अपने खुद के .glb मॉडल को Base64 में बदलना होगा और इन स्ट्रिंग्स को बदलना होगा।
-        // आप 'base64.guru/converter/encode/file' जैसी ऑनलाइन वेबसाइट का उपयोग कर सकते हैं।
+  // Movement
+  let speed=0;
+  const keys = {ArrowUp:false, ArrowDown:false, ArrowLeft:false, ArrowRight:false};
+  window.addEventListener('keydown', e => keys[e.code]=true);
+  window.addEventListener('keyup', e => keys[e.code]=false);
 
-        const car_base64 = 'data:model/gltf-binary;base64,Z2xURgIAAACoBQAAAAJQSFRaAAAABgAAABwBGgAIAgAAAAAAAAAAAAADYWJjZAIAAAAAAGpTT057ImFzc2V0Ijp7InZlcnNpb24iOiIyLjAiLCJnZW5lcmF0b3IiOiJibGVuZGVyLWdsdGYtZXhwb3J0ZXItMi4yLjAifSwic2NlbmUiOjAsInNjZW5lcyI6W3sibmFtZSI6IlNjZW5lIiwibm9kZXMiOlsxLDBdfV0sIm5vZGVzIjpbeyJtZXNoIjowLCJuYW1lIjoiQ3ViZSJ9LHsiY2hpbGRyZW4iOlsyXSwibmFtZSI6IkxpZ2h0In0seyJuYW1lIjoiUG9pbnQiLCJyb3RhdGlvbiI6WzAuNjUyLC0wLjI3MSwtMC4yNzEsLTAuNjUyXSwicG9zaXRpb24iOls0LjA3NiwyLjA1MSw1LjkAOV19XSwibWVzaGVzIjpbeyJuYW1lIjoiQ3ViZSIsImNyaW1pdGl2ZXMiOlt7ImF0dHJpYnV0ZXMiOnsiUE9TSVRJT04iOjAsIk5PUk1BTCI6MX0sImluZGljZXMiOjIsIm1hdGVyaWFsIjowfV19XSwibWF0ZXJpYWxzIjpbeyJuYW1lIjoiTWF0ZXJpYWwiLCJkb3VibGVTZWRlZCI6dHJ1ZSwicEtSUm1ldGFsbGljUm91Z2huZXNzIjp7ImJhc2VDb2xvclRleHR1cmUiOnsiaW5kZXgiOjB9LCJtZXRhbGxpY1JvdWdobmVzc1RleHR1cmUiOnsiaW5kZXgiOjB9fX1dLCJ0ZXh0dXJlcyI6W3sic291cmNlIjowfV0sImltYWdlcyI6W3sibmFtZSI6ImNvbG9yIiwibWltZVR5cGUiOiJpbWFnZS9wbmciLCJidWZmZXJWaWV3IjowfV19';
-        const house_base64 = 'data:model/gltf-binary;base64,Z2xURgIAAABoBQAAAAJQSFRaAAAABgAAAAwCGgAIAgAAAAAAAAAAAAADYWJjZAIAAAAAAGpTT057ImFzc2V0Ijp7InZlcnNpb24iOiIyLjAiLCJnZW5lcmF0b3IiOiJibGVuZGVyLWdsdGYtZXhwb3J0ZXItMi4yLjAifSwic2NlbmUiOjAsInNjZW5lcyI6W3sibmFtZSI6IlNjZW5lIiwibm9kZXMiOlsxLDBdfV0sIm5vZGVzIjpbeyJtZXNoIjowLCJuYW1lIjoiQ3ViZSJ9LHsiY2hpbGRyZW4iOlsyXSwibmFtZSI6IkxpZ2h0In0seyJuYW1lIjoiUG9pbnQiLCJyb3RhdGlvbiI6WzAuNjUyLC0wLjI3MSwtMC4yNzEsLTAuNjUyXSwicG9zaXRpb24iOls0LjA3NiwyLjA1MSw1LjkwOV19XSwibWVzaGVzIjpbeyJuYW1lIjoiQ3ViZSIsImNyaW1pdGl2ZXMiOlt7ImF0dHJpYnV0ZXMiOnsiUE9TSVRJT04iOjAsIk5PUk1BTCI6MX0sImluZGljZXMiOjIsIm1hdGVyaWFsIjowfV19XSwibWF0ZXJpYWxzIjpbeyJuYW1lIjoiTWF0ZXJpYWwiLCJkb3VibGVTZWRlZCI6dHJ1ZSwicEtSUm1ldGFsbGljUm91Z2huZXNzIjp7ImJhc2VDb2xvclRleHR1cmUiOnsiaW5kZXgiOjB9LCJtZXRhbGxpY1JvdWdobmVzc1RleHR1cmUiOnsiaW5kZXgiOjB9fX1dLCJ0ZXh0dXJlcyI6W3sic291cmNlIjowfV0sImltYWdlcyI6W3sibmFtZSI6ImNvbG9yIiwibWltZVR5cGUiOiJpbWFnZS9wbmciLCJidWZmZXJWaWV3IjowfV19';
+  // touch map
+  const touch = {accel:false, brake:false, left:false, right:false};
+  ['accel','brake','left','right'].forEach(id => {
+    const el = document.getElementById(id);
+    el.addEventListener('pointerdown', ()=> touch[id]=true);
+    el.addEventListener('pointerup', ()=> touch[id]=false);
+  });
 
-        // कार लोड करें
-        loader.load(car_base64, (gltf) => {
-            car = gltf.scene;
-            car.scale.set(0.5, 0.5, 0.5);
-            car.position.y = 0.1;
-            car.traverse(function(node) {
-                if (node.isMesh) { node.castShadow = true; }
-            });
-            scene.add(car);
-        }, undefined, (error) => {
-            console.error('कार लोड होने में त्रुटि:', error);
-            // प्लेसहोल्डर के रूप में एक बॉक्स बनाएं अगर मॉडल लोड नहीं होता है
-            const carPlaceholder = new THREE.Mesh(new THREE.BoxGeometry(2, 1, 4), new THREE.MeshStandardMaterial({color: 0xff0000}));
-            car = carPlaceholder;
-            car.position.y = 0.5;
-            car.castShadow = true;
-            scene.add(car);
-        });
-        
-        // घर लोड करें
-        loader.load(house_base64, (gltf) => {
-            const house = gltf.scene;
-            house.scale.set(5, 5, 5);
-            house.position.set(-20, 0, -20);
-            house.traverse(function(node) {
-                if (node.isMesh) { 
-                    node.castShadow = true;
-                    node.receiveShadow = true;
-                }
-            });
-            scene.add(house);
-        }, undefined, (error) => {
-            console.error('घर लोड होने में त्रुटि:', error);
-            const housePlaceholder = new THREE.Mesh(new THREE.BoxGeometry(10, 10, 10), new THREE.MeshStandardMaterial({color: 0x0000ff}));
-            housePlaceholder.position.set(-20, 5, -20);
-            housePlaceholder.castShadow = true;
-            housePlaceholder.receiveShadow = true;
-            scene.add(housePlaceholder);
-        });
+  const exporter = new GLTFExporter();
+  document.getElementById('exportBtn').onclick = ()=>{
+    exporter.parse(car || carRoot, res => {
+      const blob = res instanceof ArrayBuffer ? new Blob([res]) : new Blob([JSON.stringify(res, null,2)]);
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = car ? 'car.glb' : 'scene.glb';
+      a.click();
+      setTimeout(()=> URL.revokeObjectURL(a.href),5000);
+    }, {binary:true});
+  };
 
-        // --- गेम कंट्रोल ---
-        const keys = {
-            ArrowUp: false,
-            ArrowDown: false,
-            ArrowLeft: false,
-            ArrowRight: false
-        };
+  function animate(){
+    requestAnimationFrame(animate);
+    const dt = Math.min(0.05, performance.now()/1000);
+    let up = keys.ArrowUp || touch.accel, down = keys.ArrowDown || touch.brake;
+    let left = keys.ArrowLeft || touch.left, right = keys.ArrowRight || touch.right;
 
-        document.addEventListener('keydown', (event) => {
-            if (event.code in keys) {
-                keys[event.code] = true;
-            }
-        });
+    if(up) speed += 20*dt;
+    else if(down) speed -= 40*dt;
+    else speed *= 0.95;
 
-        document.addEventListener('keyup', (event) => {
-            if (event.code in keys) {
-                keys[event.code] = false;
-            }
-        });
+    speed = THREE.MathUtils.clamp(speed, -10, 20);
+    speedEl.textContent = 'Speed: ' + speed.toFixed(1);
 
-        const clock = new THREE.Clock();
+    if(carRoot){
+      const steer = (left?1:0) - (right?1:0);
+      carRoot.rotation.y += steer * 1.5 * dt;
+      const forward = new THREE.Vector3(0,0,-1).applyQuaternion(carRoot.quaternion);
+      carRoot.position.addScaledVector(forward, speed * dt);
+    }
 
-        // --- गेम लूप (एनीमेशन) ---
-        function animate() {
-            requestAnimationFrame(animate);
+    const camOff = new THREE.Vector3(0,5,12).applyQuaternion(carRoot.quaternion);
+    const camPos = (new THREE.Vector3()).copy(carRoot.position).add(camOff);
+    camera.position.lerp(camPos, 0.1);
+    camera.lookAt(carRoot.position);
 
-            const delta = clock.getDelta(); // स्मूथ मूवमेंट के लिए
-
-            if (car) {
-                const moveSpeed = 5 * delta;
-                const rotateSpeed = 1.5 * delta;
-
-                // कार की मूवमेंट
-                if (keys.ArrowUp) {
-                    car.translateZ(-moveSpeed);
-                }
-                if (keys.ArrowDown) {
-                    car.translateZ(moveSpeed);
-                }
-
-                // कार का घुमाव
-                if (keys.ArrowLeft) {
-                    car.rotateY(rotateSpeed);
-                }
-                if (keys.ArrowRight) {
-                    car.rotateY(-rotateSpeed);
-                }
-
-                // कैमरे को कार के पीछे सेट करें
-                const relativeCameraOffset = new THREE.Vector3(0, 4, 8);
-                const cameraOffset = relativeCameraOffset.applyMatrix4(car.matrixWorld);
-
-                camera.position.lerp(cameraOffset, 0.1);
-                camera.lookAt(car.position);
-            }
-
-            renderer.render(scene, camera);
-        }
-
-        // ब्राउज़र विंडो का आकार बदलने पर एडजस्ट करें
-        window.addEventListener('resize', () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-        });
-
-        animate(); // गेम लूप शुरू करें
-    </script>
+    renderer.render(scene, camera);
+  }
+  animate();
+  window.addEventListener('resize', ()=>{
+    camera.aspect = innerWidth/innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth,innerHeight);
+  });
+  </script>
 </body>
 </html>
