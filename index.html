@@ -27,8 +27,6 @@
             margin: 0; padding: 20px; direction: rtl; overflow-x: hidden;
         }
         @keyframes background-pan { from { background-position: 0% 0%; } to { background-position: 100% 100%; } }
-
-        /* Existing CSS remains unchanged */
         #homeScreen { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 90vh; text-align: center; }
         .aura-container { position: relative; padding: 30px; margin-bottom: 30px; }
         .aura-container::before, .aura-container::after { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; border-radius: 30px; z-index: -1; filter: blur(30px); animation: aura-pulse 6s ease-in-out infinite; }
@@ -44,7 +42,6 @@
         .menu-box { padding: 35px; border-radius: 20px; cursor: pointer; box-shadow: inset 0 -5px 15px rgba(0,0,0,0.3), 0 5px 15px rgba(0,0,0,0.3); border: 1px solid rgba(255, 255, 255, 0.1); position: relative; animation: float-animation 6s ease-in-out infinite; transition: transform 0.3s ease; }
         .menu-box:hover { animation-play-state: paused; transform: translateY(-10px) scale(1.05) !important; }
         .menu-title { color: white; font-size: 2.2rem; font-weight: 700; text-shadow: 0 0 3px rgba(0,0,0,0.8), 0 2px 5px rgba(0,0,0,0.7); white-space: nowrap; overflow: hidden; margin: 0 auto; display: inline-block; }
-        /* Gradient classes for Surahs */
         .menu-box-1 { background: linear-gradient(145deg, #2ecc71, #27ae60); }
         .menu-box-2 { background: linear-gradient(145deg, #e74c3c, #c0392b); }
         .menu-box-3 { background: linear-gradient(145deg, #e84393, #d81b60); }
@@ -53,6 +50,7 @@
         .menu-box-6 { background: linear-gradient(145deg, #1abc9c, #16a085); }
         .menu-box-7 { background: linear-gradient(145deg, #9b59b6, #8e44ad); }
         .menu-box-8 { background: linear-gradient(145deg, #e67e22, #d35400); }
+        .menu-title { animation: typing-short 7s steps(10, end) infinite; }
         @keyframes typing-short { 0% { width: 0; } 45% { width: 100%; } 80% { width: 100%; } 100% { width: 0; } }
         .surah-page { display: none; }
         .header { text-align: center; margin-bottom: 20px; }
@@ -66,7 +64,7 @@
         .ayah-text { font-size: 2.2rem; line-height: 2.9; text-align: center; font-weight: 700; text-shadow: 0px 1px 1px rgba(0, 0, 0, 0.2), 0px 2px 2px rgba(0, 0, 0, 0.4), 0px 4px 6px rgba(0, 0, 0, 0.4); animation: color-cycle 20s linear infinite; }
         @keyframes color-cycle { 0% { color: #ffffff; } 25% { color: #d1eaff; } 50% { color: #e0ffed; } 75% { color: #fff5d6; } 100% { color: #ffffff; } }
         .ayah-number { display: inline-block; font-size: 1.5rem; padding-left: 10px; opacity: 0.7; }
-        .back-button { position: fixed; top: 20px; left: 20px; padding: 12px 20px; background-color: #ecf0f1; color: #2c3e50; border: none; border-radius: 50px; font-size: 1.2rem; font-weight: bold; cursor: pointer; z-index: 100; box-shadow: 0 5px 15px rgba(0,0,0,5); font-family: 'Noto Nastaliq Urdu', sans-serif; }
+        .back-button { position: fixed; top: 20px; left: 20px; padding: 12px 20px; background-color: #ecf0f1; color: #2c3e50; border: none; border-radius: 50px; font-size: 1.2rem; font-weight: bold; cursor: pointer; z-index: 100; box-shadow: 0 5px 15px rgba(0,0,0,0.3); font-family: 'Noto Nastaliq Urdu', sans-serif; }
         .audio-player-wrapper { position: relative; max-width: 550px; margin: 0 auto 35px auto; padding: 15px; border-radius: 20px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.5), 0 10px 20px rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); animation: box-color-change 18s linear infinite; }
         .audio-player-wrapper::before, .audio-player-wrapper::after { content: ''; position: absolute; top: -2px; left: -2px; right: -2px; bottom: -2px; border-radius: 22px; z-index: -1; filter: blur(25px); animation: aura-pulse 8s ease-in-out infinite alternate; }
         .audio-player-wrapper::before { background: linear-gradient(45deg, var(--glow-color1), var(--glow-color3)); }
@@ -88,8 +86,6 @@
         .close-button:hover, .close-button:focus { color: white; text-decoration: none; cursor: pointer; }
         .modal-content a { color: #0ebeff; font-size: 1.5rem; font-weight: bold; text-decoration: none; transition: color 0.3s; font-family: Arial, sans-serif; direction: ltr; }
         .modal-content a:hover { color: #ffdd40; }
-        
-        /* AI Chat Styles */
         #ai-chat-button {
             position: fixed; bottom: 20px; right: 20px;
             width: 60px; height: 60px;
@@ -156,7 +152,7 @@
             animation: slideInLeft 0.3s ease forwards;
         }
         @keyframes slideInRight { from { transform: translateX(50px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-        @keyframes slideInLeft { from { transform: translateX(-50px); opacity: 0; } to { transform"},
+        @keyframes slideInLeft { from { transform: translateX(-50px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
         .typing-indicator { display: flex; align-items: center; gap: 5px; }
         .typing-indicator span { width: 8px; height: 8px; background-color: #aaa; border-radius: 50%; animation: typing 1s infinite; }
         .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
@@ -180,127 +176,135 @@
             transition: background-color 0.2s;
         }
         #send-chat-button:hover { background-color: #0b9dcc; }
-        
         @media (max-width: 768px) {
             #bismillah-text { font-size: 2.2rem; } .home-header h2 { font-size: 2rem; } .menu-title { font-size: 1.8rem; } .header h1 { font-size: 2.5rem; } .ayah-box { transform: none; padding: 20px; } .ayah-text { font-size: 1.8rem; } .back-button { font-size: 1rem; padding: 10px 15px; } #settings-icon { top: 15px; right: 15px; } .modal-content a { font-size: 1.3rem; }
         }
     </style>
 </head>
 <body>
-
     <div id="settings-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" width="28px" height="28px"><path d="M0 0h24v24H0z" fill="none"/><path d="M19.43 12.98c.04-.32.07-.64.07-.98s-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.30-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69-.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.65c-.04.32-.07.65-.07.98s.03.66.07.98l-2.11 1.65c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49 1c.52.4 1.08.73 1.69-.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25-1.17-.59-1.69-.98l2.49 1c.23.09.49 0 .61.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.65zM12 15.5c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5z"/></svg></div>
     <div id="privacy-modal" class="modal"><div class="modal-content"><span class="close-button">×</span><a href="https://www.termsfeed.com/live/7fc9538c-1151-42c8-8a71-5debf6df2214" target="_blank">View Privacy Policy</a></div></div>
     <div id="homeScreen">
         <div class="aura-container">
             <div class="home-header">
-                <h2>Quran Shareef</h2>
+                <h2>قرآن شریف</h2>
                 <div class="typing-container">
                     <h1 id="bismillah-text">بِسْمِ اللّٰهِ الرَّحْمٰنِ الرَّحِيْمِ</h1>
                 </div>
             </div>
         </div>
         <div class="menu-container">
-            <!-- 114 Surah ke menu boxes yahan generate honge -->
-        </div>
-    </div>
-
-    <!-- 114 Surah ke pages yahan generate honge -->
-
-    <!-- AI Chat Button and Modal -->
-    <button id="ai-chat-button"><span class="material-symbols-outlined">smart_toy</span></button>
-    <div id="ai-chat-modal" class="modal">
-        <div class="chat-container">
-            <div class="chat-header">
-                <span id="close-chat-button">×</span>
-                <span class="material-symbols-outlined">neurology</span>
-                Faraz
-            </div>
-            <div class="chat-messages" id="chat-messages">
-                <div class="message ai-message">Assalamu Alaikum! Main Faraz hoon, aapka AI assistant. Quran Shareef ke baare mein koi sawal poochhein ya kisi ayah ki tafseer jaan'na chaahein!</div>
-            </div>
-            <div class="chat-input-area">
-                <input type="text" id="chat-input" placeholder="Apna sawal yahan likhein...">
-                <button id="send-chat-button"><span class="material-symbols-outlined">send</span></button>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        // JavaScript to handle navigation, audio, and AI chat
-        function showPage(pageId) {
-            document.getElementById('homeScreen').style.display = 'none';
-            document.querySelectorAll('.surah-page').forEach(page => page.style.display = 'none');
-            document.getElementById(pageId).style.display = 'block';
-            // Load Surah content dynamically if needed
-        }
-
-        function showHomeScreen() {
-            document.querySelectorAll('.surah-page').forEach(page => page.style.display = 'none');
-            document.getElementById('homeScreen').style.display = 'flex';
-        }
-
-        // Settings Modal
-        const settingsIcon = document.getElementById('settings-icon');
-        const privacyModal = document.getElementById('privacy-modal');
-        const closeButton = document.querySelector('.close-button');
-        
-        settingsIcon.addEventListener('click', () => {
-            privacyModal.style.display = 'flex';
-        });
-        
-        closeButton.addEventListener('click', () => {
-            privacyModal.style.display = 'none';
-        });
-
-        // AI Chat Modal
-        const aiChatButton = document.getElementById('ai-chat-button');
-        const aiChatModal = document.getElementById('ai-chat-modal');
-        const closeChatButton = document.getElementById('close-chat-button');
-        const sendChatButton = document.getElementById('send-chat-button');
-        const chatInput = document.getElementById('chat-input');
-        const chatMessages = document.getElementById('chat-messages');
-
-        aiChatButton.addEventListener('click', () => {
-            aiChatModal.style.display = 'flex';
-        });
-
-        closeChatButton.addEventListener('click', () => {
-            aiChatModal.style.display = 'none';
-        });
-
-        sendChatButton.addEventListener('click', () => {
-            const message = chatInput.value.trim();
-            if (message) {
-                const userMessage = document.createElement('div');
-                userMessage.className = 'message user-message';
-                userMessage.textContent = message;
-                chatMessages.appendChild(userMessage);
-                chatMessages.scrollTop = chatMessages.scrollHeight;
-
-                // Simulate AI response (replace with actual AI integration)
-                setTimeout(() => {
-                    const aiMessage = document.createElement('div');
-                    aiMessage.className = 'message ai-message';
-                    aiMessage.textContent = 'Yeh ek numaish jawab hai. Barah karam apne server se AI integration shaamil karein.';
-                    chatMessages.appendChild(aiMessage);
-                    chatMessages.scrollTop = chatMessages.scrollHeight;
-                }, 1000);
-
-                chatInput.value = '';
-            }
-        });
-
-        // Handle Enter key for chat input
-        chatInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                sendChatButton.click();
-            }
-        });
-
-        // Add dynamic typing animation for each Surah title
-        document.querySelectorAll('.menu-title').forEach(title => {
-            title.style.animation = `typing-short ${7 + Math.random()}s steps(${title.textContent.length}, end) infinite`;
-        });
-    </script>
-</body>
-</html>
+            <div class="menu-box menu-box-1" onclick="showPage('surah1Page')"><div id="surah1-title" class="menu-title">سورۃ الفاتحہ</div></div>
+            <div class="menu-box menu-box-2" onclick="showPage('surah2Page')"><div id="surah2-title" class="menu-title">سورۃ البقرہ</div></div>
+            <div class="menu-box menu-box-3" onclick="showPage('surah3Page')"><div id="surah3-title" class="menu-title">سورۃ آل عمران</div></div>
+            <div class="menu-box menu-box-4" onclick="showPage('surah4Page')"><div id="surah4-title" class="menu-title">سورۃ النساء</div></div>
+            <div class="menu-box menu-box-5" onclick="showPage('surah5Page')"><div id="surah5-title" class="menu-title">سورۃ المائدہ</div></div>
+            <div class="menu-box menu-box-6" onclick="showPage('surah6Page')"><div id="surah6-title" class="menu-title">سورۃ الأنعام</div></div>
+            <div class="menu-box menu-box-7" onclick="showPage('surah7Page')"><div id="surah7-title" class="menu-title">سورۃ الأعراف</div></div>
+            <div class="menu-box menu-box-8" onclick="showPage('surah8Page')"><div id="surah8-title" class="menu-title">سورۃ الأنفال</div></div>
+            <div class="menu-box menu-box-1" onclick="showPage('surah9Page')"><div id="surah9-title" class="menu-title">سورۃ التوبہ</div></div>
+            <div class="menu-box menu-box-2" onclick="showPage('surah10Page')"><div id="surah10-title" class="menu-title">سورۃ یونس</div></div>
+            <div class="menu-box menu-box-3" onclick="showPage('surah11Page')"><div id="surah11-title" class="menu-title">سورۃ ہود</div></div>
+            <div class="menu-box menu-box-4" onclick="showPage('surah12Page')"><div id="surah12-title" class="menu-title">سورۃ یوسف</div></div>
+            <div class="menu-box menu-box-5" onclick="showPage('surah13Page')"><div id="surah13-title" class="menu-title">سورۃ الرعد</div></div>
+            <div class="menu-box menu-box-6" onclick="showPage('surah14Page')"><div id="surah14-title" class="menu-title">سورۃ ابراہیم</div></div>
+            <div class="menu-box menu-box-7" onclick="showPage('surah15Page')"><div id="surah15-title" class="menu-title">سورۃ الحجر</div></div>
+            <div class="menu-box menu-box-8" onclick="showPage('surah16Page')"><div id="surah16-title" class="menu-title">سورۃ النحل</div></div>
+            <div id="surah17Page" class="surah-page"><button class="back-button" onclick="showHomeScreen()">⇦ ہوم</button><header class="header"><h1>بِسْمِ اللّٰهِ الرَّحْمٰنِ الرَّحِيْمِ</h1><h1>سورۃ الإسراء</h1></header><div class="audio-player-wrapper"><div class="custom-audio-player" data-audio-src="https://download.quranicaudio.com/quran/abdul_basit_murattal/017.mp3"></div></div><main class="surah-container"></main></div>
+    <div id="surah18Page" class="surah-page"><button class="back-button" onclick="showHomeScreen()">⇦ ہوم</button><header class="header"><h1>بِسْمِ اللّٰهِ الرَّحْمٰنِ الرَّحِيْمِ</h1><h1>سورۃ الکہف</h1></header><div class="audio-player-wrapper"><div class="custom-audio-player" data-audio-src="https://download.quranicaudio.com/quran/abdul_basit_murattal/018.mp3"></div></div><main class="surah-container"></main></div>
+    <div id="surah19Page" class="surah-page"><button class="back-button" onclick="showHomeScreen()">⇦ ہوم</button><header class="header"><h1>بِسْمِ اللّٰهِ الرَّحْمٰنِ الرَّحِيْمِ</h1><h1>سورۃ مریم</h1></header><div class="audio-player-wrapper"><div class="custom-audio-player" data-audio-src="https://download.quranicaudio.com/quran/abdul_basit_murattal/019.mp3"></div></div><main class="surah-container"></main></div>
+    <div id="surah20Page" class="surah-page"><button class="back-button" onclick="showHomeScreen()">⇦ ہوم</button><header class="header"><h1>بِسْمِ اللّٰهِ الرَّحْمٰنِ الرَّحِيْمِ</h1><h1>سورۃ طہ</h1></header><div class="audio-player-wrapper"><div class="custom-audio-player" data-audio-src="https://download.quranicaudio.com/quran/abdul_basit_murattal/020.mp3"></div></div><main class="surah-container"></main></div>
+    <div id="surah21Page" class="surah-page"><button class="back-button" onclick="showHomeScreen()">⇦ ہوم</button><header class="header"><h1>بِسْمِ اللّٰهِ الرَّحْمٰنِ الرَّحِيْمِ</h1><h1>سورۃ الأنبیاء</h1></header><div class="audio-player-wrapper"><div class="custom-audio-player" data-audio-src="https://download.quranicaudio.com/quran/abdul_basit_murattal/021.mp3"></div></div><main class="surah-container"></main></div>
+    <div id="surah22Page" class="surah-page"><button class="back-button" onclick="showHomeScreen()">⇦ ہوم</button><header class="header"><h1>بِسْمِ اللّٰهِ الرَّحْمٰنِ الرَّحِيْمِ</h1><h1>سورۃ الحج</h1></header><div class="audio-player-wrapper"><div class="custom-audio-player" data-audio-src="https://download.quranicaudio.com/quran/abdul_basit_murattal/022.mp3"></div></div><main class="surah-container"></main></div>
+    <div id="surah23Page" class="surah-page"><button class="back-button" onclick="showHomeScreen()">⇦ ہوم</button><header class="header"><h1>بِسْمِ اللّٰهِ الرَّحْمٰنِ الرَّحِيْمِ</h1><h1>سورۃ المؤمنون</h1></header><div class="audio-player-wrapper"><div class="custom-audio-player" data-audio-src="https://download.quranicaudio.com/quran/abdul_basit_murattal/023.mp3"></div></div><main class="surah-container"></main></div>
+    <div id="surah24Page" class="surah-page"><button class="back-button" onclick="showHomeScreen()">⇦ ہوم</button><header class="header"><h1>بِسْمِ اللّٰهِ الرَّحْمٰنِ الرَّحِيْمِ</h1><h1>سورۃ النور</h1></header><div class="audio-player-wrapper"><div class="custom-audio-player" data-audio-src="https://download.quranicaudio.com/quran/abdul_basit_murattal/024.mp3"></div></div><main class="surah-container"></main></div>
+    <div id="surah25Page" class="surah-page"><button class="back-button" onclick="showHomeScreen()">⇦ ہوم</button><header class="header"><h1>بِسْمِ اللّٰهِ الرَّحْمٰنِ الرَّحِيْمِ</h1><h1>سورۃ الفرقان</h1></header><div class="audio-player-wrapper"><div class="custom-audio-player" data-audio-src="https://download.quranicaudio.com/quran/abdul_basit_murattal/025.mp3"></div></div><main class="surah-container"></main></div>
+    <div id="surah26Page" class="surah-page"><button class="back-button" onclick="showHomeScreen()">⇦ ہوم</button><header class="header"><h1>بِسْمِ اللّٰهِ الرَّحْمٰنِ الرَّحِيْمِ</h1><h1>سورۃ الشعراء</h1></header><div class="audio-player-wrapper"><div class="custom-audio-player" data-audio-src="https://download.quranicaudio.com/quran/abdul_basit_murattal/026.mp3"></div></div><main class="surah-container"></main></div>
+    <div id="surah27Page" class="surah-page"><button class="back-button" onclick="showHomeScreen()">⇦ ہوم</button><header class="header"><h1>بِسْمِ اللّٰهِ الرَّحْمٰنِ الرَّحِيْمِ</h1><h1>سورۃ النمل</h1></header><div class="audio-player-wrapper"><div class="custom-audio-player" data-audio-src="https://download.quranicaudio.com/quran/abdul_basit_murattal/027.mp3"></div></div><main class="surah-container"></main></div>
+    <div id="surah28Page" class="surah-page"><button class="back-button" onclick="showHomeScreen()">⇦ ہوم</button><header class="header"><h1>بِسْمِ اللّٰهِ الرَّحْمٰنِ الرَّحِيْمِ</h1><h1>سورۃ القصص</h1></header><div class="audio-player-wrapper"><div class="custom-audio-player" data-audio-src="https://download.quranicaudio.com/quran/abdul_basit_murattal/028.mp3"></div></div><main class="surah-container"></main></div>
+    <div id="surah29Page" class="surah-page"><button class="back-button" onclick="showHomeScreen()">⇦ ہوم</button><header class="header"><h1>بِسْمِ اللّٰهِ الرَّحْمٰنِ الرَّحِيْمِ</h1><h1>سورۃ العنکبوت</h1></header><div class="audio-player-wrapper"><div class="custom-audio-player" data-audio-src="https://download.quranicaudio.com/quran/abdul_basit_murattal/029.mp3"></div></div><main class="surah-container"></main></div>
+    <div id="surah30Page" class="surah-page"><button class="back-button" onclick="showHomeScreen()">⇦ ہوم</button><header class="header"><h1>بِسْمِ اللّٰهِ الرَّحْمٰنِ الرَّحِيْمِ</h1><h1>سورۃ الروم</h1></header><div class="audio-player-wrapper"><div class="custom-audio-player" data-audio-src="https://download.quranicaudio.com/quran/abdul_basit_murattal/030.mp3"></div></div><main class="surah-container"></main></div>
+    <div id="surah31Page" class="surah-page"><button class="back-button" onclick="showHomeScreen()">⇦ ہوم</button><header class="header"><h1>بِسْمِ اللّٰهِ الرَّحْمٰنِ الرَّحِيْمِ</h1><h1>سورۃ لقمان</h1></header><div class="audio-player-wrapper"><div class="custom-audio-player" data-audio-src="https://download.quranicaudio.com/quran/abdul_basit_murattal/031.mp3"></div></div><main class="surah-container"></main></div>
+    <div id="surah32Page" class="surah-page"><button class="back-button" onclick="showHomeScreen()">⇦ ہوم</button><header class="header"><h1>بِسْمِ اللّٰهِ الرَّحْمٰنِ الرَّحِيْمِ</h1><h1>سورۃ السجدہ</h1></header><div class="audio-player-wrapper"><div class="custom-audio-player" data-audio-src="https://download.quranicaudio.com/quran/abdul_basit_murattal/032.mp3"></div></div><main class="surah-container"></main></div>
+    <div class="menu-box menu-box-1" onclick="showPage('surah33Page')"><div id="surah33-title" class="menu-title">سورۃ الأحزاب</div></div>
+            <div class="menu-box menu-box-2" onclick="showPage('surah34Page')"><div id="surah34-title" class="menu-title">سورۃ سبا</div></div>
+            <div class="menu-box menu-box-3" onclick="showPage('surah35Page')"><div id="surah35-title" class="menu-title">سورۃ فاطر</div></div>
+            <div class="menu-box menu-box-4" onclick="showPage('surah36Page')"><div id="surah36-title" class="menu-title">سورۃ یٰسٓ</div></div>
+            <div class="menu-box menu-box-5" onclick="showPage('surah37Page')"><div id="surah37-title" class="menu-title">سورۃ الصافات</div></div>
+            <div class="menu-box menu-box-6" onclick="showPage('surah38Page')"><div id="surah38-title" class="menu-title">سورۃ ص</div></div>
+            <div class="menu-box menu-box-7" onclick="showPage('surah39Page')"><div id="surah39-title" class="menu-title">سورۃ الزمر</div></div>
+            <div class="menu-box menu-box-8" onclick="showPage('surah40Page')"><div id="surah40-title" class="menu-title">سورۃ غافر</div></div>
+            <div class="menu-box menu-box-1" onclick="showPage('surah41Page')"><div id="surah41-title" class="menu-title">سورۃ فصلت</div></div>
+            <div class="menu-box menu-box-2" onclick="showPage('surah42Page')"><div id="surah42-title" class="menu-title">سورۃ الشوریٰ</div></div>
+            <div class="menu-box menu-box-3" onclick="showPage('surah43Page')"><div id="surah43-title" class="menu-title">سورۃ الزخرف</div></div>
+            <div class="menu-box menu-box-4" onclick="showPage('surah44Page')"><div id="surah44-title" class="menu-title">سورۃ الدخان</div></div>
+            <div class="menu-box menu-box-5" onclick="showPage('surah45Page')"><div id="surah45-title" class="menu-title">سورۃ الجاثیہ</div></div>
+            <div class="menu-box menu-box-6" onclick="showPage('surah46Page')"><div id="surah46-title" class="menu-title">سورۃ الأحقاف</div></div>
+            <div class="menu-box menu-box-7" onclick="showPage('surah47Page')"><div id="surah47-title" class="menu-title">سورۃ محمد</div></div>
+            <div class="menu-box menu-box-8" onclick="showPage('surah48Page')"><div id="surah48-title" class="menu-title">سورۃ الفتح</div></div>
+            <div class="menu-box menu-box-1" onclick="showPage('surah49Page')"><div id="surah49-title" class="menu-title">سورۃ الحجرات</div></div>
+            <div class="menu-box menu-box-2" onclick="showPage('surah50Page')"><div id="surah50-title" class="menu-title">سورۃ ق</div></div>
+            <div class="menu-box menu-box-3" onclick="showPage('surah51Page')"><div id="surah51-title" class="menu-title">سورۃ الذاریات</div></div>
+            <div class="menu-box menu-box-4" onclick="showPage('surah52Page')"><div id="surah52-title" class="menu-title">سورۃ الطور</div></div>
+            <div class="menu-box menu-box-5" onclick="showPage('surah53Page')"><div id="surah53-title" class="menu-title">سورۃ النجم</div></div>
+            <div class="menu-box menu-box-6" onclick="showPage('surah54Page')"><div id="surah54-title" class="menu-title">سورۃ القمر</div></div>
+            <div class="menu-box menu-box-7" onclick="showPage('surah55Page')"><div id="surah55-title" class="menu-title">سورۃ الرحمٰن</div></div>
+            <div class="menu-box menu-box-8" onclick="showPage('surah56Page')"><div id="surah56-title" class="menu-title">سورۃ الواقعہ</div></div>
+            <div class="menu-box menu-box-1" onclick="showPage('surah57Page')"><div id="surah57-title" class="menu-title">سورۃ الحدید</div></div>
+            <div class="menu-box menu-box-2" onclick="showPage('surah58Page')"><div id="surah58-title" class="menu-title">سورۃ المجادلہ</div></div>
+            <div class="menu-box menu-box-3" onclick="showPage('surah59Page')"><div id="surah59-title" class="menu-title">سورۃ الحشر</div></div>
+            <div class="menu-box menu-box-4" onclick="showPage('surah60Page')"><div id="surah60-title" class="menu-title">سورۃ الممتحنہ</div></div>
+            <div class="menu-box menu-box-5" onclick="showPage('surah61Page')"><div id="surah61-title" class="menu-title">سورۃ الصف</div></div>
+            <div class="menu-box menu-box-6" onclick="showPage('surah62Page')"><div id="surah62-title" class="menu-title">سورۃ الجمعہ</div></div>
+            <div class="menu-box menu-box-7" onclick="showPage('surah63Page')"><div id="surah63-title" class="menu-title">سورۃ المنافقون</div></div>
+            <div class="menu-box menu-box-8" onclick="showPage('surah64Page')"><div id="surah64-title" class="menu-title">سورۃ التغابن</div></div>
+            <div class="menu-box menu-box-1" onclick="showPage('surah65Page')"><div id="surah65-title" class="menu-title">سورۃ الطلاق</div></div>
+            <div class="menu-box menu-box-2" onclick="showPage('surah66Page')"><div id="surah66-title" class="menu-title">سورۃ التحریم</div></div>
+            <div class="menu-box menu-box-3" onclick="showPage('surah67Page')"><div id="surah67-title" class="menu-title">سورۃ الملک</div></div>
+            <div class="menu-box menu-box-4" onclick="showPage('surah68Page')"><div id="surah68-title" class="menu-title">سورۃ القلم</div></div>
+            <div class="menu-box menu-box-5" onclick="showPage('surah69Page')"><div id="surah69-title" class="menu-title">سورۃ الحاقہ</div></div>
+            <div class="menu-box menu-box-6" onclick="showPage('surah70Page')"><div id="surah70-title" class="menu-title">سورۃ المعارج</div></div>
+            <div class="menu-box menu-box-7" onclick="showPage('surah71Page')"><div id="surah71-title" class="menu-title">سورۃ نوح</div></div>
+            <div class="menu-box menu-box-8" onclick="showPage('surah72Page')"><div id="surah72-title" class="menu-title">سورۃ الجن</div></div>
+            <div class="menu-box menu-box-1" onclick="showPage('surah73Page')"><div id="surah73-title" class="menu-title">سورۃ المزمل</div></div>
+            <div class="menu-box menu-box-2" onclick="showPage('surah74Page')"><div id="surah74-title" class="menu-title">سورۃ المدثر</div></div>
+            <div class="menu-box menu-box-3" onclick="showPage('surah75Page')"><div id="surah75-title" class="menu-title">سورۃ القیامہ</div></div>
+            <div class="menu-box menu-box-4" onclick="showPage('surah76Page')"><div id="surah76-title" class="menu-title">سورۃ الإنسان</div></div>
+            <div class="menu-box menu-box-5" onclick="showPage('surah77Page')"><div id="surah77-title" class="menu-title">سورۃ المرسلات</div></div>
+            <div class="menu-box menu-box-6" onclick="showPage('surah78Page')"><div id="surah78-title" class="menu-title">سورۃ النبأ</div></div>
+            <div class="menu-box menu-box-7" onclick="showPage('surah79Page')"><div id="surah79-title" class="menu-title">سورۃ النازعات</div></div>
+            <div class="menu-box menu-box-8" onclick="showPage('surah80Page')"><div id="surah80-title" class="menu-title">سورۃ عبس</div></div>
+            <div class="menu-box menu-box-1" onclick="showPage('surah81Page')"><div id="surah81-title" class="menu-title">سورۃ التکویر</div></div>
+            <div class="menu-box menu-box-2" onclick="showPage('surah82Page')"><div id="surah82-title" class="menu-title">سورۃ الإنفطار</div></div>
+            <div class="menu-box menu-box-3" onclick="showPage('surah83Page')"><div id="surah83-title" class="menu-title">سورۃ المطففین</div></div>
+            <div class="menu-box menu-box-4" onclick="showPage('surah84Page')"><div id="surah84-title" class="menu-title">سورۃ الإنشقاق</div></div>
+            <div class="menu-box menu-box-5" onclick="showPage('surah85Page')"><div id="surah85-title" class="menu-title">سورۃ البروج</div></div>
+            <div class="menu-box menu-box-6" onclick="showPage('surah86Page')"><div id="surah86-title" class="menu-title">سورۃ الطارق</div></div>
+            <div class="menu-box menu-box-7" onclick="showPage('surah87Page')"><div id="surah87-title" class="menu-title">سورۃ الأعلیٰ</div></div>
+            <div class="menu-box menu-box-8" onclick="showPage('surah88Page')"><div id="surah88-title" class="menu-title">سورۃ الغاشیہ</div></div>
+            <div class="menu-box menu-box-1" onclick="showPage('surah89Page')"><div id="surah89-title" class="menu-title">سورۃ الفجر</div></div>
+            <div class="menu-box menu-box-2" onclick="showPage('surah90Page')"><div id="surah90-title" class="menu-title">سورۃ البلد</div></div>
+            <div class="menu-box menu-box-3" onclick="showPage('surah91Page')"><div id="surah91-title" class="menu-title">سورۃ الشمس</div></div>
+            <div class="menu-box menu-box-4" onclick="showPage('surah92Page')"><div id="surah92-title" class="menu-title">سورۃ اللیل</div></div>
+            <div class="menu-box menu-box-5" onclick="showPage('surah93Page')"><div id="surah93-title" class="menu-title">سورۃ الضحیٰ</div></div>
+            <div class="menu-box menu-box-6" onclick="showPage('surah94Page')"><div id="surah94-title" class="menu-title">سورۃ الشرح</div></div>
+            <div class="menu-box menu-box-7" onclick="showPage('surah95Page')"><div id="surah95-title" class="menu-title">سورۃ التین</div></div>
+            <div class="menu-box menu-box-8" onclick="showPage('surah96Page')"><div id="surah96-title" class="menu-title">سورۃ العلق</div></div>
+            <div class="menu-box menu-box-1" onclick="showPage('surah97Page')"><div id="surah97-title" class="menu-title">سورۃ القدر</div></div>
+            <div class="menu-box menu-box-2" onclick="showPage('surah98Page')"><div id="surah98-title" class="menu-title">سورۃ البینہ</div></div>
+            <div class="menu-box menu-box-3" onclick="showPage('surah99Page')"><div id="surah99-title" class="menu-title">سورۃ الزلزلہ</div></div>
+            <div class="menu-box menu-box-4" onclick="showPage('surah100Page')"><div id="surah100-title" class="menu-title">سورۃ العدیات</div></div>
+            <div class="menu-box menu-box-5" onclick="showPage('surah101Page')"><div id="surah101-title" class="menu-title">سورۃ القارعہ</div></div>
+            <div class="menu-box menu-box-6" onclick="showPage('surah102Page')"><div id="surah102-title" class="menu-title">سورۃ التکاثر</div></div>
+            <div class="menu-box menu-box-7" onclick="showPage('surah103Page')"><div id="surah103-title" class="menu-title">سورۃ العصر</div></div>
+            <div class="menu-box menu-box-8" onclick="showPage('surah104Page')"><div id="surah104-title" class="menu-title">سورۃ الہمزہ</div></div>
+            <div class="menu-box menu-box-1" onclick="showPage('surah105Page')"><div id="surah105-title" class="menu-title">سورۃ الفیل</div></div>
+            <div class="menu-box menu-box-2" onclick="showPage('surah106Page')"><div id="surah106-title" class="menu-title">سورۃ قریش</div></div>
+            <div class="menu-box menu-box-3" onclick="showPage('surah107Page')"><div id="surah107-title" class="menu-title">سورۃ الماعون</div></div>
+            <div class="menu-box menu-box-4" onclick="showPage('surah108Page')"><div id="surah108-title" class="menu-title">سورۃ الکوثر</div></div>
+            <div class="menu-box menu-box-5" onclick="showPage('surah109Page')"><div id="surah109-title" class="menu-title">سورۃ الکافرون</div></div>
+            <div class="menu-box menu-box-6" onclick="showPage('surah110Page')"><div id="surah110-title" class="menu-title">سورۃ النصر</div></div>
+            <div class="menu-box menu-box-7" onclick="showPage('surah111Page')"><div id="surah111-title" class="menu-title">سورۃ المسد</div></div>
+            <div class="menu-box menu-box-8" onclick="showPage('surah112Page')"><div id="surah112-title" class="menu-title">سورۃ الإخلاص</div></div>
+            <div class="menu-box menu-box-1" onclick="showPage('surah113Page')"><div id="surah113-title" class="menu-title">سورۃ الفلق</div></div>
+            <div class="menu-box menu-box-2" onclick="showPage('surah114Page')"><div id="surah114-title" class="menu-title">سورۃ الناس</div></div>
