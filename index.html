@@ -1,143 +1,147 @@
 <!DOCTYPE html>
-<html lang="hi">
+<html lang="ur" dir="rtl">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>3D कार गेम — No Setup Needed</title>
-  <style>
-    body { margin:0; overflow:hidden; background:#87ceeb; font-family:Arial, sans-serif; }
-    #info { position:absolute; top:10px; width:100%; text-align:center; color:#fff; font-size:18px; text-shadow:1px 1px 3px #000; z-index:100; }
-    #exportBtn { position:absolute; right:10px; top:10px; padding:6px 10px; font-size:14px; background:#222; color:#fff; border:none; border-radius:4px; cursor:pointer; z-index:110; }
-    #speed { position:absolute; left:10px; top:10px; padding:6px 10px; background:rgba(0,0,0,0.5); color:#fff; font-size:14px; border-radius:4px; z-index:110; }
-    #touchControls { position:absolute; bottom:10px; left:50%; transform:translateX(-50%); display:grid; grid-template-columns:60px 60px 60px; gap:8px; z-index:110; }
-    .tg { width:60px; height:60px; background:rgba(0,0,0,0.4); color:#fff; font-size:24px; display:flex; align-items:center; justify-content:center; border-radius:8px; user-select:none; }
-  </style>
+    <meta charset="UTF-8">
+    <title>8D قرآن ایپ - پورے قرآن کے ساتھ</title>
+    <!-- Fonts and Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@700&family=Noto+Nastaliq+Urdu:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
+    <style>
+        :root {
+            --glow-color1: #0ebeff; --glow-color2: #ffdd40;
+            --glow-color3: #ff4971; --glow-color4: #25d366;
+            --highlight-glow: #f39c12;
+            --chat-bg: #1e2732;
+            --chat-header-bg: #161b22;
+        }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Amiri', serif; background-color: #0d121a;
+            background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,0.1) 1px, transparent 0);
+            background-size: 25px 25px; animation: background-pan 50s linear infinite;
+            margin: 0; padding: 20px; direction: rtl; overflow-x: hidden;
+        }
+        @keyframes background-pan { from { background-position: 0% 0%; } to { background-position: 100% 100%; } }
+        #homeScreen { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 90vh; text-align: center; }
+        .aura-container { position: relative; padding: 30px; margin-bottom: 30px; }
+        .aura-container::before, .aura-container::after { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; border-radius: 30px; z-index: -1; filter: blur(30px); animation: aura-pulse 6s ease-in-out infinite; }
+        .aura-container::before { background: linear-gradient(45deg, var(--glow-color1), var(--glow-color2)); }
+        .aura-container::after { background: linear-gradient(-45deg, var(--glow-color3), var(--glow-color4)); animation-delay: -3s; }
+        @keyframes aura-pulse { 0%, 100% { opacity: 0.6; transform: scale(0.95); } 50% { opacity: 1; transform: scale(1.05); } }
+        .home-header { color: #ecf0f1; font-family: 'Noto Nastaliq Urdu', sans-serif; }
+        .home-header h2 { font-size: 2.5rem; opacity: 0.9; letter-spacing: 2px; text-shadow: 0 0 15px rgba(236, 240, 241, 0.4); }
+        .typing-container { padding: 10px; border-bottom: 2px solid rgba(243, 156, 18, 0.5); display: inline-block; }
+        #bismillah-text { font-family: 'Amiri', serif; font-size: 3rem; color: var(--highlight-glow); font-weight: 700; text-shadow: 0 0 5px var(--highlight-glow), 0 0 15px var(--highlight-glow), 0 0 30px #e67e22; width: 0; white-space: nowrap; overflow: hidden; animation: bismillah_typing 8s steps(29, end) infinite; }
+        @keyframes bismillah_typing { 0% { width: 0; } 50% { width: 100%; } 80% { width: 100%; } 100% { width: 0; } }
+        .menu-container { width: 100%; max-width: 500px; display: grid; grid-template-columns: 1fr; gap: 25px; font-family: 'Noto Nastaliq Urdu', sans-serif; margin-top: 50px; }
+        .menu-box { padding: 35px; border-radius: 20px; cursor: pointer; box-shadow: inset 0 -5px 15px rgba(0,0,0,0.3), 0 5px 15px rgba(0,0,0,0.3); border: 1px solid rgba(255, 255, 255, 0.1); position: relative; animation: float-animation 6s ease-in-out infinite; transition: transform 0.3s ease; background: linear-gradient(145deg, #2980b9, #3498db); }
+        @keyframes float-animation { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+        .menu-box:hover { animation-play-state: paused; transform: translateY(-10px) scale(1.05) !important; }
+        .menu-title { color: white; font-size: 2.2rem; font-weight: 700; text-shadow: 0 0 3px rgba(0,0,0,0.8), 0 2px 5px rgba(0,0,0,0.7); white-space: nowrap; overflow: hidden; margin: 0 auto; display: inline-block; }
+        .surah-page { display: none; }
+        .header { text-align: center; margin-bottom: 20px; }
+        .header h1 { font-size: 3.5rem; color: #ecf0f1; text-shadow: 0px 2px 5px rgba(0,0,0,0.5); font-weight: 700; }
+        .surah-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 30px; perspective: 1500px; padding-top: 20px; }
+        .ayah-box { padding: 40px 30px; border-radius: 20px; color: #fff; box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3); border: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; opacity: 0; transform: translateY(40px); transition: opacity 0.6s ease-out, transform 0.6s ease-out, background 0.5s ease, box-shadow 0.5s ease; background: #161b22; }
+        .ayah-box.visible { opacity: 1; transform: translateY(0); }
+        .ayah-text { font-size: 2.2rem; line-height: 2.9; text-align: center; font-weight: 700; text-shadow: 0px 1px 1px rgba(0, 0, 0, 0.2), 0px 2px 2px rgba(0, 0, 0, 0.4), 0px 4px 6px rgba(0, 0, 0, 0.4); }
+        .ayah-number { display: inline-block; font-size: 1.5rem; padding-left: 10px; opacity: 0.7; }
+        .back-button { position: fixed; top: 20px; left: 20px; padding: 12px 20px; background-color: #ecf0f1; color: #2c3e50; border: none; border-radius: 50px; font-size: 1.2rem; font-weight: bold; cursor: pointer; z-index: 100; box-shadow: 0 5px 15px rgba(0,0,0,0.3); font-family: 'Noto Nastaliq Urdu', sans-serif; }
+        .audio-player-wrapper { position: relative; max-width: 550px; margin: 0 auto 35px auto; padding: 15px; border-radius: 20px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.5), 0 10px 20px rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); background: linear-gradient(145deg, #2980b9, #3498db); }
+        audio { width: 100%; outline: none; }
+        @media (max-width: 768px) {
+            .menu-title { font-size: 1.6rem; }
+            .ayah-box { padding: 20px; }
+            .ayah-text { font-size: 1.3rem; }
+            .header h1 { font-size: 2rem; }
+            .back-button { font-size: 1rem; padding: 10px 15px; }
+        }
+    </style>
 </head>
 <body>
-  <div id="info">Arrow Keys से चलाएँ | Mobile पर Touch Controls</div>
-  <button id="exportBtn">Export Car (.glb)</button>
-  <div id="speed">Speed: 0</div>
-  <div id="touchControls">
-    <div id="accel" class="tg">▲</div>
-    <div id="brake" class="tg">▼</div>
-    <div id="left" class="tg">◀</div>
-    <div id="right" class="tg">▶</div>
-  </div>
+    <div id="homeScreen">
+        <div class="aura-container">
+            <div class="home-header">
+                <h2>قرآن شریف</h2>
+                <div class="typing-container">
+                    <h1 id="bismillah-text">بِسْمِ اللّٰهِ الرَّحْمٰنِ الرَّحِيْمِ</h1>
+                </div>
+            </div>
+        </div>
+        <div class="menu-container" id="menuContainer">
+            <!-- سارے سورۃ یہاں آئیں گے -->
+        </div>
+    </div>
+    <div id="surahPage" class="surah-page">
+        <button class="back-button" onclick="showHome()">⇦ ہوم</button>
+        <header class="header">
+            <h1>بِسْمِ اللّٰهِ الرَّحْمٰنِ الرَّحِيْمِ</h1>
+            <h1 id="surahTitle"></h1>
+        </header>
+        <div class="audio-player-wrapper">
+            <audio id="surahAudio" controls></audio>
+        </div>
+        <main class="surah-container" id="ayahContainer"></main>
+    </div>
+    <script>
+    const API_BASE = 'https://alquran-api.pages.dev/api/quran';
 
-  <script type="importmap">
-  {
-    "imports": {
-      "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
-      "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
-    }
-  }
-  </script>
-  <script type="module">
-  import * as THREE from 'three';
-  import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-  import { GLTFExporter } from 'three/addons/exporters/GLTFExporter.js';
-
-  // Scene setup
-  const scene = new THREE.Scene();
-  scene.background = new THREE.Color(0x87ceeb);
-
-  const camera = new THREE.PerspectiveCamera(60, innerWidth/innerHeight, 0.1, 1000);
-  camera.position.set(0,6,12);
-
-  const renderer = new THREE.WebGLRenderer({antialias:true});
-  renderer.setSize(innerWidth, innerHeight);
-  renderer.shadowMap.enabled = true;
-  document.body.appendChild(renderer.domElement);
-
-  scene.add(new THREE.AmbientLight(0xffffff,0.6));
-  const dl = new THREE.DirectionalLight(0xffffff,0.8);
-  dl.position.set(30,40,10);
-  dl.castShadow = true;
-  dl.shadow.mapSize.set(2048,2048);
-  scene.add(dl);
-
-  const ground = new THREE.Mesh(new THREE.PlaneGeometry(400,400), new THREE.MeshStandardMaterial({color:0x8db46b}));
-  ground.rotation.x = -Math.PI/2;
-  ground.receiveShadow = true;
-  scene.add(ground);
-
-  const road = new THREE.Mesh(new THREE.PlaneGeometry(400,6), new THREE.MeshStandardMaterial({color:0x333333}));
-  road.rotation.x = -Math.PI/2;
-  road.position.y = 0.01;
-  scene.add(road);
-
-  const loader = new GLTFLoader();
-  let carRoot = new THREE.Group(); scene.add(carRoot);
-  let car = null;
-  const speedEl = document.getElementById('speed');
-
-  loader.load('https://threejs.org/examples/models/gltf/Flamingo.glb', g => {
-    // using flamingo as placeholder free model
-    car = g.scene;
-    car.scale.set(0.05,0.05,0.05);
-    car.traverse(n => { if(n.isMesh) n.castShadow = true; });
-    carRoot.add(car);
-  }, undefined, () => {
-    console.warn('Model load failed');
-  });
-
-  // Movement
-  let speed=0;
-  const keys = {ArrowUp:false, ArrowDown:false, ArrowLeft:false, ArrowRight:false};
-  window.addEventListener('keydown', e => keys[e.code]=true);
-  window.addEventListener('keyup', e => keys[e.code]=false);
-
-  // touch map
-  const touch = {accel:false, brake:false, left:false, right:false};
-  ['accel','brake','left','right'].forEach(id => {
-    const el = document.getElementById(id);
-    el.addEventListener('pointerdown', ()=> touch[id]=true);
-    el.addEventListener('pointerup', ()=> touch[id]=false);
-  });
-
-  const exporter = new GLTFExporter();
-  document.getElementById('exportBtn').onclick = ()=>{
-    exporter.parse(car || carRoot, res => {
-      const blob = res instanceof ArrayBuffer ? new Blob([res]) : new Blob([JSON.stringify(res, null,2)]);
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.download = car ? 'car.glb' : 'scene.glb';
-      a.click();
-      setTimeout(()=> URL.revokeObjectURL(a.href),5000);
-    }, {binary:true});
-  };
-
-  function animate(){
-    requestAnimationFrame(animate);
-    const dt = Math.min(0.05, performance.now()/1000);
-    let up = keys.ArrowUp || touch.accel, down = keys.ArrowDown || touch.brake;
-    let left = keys.ArrowLeft || touch.left, right = keys.ArrowRight || touch.right;
-
-    if(up) speed += 20*dt;
-    else if(down) speed -= 40*dt;
-    else speed *= 0.95;
-
-    speed = THREE.MathUtils.clamp(speed, -10, 20);
-    speedEl.textContent = 'Speed: ' + speed.toFixed(1);
-
-    if(carRoot){
-      const steer = (left?1:0) - (right?1:0);
-      carRoot.rotation.y += steer * 1.5 * dt;
-      const forward = new THREE.Vector3(0,0,-1).applyQuaternion(carRoot.quaternion);
-      carRoot.position.addScaledVector(forward, speed * dt);
+    // دوبارہ ہوم جاؤ
+    function showHome() {
+        document.getElementById('surahPage').style.display = 'none';
+        document.getElementById('homeScreen').style.display = 'flex';
     }
 
-    const camOff = new THREE.Vector3(0,5,12).applyQuaternion(carRoot.quaternion);
-    const camPos = (new THREE.Vector3()).copy(carRoot.position).add(camOff);
-    camera.position.lerp(camPos, 0.1);
-    camera.lookAt(carRoot.position);
+    // ہوم پر سارے سورہ کے باکس بنائیں
+    async function loadSurahMenu() {
+        const menu = document.getElementById('menuContainer');
+        const res = await fetch(`${API_BASE}/chapters`);
+        const data = await res.json();
+        menu.innerHTML = '';
 
-    renderer.render(scene, camera);
-  }
-  animate();
-  window.addEventListener('resize', ()=>{
-    camera.aspect = innerWidth/innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth,innerHeight);
-  });
-  </script>
+        data.data.forEach((surah, idx) => {
+            const div = document.createElement('div');
+            div.className = 'menu-box';
+            div.style.animationDelay = `${(idx%3)*-2}s`;
+            div.innerHTML = `<div class="menu-title">سورۃ ${surah.name_ar} (${surah.name_simple})</div>`;
+            div.onclick = () => loadSurah(surah.id, surah.name_ar, surah.name_simple);
+            menu.appendChild(div);
+        });
+    }
+
+    // کسی سورہ پر کلک ہونے پر صفحہ دکھائیں
+    async function loadSurah(surahId, surahNameAr, surahNameEn) {
+        document.getElementById('homeScreen').style.display = 'none';
+        document.getElementById('surahPage').style.display = 'block';
+        document.getElementById('surahTitle').innerText = `سورۃ ${surahNameAr} (${surahNameEn})`;
+
+        // آیات لوڈ کریں
+        const ayahRes = await fetch(`${API_BASE}/surah/${surahId}`);
+        const ayahData = await ayahRes.json();
+        const ayahContainer = document.getElementById('ayahContainer');
+        ayahContainer.innerHTML = '';
+        ayahData.data.ayahs.forEach(ayah => {
+            const ayahDiv = document.createElement('div');
+            ayahDiv.className = 'ayah-box visible';
+            ayahDiv.innerHTML = `<span class='ayah-text'>${ayah.text}</span>
+                <span class='ayah-number'>${ayah.numberInSurah}</span>`;
+            ayahContainer.appendChild(ayahDiv);
+        });
+
+        // آڈیو سیٹ کریں
+        const audioSrc = `https://download.quranicaudio.com/quran/abdul_basit_murattal/${String(surahId).padStart(3, '0')}.mp3`;
+        const audioPlayer = document.getElementById('surahAudio');
+        audioPlayer.src = audioSrc;
+        audioPlayer.load();
+        audioPlayer.play();
+    }
+
+    window.onload = function() {
+        document.getElementById('surahPage').style.display = 'none';
+        loadSurahMenu();
+    }
+    </script>
 </body>
 </html>
