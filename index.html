@@ -445,3 +445,388 @@
 
 </body>
 </html>
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ज्ञान का ब्रह्मांड - अनंत लर्निंग एडवेंचर</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;700;800&display=swap');
+
+        :root {
+            --primary: #2980b9; --secondary: #c0392b; --accent: #f1c40f;
+            --bg: #ecf0f1; --font-color: #2c3e50;
+            --success: #27ae60; --danger: #e74c3c;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Baloo 2', cursive;
+            background-color: var(--bg);
+            color: var(--font-color);
+            margin: 0;
+            padding: 0;
+            text-align: center;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        #app {
+            width: 100%;
+            height: 100%;
+            max-width: 1000px;
+            max-height: 700px;
+            background: white;
+            border-radius: 25px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .screen {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            transition: opacity 0.5s, transform 0.5s;
+        }
+
+        .screen:not(.active) {
+            opacity: 0;
+            pointer-events: none;
+            transform: scale(1.1);
+        }
+
+        /* --- Welcome Screen --- */
+        #welcome-screen { background: linear-gradient(135deg, var(--primary), #8e44ad); color: white; }
+        #welcome-screen h1 { font-size: 4em; margin: 0; text-shadow: 3px 3px 5px rgba(0,0,0,0.3); }
+        #name-input { font-size: 1.5em; padding: 15px; border-radius: 15px; border: 3px solid var(--accent); margin-top: 20px; text-align: center; font-family: 'Baloo 2'; }
+        
+        /* --- Main Map Screen --- */
+        #map-screen { background: url('https://www.freevector.com/uploads/vector/preview/28907/Jungle_Background_7.jpg') no-repeat center center/cover; }
+        #map-container { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+        .planet-btn {
+            background-color: rgba(255, 255, 255, 0.8);
+            border: 5px solid var(--primary);
+            border-radius: 20px;
+            padding: 20px;
+            font-size: 1.8em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+        }
+        .planet-btn:hover { transform: scale(1.1); background-color: white; border-color: var(--accent); }
+        .planet-btn .level-info { font-size: 0.6em; color: var(--secondary); font-weight: 800; }
+
+        /* --- Game Screen --- */
+        #game-screen { background-color: #a7d7c5; }
+        #game-header { width: 100%; display: flex; justify-content: space-between; font-size: 1.5em; padding: 0 30px; position: absolute; top: 10px; }
+        #task-description { font-size: 2.5em; color: var(--font-color); margin-bottom: 20px; background: rgba(255,255,255,0.7); padding: 10px 20px; border-radius: 20px;}
+        #game-canvas { background-color: #f7f9f9; border-radius: 20px; box-shadow: 0 0 15px rgba(0,0,0,0.1); cursor: pointer; }
+
+        /* --- Level Complete Screen --- */
+        #level-complete-screen { background: rgba(0,0,0,0.7); color: white; backdrop-filter: blur(10px); }
+        #level-complete-screen h2 { font-size: 5em; color: var(--accent); text-shadow: 4px 4px 0px var(--primary); }
+        .stars-container { display: flex; gap: 20px; margin: 20px 0; }
+        .star { font-size: 5em; opacity: 0; animation: popIn 0.5s forwards; }
+        @keyframes popIn {
+            0% { transform: scale(0); }
+            80% { transform: scale(1.2); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* --- Utility Classes --- */
+        .btn {
+            background: linear-gradient(45deg, var(--accent), #f39c12);
+            color: var(--font-color);
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.5em;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            font-family: 'Baloo 2', cursive;
+            font-weight: 700;
+        }
+        .btn:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
+
+    </style>
+</head>
+<body>
+
+    <div id="app">
+        <!-- Screen 1: Welcome -->
+        <div id="welcome-screen" class="screen active">
+            <h1>ज्ञान का ब्रह्मांड</h1>
+            <p style="font-size: 1.5em;">आपका स्वागत है, छोटे खोजकर्ता!</p>
+            <input type="text" id="name-input" placeholder="अपना नाम यहाँ लिखें">
+            <button class="btn" onclick="initGame()">सफर शुरू करें</button>
+        </div>
+
+        <!-- Screen 2: Main Map -->
+        <div id="map-screen" class="screen">
+            <h2 id="map-title" style="font-size: 2.5em; color: white; background: rgba(0,0,0,0.5); padding:10px; border-radius:15px;">, चुनें कि कहाँ जाना है!</h2>
+            <div id="map-container">
+                <div class="planet-btn" onclick="startGame('colors')">🎨<br>रंगों का ग्रह<div class="level-info" id="level-colors">Level 1</div></div>
+                <div class="planet-btn" onclick="startGame('animals')">🦁<br>जानवरों का जंगल<div class="level-info" id="level-animals">Level 1</div></div>
+                <div class="planet-btn" onclick="startGame('alphabets')">अ<br>अक्षरों का द्वीप<div class="level-info" id="level-alphabets">Level 1</div></div>
+                <div class="planet-btn" onclick="startGame('math')">➕<br>गणित की आकाशगंगा<div class="level-info" id="level-math">Level 1</div></div>
+            </div>
+        </div>
+
+        <!-- Screen 3: Game -->
+        <div id="game-screen" class="screen">
+            <div id="game-header">
+                <div id="level-display">Level: 1</div>
+                <div id="score-display">Score: 0</div>
+                <div id="timer-display">समय: 30</div>
+            </div>
+            <h3 id="task-description">कार्य यहाँ दिखेगा</h3>
+            <canvas id="game-canvas" width="800" height="500"></canvas>
+            <button class="btn" style="background:var(--secondary);" onclick="showScreen('map-screen')">वापस जाएं</button>
+        </div>
+
+        <!-- Screen 4: Level Complete -->
+        <div id="level-complete-screen" class="screen">
+            <h2>लेवल पूरा हुआ!</h2>
+            <div class="stars-container">
+                <div class="star" style="animation-delay: 0.2s;">⭐</div>
+                <div class="star" style="animation-delay: 0.4s;">⭐</div>
+                <div class="star" style="animation-delay: 0.6s;">⭐</div>
+            </div>
+            <p style="font-size: 1.5em;">बहुत बढ़िया!</p>
+            <p id="level-summary" style="font-size: 1.2em;"></p>
+        </div>
+    </div>
+
+    <script>
+        // --- SOUNDS ---
+        const sounds = {
+            click: new Audio('https://cdn.pixabay.com/audio/2021/08/04/audio_c6ccf34898.mp3'),
+            correct: new Audio('https://cdn.pixabay.com/audio/2022/03/15/audio_23b3714d64.mp3'),
+            wrong: new Audio('https://cdn.pixabay.com/audio/2022/03/10/audio_89592a7594.mp3'),
+            levelUp: new Audio('https://cdn.pixabay.com/audio/2022/09/23/audio_2911a36b41.mp3'),
+        };
+
+        // --- GAME STATE & DATA ---
+        let gameState = {};
+        const canvas = document.getElementById('game-canvas');
+        const ctx = canvas.getContext('2d');
+        let gameObjects = [];
+        let currentTask = {};
+        let timerInterval;
+
+        const TOPICS = {
+            colors: {
+                title: 'रंगों का ग्रह',
+                items: [ { name: 'लाल', value: '#e74c3c', emoji: '🍎' }, { name: 'हरा', value: '#2ecc71', emoji: '🌳' }, { name: 'नीला', value: '#3498db', emoji: '💧' }, { name: 'पीला', value: '#f1c40f', emoji: '🌟' }, { name: 'नारंगी', value: '#e67e22', emoji: '🍊' }],
+                taskGenerator: function() {
+                    const target = this.items[Math.floor(Math.random() * this.items.length)];
+                    return { type: 'find_color', target: target, text: `${target.name} रंग की सभी चीजें ढूंढो!` };
+                }
+            },
+            animals: {
+                title: 'जानवरों का जंगल',
+                items: [ { name: 'शेर', emoji: '🦁' }, { name: 'बंदर', emoji: '🐵' }, { name: 'हाथी', emoji: '🐘' }, { name: 'कुत्ता', emoji: '🐶' }, { name: 'बिल्ली', emoji: '🐱' } ],
+                taskGenerator: function() {
+                    const target = this.items[Math.floor(Math.random() * this.items.length)];
+                    return { type: 'find_animal', target: target, text: `सभी ${target.name} (${target.emoji}) को ढूंढो!` };
+                }
+            },
+            // ... (अधिक विषय यहाँ जोड़े जा सकते हैं)
+        };
+
+        // --- SCREEN MANAGEMENT ---
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(screenId).classList.add('active');
+        }
+
+        // --- INITIALIZATION ---
+        function initGame() {
+            const playerName = document.getElementById('name-input').value.trim();
+            if (playerName === '') { alert('कृपया अपना नाम डालें!'); return; }
+            sounds.click.play();
+            
+            // Load or create player data
+            const savedData = localStorage.getItem('playerData');
+            if (savedData) {
+                gameState = JSON.parse(savedData);
+                gameState.playerName = playerName; // Update name if changed
+            } else {
+                gameState = {
+                    playerName: playerName,
+                    score: 0,
+                    progress: { colors: 1, animals: 1, alphabets: 1, math: 1 }
+                };
+            }
+            
+            document.getElementById('map-title').textContent = `${gameState.playerName}, चुनें कि कहाँ जाना है!`;
+            updateMapLevels();
+            showScreen('map-screen');
+        }
+
+        function updateMapLevels() {
+            for (const topic in gameState.progress) {
+                document.getElementById(`level-${topic}`).innerText = `Level ${gameState.progress[topic]}`;
+            }
+        }
+        
+        // --- GAMEPLAY CORE ---
+        function startGame(topic) {
+            sounds.click.play();
+            gameState.currentTopic = topic;
+            gameState.currentLevel = gameState.progress[topic];
+            gameState.timeLeft = 30 - Math.min(15, Math.floor(gameState.currentLevel / 2)); // Timer gets faster
+            
+            showScreen('game-screen');
+            generateLevel();
+            startTimer();
+        }
+
+        function startTimer() {
+            clearInterval(timerInterval);
+            document.getElementById('timer-display').textContent = `समय: ${gameState.timeLeft}`;
+            timerInterval = setInterval(() => {
+                gameState.timeLeft--;
+                document.getElementById('timer-display').textContent = `समय: ${gameState.timeLeft}`;
+                if (gameState.timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    alert("समय समाप्त! फिर से प्रयास करें।");
+                    showScreen('map-screen');
+                }
+            }, 1000);
+        }
+
+        // --- THE "NEVER-ENDING" ENGINE ---
+        function generateLevel() {
+            document.getElementById('level-display').textContent = `Level: ${gameState.currentLevel}`;
+            document.getElementById('score-display').textContent = `Score: ${gameState.score}`;
+
+            const topicData = TOPICS[gameState.currentTopic];
+            currentTask = topicData.taskGenerator();
+            document.getElementById('task-description').textContent = currentTask.text;
+
+            gameObjects = [];
+            const numTargets = 2 + Math.floor(gameState.currentLevel / 2); // More targets on higher levels
+            const numDistractors = 5 + gameState.currentLevel; // More distractors too
+
+            // Add target objects
+            for (let i = 0; i < numTargets; i++) {
+                gameObjects.push(createGameObject(currentTask.target, true));
+            }
+
+            // Add distractor objects
+            for (let i = 0; i < numDistractors; i++) {
+                let distractorItem;
+                do {
+                    distractorItem = topicData.items[Math.floor(Math.random() * topicData.items.length)];
+                } while (distractorItem.name === currentTask.target.name);
+                gameObjects.push(createGameObject(distractorItem, false));
+            }
+
+            gameObjects = shuffleArray(gameObjects);
+            renderGameObjects();
+        }
+
+        function createGameObject(item, isTarget) {
+            const size = 50 + Math.random() * 30;
+            return {
+                item: item,
+                x: Math.random() * (canvas.width - size),
+                y: Math.random() * (canvas.height - size),
+                w: size,
+                h: size,
+                isTarget: isTarget,
+                isFound: false,
+            };
+        }
+
+        function renderGameObjects() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            gameObjects.forEach(obj => {
+                if (!obj.isFound) {
+                    ctx.font = `${obj.w * 0.8}px 'Baloo 2'`;
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillText(obj.item.emoji, obj.x + obj.w / 2, obj.y + obj.h / 2);
+                }
+            });
+        }
+        
+        // --- PLAYER INTERACTION ---
+        canvas.addEventListener('click', function(event) {
+            const rect = canvas.getBoundingClientRect();
+            const mouseX = event.clientX - rect.left;
+            const mouseY = event.clientY - rect.top;
+
+            let correctClick = false;
+            gameObjects.forEach(obj => {
+                if (!obj.isFound && mouseX > obj.x && mouseX < obj.x + obj.w && mouseY > obj.y && mouseY < obj.y + obj.h) {
+                    if (obj.isTarget) {
+                        sounds.correct.play();
+                        obj.isFound = true;
+                        gameState.score += 10;
+                        correctClick = true;
+                    } else {
+                        sounds.wrong.play();
+                        // Optional: penalty for wrong click
+                    }
+                }
+            });
+
+            if(correctClick) {
+                renderGameObjects();
+                checkLevelComplete();
+            }
+        });
+
+        function checkLevelComplete() {
+            const allTargetsFound = gameObjects.filter(o => o.isTarget).every(o => o.isFound);
+            if (allTargetsFound) {
+                levelComplete();
+            }
+        }
+        
+        // --- PROGRESSION ---
+        function levelComplete() {
+            clearInterval(timerInterval);
+            sounds.levelUp.play();
+            
+            gameState.score += gameState.timeLeft * 2; // Time bonus
+            gameState.progress[gameState.currentTopic]++; // LEVEL UP!
+            
+            localStorage.setItem('playerData', JSON.stringify(gameState)); // Save progress
+
+            document.getElementById('level-summary').textContent = `आपका नया स्कोर है: ${gameState.score}`;
+            showScreen('level-complete-screen');
+            
+            setTimeout(() => {
+                updateMapLevels();
+                showScreen('map-screen');
+            }, 3000); // Show next screen after 3 seconds
+        }
+
+        // Helper function
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+    </script>
+</body>
+</html>
