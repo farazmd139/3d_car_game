@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>किड्स यूनिवर्स - एडवांस्ड लर्निंग ऐप</title>
+    <style>
+        /* --- गूगल फ़ॉन्ट्स --- */
+        @import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;700&display=swap');
+
+        /* --- सामान्य स्टाइलिंग --- */
+        :root {
+            --primary-color: #ff6347; /* Tomato */
+            --secondary-color: #1e90ff; /* DodgerBlue */
+            --accent-color: #ffd700; /* Gold */
+            --bg-color: #f0f8ff; /* AliceBlue */
+            --text-color: #333;
+            --card-bg: #ffffff;
+        }
+
+        body {
+            font-family: 'Baloo 2', cursive;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            text-align: center;
+            overflow-x: hidden;
+        }
+
+        /* --- हेडर --- */
+        header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 20px;
+            font-size: 2em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            border-bottom-left-radius: 20px;
+            border-bottom-right-radius: 20px;
+        }
+
+        /* --- नेविगेशन बार --- */
+        nav {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            background-color: var(--accent-color);
+            padding: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        nav button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            margin: 5px;
+            font-size: 1.1em;
+            font-family: 'Baloo 2', cursive;
+            cursor: pointer;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+        }
+        nav button:hover, nav button.active {
+            background-color: var(--secondary-color);
+            transform: translateY(-3px);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+        }
+
+        /* --- सेक्शन --- */
+        .section {
+            padding: 20px;
+            display: none;
+            animation: slideIn 0.7s forwards;
+        }
+        .section.active {
+            display: block;
+        }
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        h2 {
+            color: var(--secondary-color);
+            font-size: 2.8em;
+            margin-bottom: 20px;
+        }
+
+        /* --- ग्रिड लेआउट --- */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 20px;
+            padding: 10px;
+        }
+        .grid-item {
+            background-color: var(--card-bg);
+            border: 3px solid var(--primary-color);
+            border-radius: 20px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.6em;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 120px;
+        }
+        .grid-item:hover {
+            transform: scale(1.08);
+            border-color: var(--secondary-color);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+        .char { font-size: 3em; font-weight: bold; color: var(--primary-color); }
+        .shape { width: 80px; height: 80px; background-color: var(--primary-color); margin-bottom: 10px; }
+        .circle { border-radius: 50%; }
+        .triangle { width: 0; height: 0; border-left: 40px solid transparent; border-right: 40px solid transparent; border-bottom: 80px solid var(--primary-color); background-color: transparent; }
+        .rectangle { width: 100px; }
+
+        /* --- होम सेक्शन --- */
+        #home-content { max-width: 800px; margin: auto; }
+        #name-input { font-size: 1.2em; padding: 10px; border-radius: 10px; border: 2px solid var(--accent-color); }
+        #start-btn { font-size: 1.2em; padding: 10px 20px; margin-top: 10px; }
+
+        /* --- मेमोरी गेम --- */
+        .memory-game {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            max-width: 500px;
+            margin: auto;
+        }
+        .memory-card {
+            background-color: transparent;
+            width: 100px; height: 100px;
+            perspective: 1000px; cursor: pointer;
+        }
+        .card-inner {
+            position: relative; width: 100%; height: 100%;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+        .memory-card.flipped .card-inner { transform: rotateY(180deg); }
+        .card-front, .card-back {
+            position: absolute; width: 100%; height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            border-radius: 10px;
+            display: flex; justify-content: center; align-items: center;
+            font-size: 3em;
+        }
+        .card-front { background-color: var(--accent-color); }
+        .card-back { background-color: var(--secondary-color); color: white; transform: rotateY(180deg); }
+
+        /* --- मैथ क्विज़ --- */
+        #quiz-container { background: var(--card-bg); max-width: 600px; margin: auto; padding: 20px; border-radius: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        #question { font-size: 2.5em; margin-bottom: 20px; }
+        #options { display: flex; justify-content: center; gap: 15px; }
+        .option { font-size: 1.8em; padding: 15px 30px; }
+        #feedback { font-size: 1.5em; margin-top: 20px; font-weight: bold; }
+
+        /* --- वीडियो सेक्शन --- */
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+            height: 0;
+            overflow: hidden;
+            max-width: 100%;
+            background: #000;
+            border-radius: 15px;
+            margin: 20px auto;
+        }
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>किड्स यूनिवर्स</h1>
+    </header>
+
+    <nav id="main-nav" style="display:none;">
+        <button onclick="showSection('home')" id="nav-home">होम</button>
+        <button onclick="showSection('learning')" id="nav-learning">सीखें</button>
+        <button onclick="showSection('games')" id="nav-games">गेम्स</button>
+        <button onclick="showSection('videos')" id="nav-videos">वीडियो</button>
+    </nav>
+
+    <!-- नाम पूछने वाला सेक्शन -->
+    <section id="name-prompt" class="section active">
+        <h2>आपका प्यारा नाम क्या है?</h2>
+        <input type="text" id="name-input" placeholder="यहाँ अपना नाम लिखें...">
+        <br>
+        <button class="nav-button" id="start-btn" onclick="startGame()">चलो शुरू करें!</button>
+    </section>
+
+    <!-- होम सेक्शन -->
+    <section id="home" class="section">
+        <div id="home-content">
+            <h2 id="welcome-message"></h2>
+            <p style="font-size: 1.5em;">यह सीखने और मस्ती करने की एक जादुई दुनिया है! चुनें कि आप आज क्या करना चाहते हैं।</p>
+            <img src="https://img.freepik.com/free-vector/happy-children-playing-together_1308-103323.jpg?w=996" alt="बच्चे" style="max-width: 80%; border-radius: 15px;">
+        </div>
+    </section>
+
+    <!-- लर्निंग सेक्शन -->
+    <section id="learning" class="section">
+        <h2>चलो कुछ नया सीखें!</h2>
+        <h3>हिंदी वर्णमाला (Varnamala)</h3>
+        <div class="grid-container" id="varnamala-grid"></div>
+        <h3>आकृतियाँ (Shapes)</h3>
+        <div class="grid-container" id="shapes-grid"></div>
+    </section>
+
+    <!-- गेम्स सेक्शन -->
+    <section id="games" class="section">
+        <h2>आओ खेलें!</h2>
+        <h3>मेमोरी गेम</h3>
+        <div class="memory-game" id="memory-game"></div>
+        <h3 style="margin-top: 40px;">गणित प्रश्नोत्तरी (Math Quiz)</h3>
+        <div id="quiz-container">
+            <div id="question"></div>
+            <div id="options"></div>
+            <div id="feedback"></div>
+        </div>
+    </section>
+
+    <!-- वीडियो सेक्शन -->
+    <section id="videos" class="section">
+        <h2>कविताएँ और कहानियाँ</h2>
+        <h4>मछली जल की रानी है</h4>
+        <div class="video-container">
+            <iframe src="https://www.youtube.com/embed/Atb1o4-3yM4" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+        <h4>लकड़ी की काठी</h4>
+        <div class="video-container">
+            <iframe src="https://www.youtube.com/embed/MzAgaI63aA4" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+    </section>
+
+    <script>
+        // --- साउंड इफेक्ट्स ---
+        const clickSound = new Audio('https://www.soundjay.com/buttons/sounds/button-3.mp3');
+        const correctSound = new Audio('https://www.soundjay.com/buttons/sounds/button-16.mp3');
+        const wrongSound = new Audio('https://www.soundjay.com/buttons/sounds/button-10.mp3');
+
+        let childName = '';
+
+        // --- शुरुआती फंक्शन ---
+        function startGame() {
+            childName = document.getElementById('name-input').value;
+            if (childName.trim() === '') {
+                alert('कृपया अपना नाम डालें!');
+                return;
+            }
+            document.getElementById('name-prompt').classList.remove('active');
+            document.getElementById('main-nav').style.display = 'flex';
+            showSection('home');
+            document.getElementById('welcome-message').innerText = `${childName}, आपका स्वागत है!`;
+        }
+
+        // --- नेविगेशन ---
+        function showSection(sectionId) {
+            clickSound.play();
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.getElementById(sectionId).classList.add('active');
+            
+            document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+            document.getElementById('nav-' + sectionId)?.classList.add('active');
+            
+            // गेम्स शुरू करें जब सेक्शन दिखे
+            if (sectionId === 'games') {
+                initMemoryGame();
+                generateQuizQuestion();
+            }
+        }
+
+        // --- टेक्स्ट-टू-स्पीच ---
+        function speak(text, lang = 'hi-IN') {
+            if ('speechSynthesis' in window) {
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = lang;
+                window.speechSynthesis.speak(utterance);
+            }
+        }
+
+        // --- लर्निंग सेक्शन को पॉप्युलेट करना ---
+        function populateLearning() {
+            const varnamala = 'अ आ इ ई उ ऊ ऋ ए ऐ ओ औ क ख ग घ च छ ज झ ट ठ ड ढ ण त थ द ध न प फ ब भ म य र ल व श ष स ह'.split(' ');
+            const varnamalaGrid = document.getElementById('varnamala-grid');
+            varnamala.forEach(char => {
+                const item = document.createElement('div');
+                item.className = 'grid-item';
+                item.innerHTML = `<div class="char">${char}</div>`;
+                item.onclick = () => speak(char);
+                varnamalaGrid.appendChild(item);
+            });
+
+            const shapes = {
+                'गोला': '<div class="shape circle"></div>',
+                'वर्ग': '<div class="shape square"></div>',
+                'आयत': '<div class="shape rectangle"></div>',
+                'त्रिकोण': '<div class="shape triangle"></div>',
+            };
+            const shapesGrid = document.getElementById('shapes-grid');
+            for (const name in shapes) {
+                const item = document.createElement('div');
+                item.className = 'grid-item';
+                item.innerHTML = `${shapes[name]}${name}`;
+                item.onclick = () => speak(name);
+                shapesGrid.appendChild(item);
+            }
+        }
+
+        // --- मेमोरी गेम लॉजिक ---
+        let memoryCards = ['🐶', '🐱', '🐭', '🐹', '🐰', '🦊', '🐻', '🐼'];
+        let hasFlippedCard = false;
+        let lockBoard = false;
+        let firstCard, secondCard;
+
+        function initMemoryGame() {
+            const gameBoard = document.getElementById('memory-game');
+            gameBoard.innerHTML = ''; // Clear previous game
+            let gameCards = [...memoryCards, ...memoryCards].sort(() => 0.5 - Math.random());
+            
+            gameCards.forEach(emoji => {
+                const card = document.createElement('div');
+                card.classList.add('memory-card');
+                card.dataset.emoji = emoji;
+                card.innerHTML = `
+                    <div class="card-inner">
+                        <div class="card-front"></div>
+                        <div class="card-back">${emoji}</div>
+                    </div>
+                `;
+                card.addEventListener('click', flipCard);
+                gameBoard.appendChild(card);
+            });
+        }
+
+        function flipCard() {
+            if (lockBoard || this === firstCard) return;
+            this.classList.add('flipped');
+            clickSound.play();
+
+            if (!hasFlippedCard) {
+                hasFlippedCard = true;
+                firstCard = this;
+                return;
+            }
+            
+            secondCard = this;
+            checkForMatch();
+        }
+
+        function checkForMatch() {
+            let isMatch = firstCard.dataset.emoji === secondCard.dataset.emoji;
+            isMatch ? disableCards() : unflipCards();
+        }
+
+        function disableCards() {
+            correctSound.play();
+            firstCard.removeEventListener('click', flipCard);
+            secondCard.removeEventListener('click', flipCard);
+            resetBoard();
+        }
+
+        function unflipCards() {
+            lockBoard = true;
+            wrongSound.play();
+            setTimeout(() => {
+                firstCard.classList.remove('flipped');
+                secondCard.classList.remove('flipped');
+                resetBoard();
+            }, 1200);
+        }
+        
+        function resetBoard() {
+            [hasFlippedCard, lockBoard] = [false, false];
+            [firstCard, secondCard] = [null, null];
+        }
+
+        // --- मैथ क्विज़ लॉजिक ---
+        let score = 0;
+        
+        function generateQuizQuestion() {
+            const num1 = Math.floor(Math.random() * 10) + 1;
+            const num2 = Math.floor(Math.random() * 10) + 1;
+            const correctAnswer = num1 + num2;
+            
+            document.getElementById('question').innerText = `${num1} + ${num2} = ?`;
+            
+            const optionsContainer = document.getElementById('options');
+            optionsContainer.innerHTML = '';
+            
+            let answers = [correctAnswer];
+            while (answers.length < 4) {
+                const wrongAnswer = correctAnswer + Math.floor(Math.random() * 5) - 2;
+                if (wrongAnswer !== correctAnswer && !answers.includes(wrongAnswer) && wrongAnswer > 0) {
+                    answers.push(wrongAnswer);
+                }
+            }
+            answers.sort(() => 0.5 - Math.random());
+            
+            answers.forEach(ans => {
+                const button = document.createElement('button');
+                button.className = 'nav-button option';
+                button.innerText = ans;
+                button.onclick = () => checkAnswer(ans, correctAnswer);
+                optionsContainer.appendChild(button);
+            });
+
+            document.getElementById('feedback').innerText = `स्कोर: ${score}`;
+        }
+
+        function checkAnswer(selected, correct) {
+            const feedback = document.getElementById('feedback');
+            if (selected === correct) {
+                correctSound.play();
+                feedback.innerText = 'शाबाश! सही जवाब!';
+                feedback.style.color = 'green';
+                score++;
+            } else {
+                wrongSound.play();
+                feedback.innerText = `ओह! कोशिश करो। सही जवाब ${correct} था।`;
+                feedback.style.color = 'red';
+            }
+            setTimeout(generateQuizQuestion, 1500);
+        }
+
+        // --- ऐप को शुरू करना ---
+        document.addEventListener('DOMContentLoaded', () => {
+            populateLearning();
+        });
+    </script>
+
+</body>
+</html>
