@@ -232,3 +232,163 @@ function listenRealtimeUpdates(){
 </script>
 </body>
 </html>
+<!doctype html>
+<html lang="hi">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>✨ Faraz Remini Enhancer ✨</title>
+<style>
+  /* Gradient background */
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    min-height: 100vh;
+    align-items: center;
+  }
+
+  .container {
+    background: rgba(255,255,255,0.95);
+    border-radius: 20px;
+    padding: 30px;
+    max-width: 700px;
+    width: 90%;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    text-align: center;
+  }
+
+  h2 {
+    color: #ff6f61;
+    font-size: 2em;
+    margin-bottom: 10px;
+  }
+
+  .muted {
+    color: #666;
+    margin-bottom: 20px;
+  }
+
+  input[type="file"] {
+    display: none;
+  }
+
+  label {
+    padding: 12px 20px;
+    background: #ff6f61;
+    color: #fff;
+    font-weight: bold;
+    border-radius: 12px;
+    cursor: pointer;
+    display: inline-block;
+    margin-bottom: 15px;
+    transition: background 0.3s ease;
+  }
+
+  label:hover {
+    background: #ff856f;
+  }
+
+  .btn {
+    padding: 12px 25px;
+    background: #0b74de;
+    color: #fff;
+    font-weight: bold;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background 0.3s ease;
+  }
+
+  .btn:hover {
+    background: #186cd9;
+  }
+
+  .preview, #resultImg {
+    max-width: 100%;
+    border-radius: 15px;
+    margin: 15px 0;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+  }
+
+  .preview:hover, #resultImg:hover {
+    transform: scale(1.02);
+  }
+
+  #status {
+    font-size: 0.95em;
+    color: #333;
+    margin-top: 10px;
+  }
+
+</style>
+</head>
+<body>
+<div class="container">
+  <h2>✨ Faraz Remini Enhancer ✨</h2>
+  <p class="muted">Photo choose karo aur turant enhance karo!</p>
+
+  <!-- File input -->
+  <label for="fileInput">Choose Image</label>
+  <input id="fileInput" type="file" accept="image/*" />
+
+  <br/>
+  <button id="uploadBtn" class="btn">Enhance Image</button>
+  <div id="status" class="muted"></div>
+
+  <h3>Original</h3>
+  <img id="origPreview" class="preview" src="" alt="Original preview" />
+
+  <h3>Enhanced</h3>
+  <img id="resultImg" src="" alt="Enhanced result" />
+</div>
+
+<script>
+const fileInput = document.getElementById('fileInput');
+const origPreview = document.getElementById('origPreview');
+const uploadBtn = document.getElementById('uploadBtn');
+const status = document.getElementById('status');
+const resultImg = document.getElementById('resultImg');
+
+// Tumhari DeepAI API key
+const DEEPAI_API_KEY = "e971ff43-c7c2-4b35-b1c9-304fefb9f341";
+
+fileInput.addEventListener('change', e => {
+  const file = e.target.files[0];
+  if (!file) return;
+  origPreview.src = URL.createObjectURL(file);
+});
+
+uploadBtn.addEventListener('click', async () => {
+  const file = fileInput.files[0];
+  if (!file) { alert('Pehle image choose karo'); return; }
+
+  status.textContent = 'Uploading & enhancing...';
+  resultImg.src = '';
+
+  const form = new FormData();
+  form.append('image', file);
+
+  try {
+    const resp = await fetch('https://api.deepai.org/api/torch-srgan', {
+      method: 'POST',
+      headers: { 'api-key': DEEPAI_API_KEY },
+      body: form
+    });
+
+    const data = await resp.json();
+    if (!resp.ok) { status.textContent = 'Error: ' + (data.error || JSON.stringify(data)); return; }
+
+    const outUrl = data.output_url || data.output?.[0] || data.output_image || data.result || null;
+    if (outUrl) { resultImg.src = outUrl; status.textContent = 'Enhancement complete!'; }
+    else { console.log('DeepAI response:', data); status.textContent = 'Check console for response'; }
+  } catch (err) { console.error(err); status.textContent = 'Server error: ' + err; }
+});
+</script>
+</body>
+</html>
