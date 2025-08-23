@@ -1,111 +1,216 @@
-<!doctype html>
-<html lang="hi">
+<!DOCTYPE html><html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Faraz 3D Photo Enhancer</title>
-  <style>
-    :root{
-      --bg1:#0f172a; --bg2:#0b1220;
-      --card:#0e1830;
-    }
-    body{
-      margin:0; min-height:100vh;
-      display:flex; align-items:center; justify-content:center;
-      background: radial-gradient(800px 400px at 10% 10%, rgba(99,102,241,0.12), transparent),
-                  linear-gradient(135deg, #071021 0%, #051025 50%, #08102a 100%);
-      font-family: Inter, system-ui, sans-serif;
-      color:#e6eef8;
-    }
-
-    .app {
-      width:960px; max-width:95vw; border-radius:20px;
-      background: linear-gradient(135deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
-      box-shadow: 0 10px 40px rgba(2,6,23,0.7), inset 0 1px 0 rgba(255,255,255,0.02);
-      padding:22px; display:grid; gap:16px;
-      grid-template-columns: 1fr 420px;
-      transform: translateZ(0);
-    }
-
-    .panel {
-      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.02));
-      border-radius:14px; padding:16px; min-height:420px;
-      box-shadow: 0 8px 30px rgba(8,12,30,0.6);
-      position:relative; overflow:hidden;
-    }
-
-    .title {
-      font-weight:700; font-size:20px; letter-spacing:0.2px; display:flex; gap:8px; align-items:center;
-    }
-
-    .uploader { margin-top:12px; display:flex; gap:10px; align-items:center; }
-    .uploader input[type=file]{ display:none; }
-    .btn {
-      background: linear-gradient(90deg,#7c3aed,#06b6d4);
-      border:none; padding:10px 14px; border-radius:10px; color:white; cursor:pointer; font-weight:600;
-      box-shadow: 0 6px 18px rgba(99,102,241,0.18);
-    }
-    .btn.ghost { background:transparent; border:1px solid rgba(255,255,255,0.06); color: #dbeafe; }
-    .preview-wrap { display:flex; gap:10px; align-items:center; justify-content:center; padding:12px; }
-    img.preview { max-width:100%; max-height:360px; border-radius:12px; box-shadow: 0 8px 30px rgba(2,6,23,0.6); }
-
-    /* Before/After slider */
-    .ba {
-      position:relative; width:100%; height:360px; border-radius:12px; overflow:hidden;
-      background:linear-gradient(180deg, rgba(0,0,0,0.1), rgba(0,0,0,0.06));
-    }
-    .ba img { position:absolute; inset:0; object-fit:contain; width:100%; height:100%; }
-    .ba .after { clip-path: inset(0 50% 0 0); } /* default half */
-    .slider {
-      position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); z-index:10;
-      width:80%;
-    }
-    input[type=range] { width:100%; -webkit-appearance:none; background:transparent; }
-    input[type=range]::-webkit-slider-thumb { -webkit-appearance:none; width:18px; height:18px; border-radius:50%; background:#fff; box-shadow:0 4px 14px rgba(0,0,0,0.6); border:6px solid rgba(124,58,237,0.9); }
-
-    /* Right column controls */
-    .controls { display:flex; flex-direction:column; gap:12px; }
-    .small { font-size:13px; color:#bcd1ff; }
-    .output img{ width:100%; border-radius:10px; }
-
-    .note { font-size:12px; color:#9fb3ff; opacity:0.9; }
-
-    footer { grid-column: 1/-1; text-align:center; color:#8ea4ff; font-size:13px; padding-top:6px; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Work App - Firebase Realtime</title>
+<style>
+body { font-family: Arial, sans-serif; background: #f0f0f0; margin: 0; padding: 20px; }
+h1 { text-align: center; color: #333; }
+.screen { display: none; }
+.card { background: #fff; padding: 15px; border-radius: 15px; box-shadow: 0 8px 15px rgba(0,0,0,0.1); margin-bottom: 20px; }
+.btn { padding: 12px 25px; border: none; border-radius: 12px; font-size: 16px; font-weight: bold; cursor: pointer; box-shadow: 0 6px #999; }
+.btn:active { box-shadow: 0 3px #666; transform: translateY(3px); }
+.btn-open { background-color: #28a745; color: #fff; }
+.btn-close { background-color: #dc3545; color: #fff; }
+.worker-card { background: linear-gradient(135deg, #a1c4fd, #c2e9fb); padding: 15px; border-radius: 15px; margin-bottom: 15px; box-shadow: 0 6px 12px rgba(0,0,0,0.2); }
+.table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+.table th, .table td { border: 1px solid #ccc; padding: 8px; text-align: center; }
+.small { color:#666; font-size: 13px; }
+</style>
 </head>
 <body>
-  <div class="app">
-    <div class="panel">
-      <div class="title">🌟 Faraz 3D Colour Enhancer</div>
-      <div class="note">Drop image ya <span style="font-weight:700">Choose File</span> karke shuru karo. (Testing only — key client me embed mat karo)</div>
+<h1>My Work App - Firebase Realtime</h1>
+<div style="text-align:center; margin-bottom:20px;">
+<button onclick="showScreen('worker')" class="btn" style="margin-right:10px;">Worker</button>
+<button onclick="showScreen('owner')" class="btn">Owner</button>
+</div><!-- Worker Screen --><div id="workerScreen" class="screen" style="display:block;">
+<div class="card">
+<label>Name:</label><br>
+<input type="text" id="workerName" placeholder="Enter your name" style="padding:8px; width:80%; border-radius:8px; border:1px solid #ccc;">
+</div>
+<div class="card" style="text-align:center;">
+<button class="btn btn-open" onclick="logTime('open')">OPEN</button>
+<button class="btn btn-close" onclick="logTime('close')" style="margin-left:15px;">CLOSE</button>
+</div>
+<div class="card">
+<h3>Latest Entry (This Device):</h3>
+<div id="latestEntry">—</div>
+</div>
+</div><!-- Owner Screen --><div id="ownerScreen" class="screen">
+<div class="card">
+<label>Enter Owner Code:</label><br>
+<input type="password" id="ownerCode" placeholder="Enter code" style="padding:8px; width:60%; border-radius:8px; border:1px solid #ccc;">
+<button class="btn btn-open" onclick="ownerLogin()" style="margin-left:10px;">Login</button>
+<button class="btn" onclick="togglePassword()" style="margin-left:10px;">Show/Hide</button>
+<p id="authMsg" style="color:red; display:none;">Wrong code!</p>
+</div>
+<div id="ownerPanel" style="display:none;">
+<div class="card">
+<label>12-hour Salary Amount:</label><br>
+<input type="number" id="salaryRate" placeholder="350" style="padding:8px; width:60%; border-radius:8px; border:1px solid #ccc;">
+<button class="btn btn-open" onclick="saveSalaryRate()" style="margin-left:10px;">Save Rate</button>
+<p class="small">Rate applies proportionally. Example: 12h = 350 → 1h = 29.17.</p>
+</div>
+<div class="card">
+<button class="btn btn-close" onclick="deleteMonthHistory()">Delete This Month History</button>
+</div>
+<div id="workerHistory"></div>
+</div>
+</div><!-- Firebase SDK --><script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script><script>
+// ---------------- Firebase Init ----------------
+const firebaseConfig = {
+  apiKey: "AIzaSyCQZjF8KrXcjB2Fkkvu9NGpjp2lAfepac8",
+  authDomain: "dil-ki-aawaz.firebaseapp.com",
+  projectId: "dil-ki-aawaz",
+  storageBucket: "dil-ki-aawaz.appspot.com", // corrected bucket host for consistency
+  messagingSenderId: "538419616399",
+  appId: "1:538419616399:web:4fc76e6d58f00d90792efa"
+};
 
-      <div class="uploader">
-        <label class="btn" id="chooseBtn">Choose File</label>
-        <input type="file" id="fileInput" accept="image/*">
-        <button class="btn ghost" id="enhanceBtn">Enhance</button>
-        <button class="btn ghost" id="downloadBtn" disabled>Download</button>
-      </div>
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+let salaryRate = Number(localStorage.getItem('salaryRate')) || 350;
+document.addEventListener('DOMContentLoaded', ()=>{
+  const sr = document.getElementById('salaryRate');
+  if(sr) sr.value = salaryRate;
+});
 
-      <div style="height:12px"></div>
+// Helper to get month key like 2025-08
+function monthKeyFromDate(d){
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+}
 
-      <div class="ba" id="ba">
-        <img id="beforeImg" src="" alt="Before" />
-        <img id="afterImg" class="after" src="" alt="After (Enhanced)" />
-        <div class="slider" style="bottom:18px; left:10%; right:10%;">
-          <input id="range" type="range" min="0" max="100" value="50">
-        </div>
-      </div>
+function showScreen(screen){
+  document.getElementById('workerScreen').style.display = screen==='worker'?'block':'none';
+  document.getElementById('ownerScreen').style.display = screen==='owner'?'block':'none';
+}
 
-      <div style="height:10px"></div>
-      <div class="note">Enhancement by DeepAI Super Resolution (torch-srgan).</div>
-    </div>
+// -------------- Worker: OPEN/CLOSE --------------
+async function logTime(type){
+  const name = document.getElementById('workerName').value.trim();
+  if(!name){ alert('Enter your name'); return; }
 
-    <div class="panel controls">
-      <div class="title">Settings</div>
-      <div class="small">Model: <strong>torch-srgan</strong></div>
-      <div class="small">Quality: Automatic</div>
+  const now = new Date();
+  const mKey = monthKeyFromDate(now);
+  const docRef = db.collection('workData').doc(mKey);
 
-      <div style="height:8px"></div>
-      <div>
-        <label class="small">API Key (testing):</label>
-        <input id="apiKey" style="width:100%; padding:8px; margin-top:6px; border-radius
+  try {
+    const docSnap = await docRef.get();
+    let data = docSnap.exists ? docSnap.data() : {};
+    if(!data[name]) data[name] = [];
+
+    if(type==='open'){
+      // if last session still open, prevent duplicate open
+      const arr = data[name];
+      if(arr.length && !arr[arr.length-1].end){
+        alert('You already have an active session. Please CLOSE first.');
+        return;
+      }
+      data[name].push({ start: now.toISOString(), end: null, hours: 0, pay: 0 });
+    } else {
+      const arr = data[name];
+      if(arr.length===0 || arr[arr.length-1].end){
+        alert('No active session to CLOSE.');
+        return;
+      }
+      const last = arr[arr.length-1];
+      last.end = now.toISOString();
+      const hrs = (new Date(last.end) - new Date(last.start)) / 36e5;
+      last.hours = parseFloat(hrs.toFixed(2));
+      const perHour = salaryRate / 12; // proportional
+      last.pay = parseFloat((perHour * hrs).toFixed(2));
+    }
+
+    await docRef.set(data, { merge: true }); // ensure we don't wipe other users
+    document.getElementById('latestEntry').innerText = `${name} - ${now.toLocaleString()}`;
+  } catch(e){
+    console.error(e);
+    alert('Firestore write failed. Check rules or network.');
+  }
+}
+
+// -------------- Owner: Auth + Live View --------------
+function ownerLogin(){
+  const code = document.getElementById('ownerCode').value.trim();
+  if(code==='Faraz_09'){
+    document.getElementById('ownerPanel').style.display='block';
+    document.getElementById('authMsg').style.display='none';
+    listenRealtimeUpdates();
+  } else {
+    document.getElementById('authMsg').style.display='block';
+  }
+}
+
+function togglePassword(){
+  const pass = document.getElementById('ownerCode');
+  pass.type = pass.type === 'password' ? 'text' : 'password';
+}
+
+function saveSalaryRate(){
+  const val = parseFloat(document.getElementById('salaryRate').value);
+  if(!isNaN(val) && val>0){
+    salaryRate = val;
+    localStorage.setItem('salaryRate', String(val));
+    alert('Salary Rate Saved');
+  }
+}
+
+async function deleteMonthHistory(){
+  if(!confirm('Delete ALL records of this month for ALL workers?')) return;
+  const now = new Date();
+  const mKey = monthKeyFromDate(now);
+  try{
+    await db.collection('workData').doc(mKey).set({});
+    alert('Month history deleted');
+  }catch(e){
+    console.error(e);
+    alert('Delete failed. Check rules/network.');
+  }
+}
+
+function listenRealtimeUpdates(){
+  const now = new Date();
+  const mKey = monthKeyFromDate(now);
+  const container = document.getElementById('workerHistory');
+
+  db.collection('workData').doc(mKey).onSnapshot(docSnap => {
+    container.innerHTML = '';
+    if(!docSnap.exists){
+      container.innerHTML = '<div class="card">No data yet for this month.</div>';
+      return;
+    }
+    const data = docSnap.data() || {};
+
+    // Sort workers alphabetically for stable view
+    const names = Object.keys(data).sort((a,b)=>a.localeCompare(b));
+    names.forEach(name => {
+      const sessions = (data[name] || []).slice().sort((a,b)=> (a.start||'').localeCompare(b.start||''));
+      let totalH = 0, totalP = 0;
+      let rows = sessions.map(s => {
+        const start = s.start ? s.start.replace('T',' ').slice(0,19) : '';
+        const end   = s.end   ? s.end.replace('T',' ').slice(0,19)   : '';
+        totalH += Number(s.hours||0);
+        totalP += Number(s.pay||0);
+        return `<tr><td>${start}</td><td>${end}</td><td>${(s.hours||0).toFixed? s.hours.toFixed(2): Number(s.hours||0).toFixed(2)}</td><td>${(s.pay||0).toFixed? s.pay.toFixed(2): Number(s.pay||0).toFixed(2)}</td></tr>`;
+      }).join('');
+
+      const card = document.createElement('div');
+      card.className = 'worker-card';
+      card.innerHTML = `
+        <h3>${name}</h3>
+        <table class="table">
+          <tr><th>Start</th><th>End</th><th>Hours</th><th>Pay</th></tr>
+          ${rows || ''}
+        </table>
+        <p><strong>Total Hours:</strong> ${totalH.toFixed(2)} &nbsp; | &nbsp; <strong>Total Pay:</strong> ${totalP.toFixed(2)}</p>
+        ${sessions.length && !sessions[sessions.length-1].end ? '<p class="small">⏳ Active session running...</p>' : ''}
+      `;
+      container.appendChild(card);
+    });
+  }, err => {
+    console.error(err);
+    container.innerHTML = `<div class="card" style="color:red;">Listener error: ${err.message}</div>`;
+  });
+}
+</script></body>
+</html>
