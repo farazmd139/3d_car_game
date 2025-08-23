@@ -1,4 +1,5 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -21,48 +22,59 @@ h1 { text-align: center; color: #333; }
 <body>
 <h1>My Work App - Firebase Realtime</h1>
 <div style="text-align:center; margin-bottom:20px;">
-<button onclick="showScreen('worker')" class="btn" style="margin-right:10px;">Worker</button>
-<button onclick="showScreen('owner')" class="btn">Owner</button>
-</div><!-- Worker Screen --><div id="workerScreen" class="screen" style="display:block;">
-<div class="card">
-<label>Name:</label><br>
-<input type="text" id="workerName" placeholder="Enter your name" style="padding:8px; width:80%; border-radius:8px; border:1px solid #ccc;">
+  <button onclick="showScreen('worker')" class="btn" style="margin-right:10px;">Worker</button>
+  <button onclick="showScreen('owner')" class="btn">Owner</button>
 </div>
-<div class="card" style="text-align:center;">
-<button class="btn btn-open" onclick="logTime('open')">OPEN</button>
-<button class="btn btn-close" onclick="logTime('close')" style="margin-left:15px;">CLOSE</button>
+
+<!-- Worker Screen -->
+<div id="workerScreen" class="screen" style="display:block;">
+  <div class="card">
+    <label>Name:</label><br>
+    <input type="text" id="workerName" placeholder="Enter your name" style="padding:8px; width:80%; border-radius:8px; border:1px solid #ccc;">
+  </div>
+  <div class="card" style="text-align:center;">
+    <button class="btn btn-open" onclick="logTime('open')">OPEN</button>
+    <button class="btn btn-close" onclick="logTime('close')" style="margin-left:15px;">CLOSE</button>
+  </div>
+  <div class="card">
+    <h3>Latest Entry (This Device):</h3>
+    <div id="latestEntry">—</div>
+  </div>
 </div>
-<div class="card">
-<h3>Latest Entry (This Device):</h3>
-<div id="latestEntry">—</div>
+
+<!-- Owner Screen -->
+<div id="ownerScreen" class="screen">
+  <div class="card">
+    <label>Enter Owner Code:</label><br>
+    <input type="password" id="ownerCode" placeholder="Enter code" style="padding:8px; width:60%; border-radius:8px; border:1px solid #ccc;">
+    <button class="btn btn-open" onclick="ownerLogin()" style="margin-left:10px;">Login</button>
+    <button class="btn" onclick="togglePassword()" style="margin-left:10px;">Show/Hide</button>
+    <p id="authMsg" style="color:red; display:none;">Wrong code!</p>
+  </div>
+  <div id="ownerPanel" style="display:none;">
+    <div class="card">
+      <label>12-hour Salary Amount:</label><br>
+      <input type="number" id="salaryRate" placeholder="350" style="padding:8px; width:60%; border-radius:8px; border:1px solid #ccc;">
+      <button class="btn btn-open" onclick="saveSalaryRate()" style="margin-left:10px;">Save Rate</button>
+      <p class="small">Rate applies proportionally. Example: 12h = 350 → 1h = 29.17.</p>
+    </div>
+    <div class="card">
+      <button class="btn btn-close" onclick="deleteMonthHistory()">Delete This Month History</button>
+    </div>
+    <div id="workerHistory"></div>
+  </div>
 </div>
-</div><!-- Owner Screen --><div id="ownerScreen" class="screen">
-<div class="card">
-<label>Enter Owner Code:</label><br>
-<input type="password" id="ownerCode" placeholder="Enter code" style="padding:8px; width:60%; border-radius:8px; border:1px solid #ccc;">
-<button class="btn btn-open" onclick="ownerLogin()" style="margin-left:10px;">Login</button>
-<button class="btn" onclick="togglePassword()" style="margin-left:10px;">Show/Hide</button>
-<p id="authMsg" style="color:red; display:none;">Wrong code!</p>
-</div>
-<div id="ownerPanel" style="display:none;">
-<div class="card">
-<label>12-hour Salary Amount:</label><br>
-<input type="number" id="salaryRate" placeholder="350" style="padding:8px; width:60%; border-radius:8px; border:1px solid #ccc;">
-<button class="btn btn-open" onclick="saveSalaryRate()" style="margin-left:10px;">Save Rate</button>
-<p class="small">Rate applies proportionally. Example: 12h = 350 → 1h = 29.17.</p>
-</div>
-<div class="card">
-<button class="btn btn-close" onclick="deleteMonthHistory()">Delete This Month History</button>
-</div>
-<div id="workerHistory"></div>
-</div>
-</div><!-- Firebase SDK --><script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script><script>
+
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script>
 // ---------------- Firebase Init ----------------
 const firebaseConfig = {
   apiKey: "AIzaSyCQZjF8KrXcjB2Fkkvu9NGpjp2lAfepac8",
   authDomain: "dil-ki-aawaz.firebaseapp.com",
   projectId: "dil-ki-aawaz",
-  storageBucket: "dil-ki-aawaz.appspot.com", // corrected bucket host for consistency
+  storageBucket: "dil-ki-aawaz.appspot.com",
   messagingSenderId: "538419616399",
   appId: "1:538419616399:web:4fc76e6d58f00d90792efa"
 };
@@ -100,7 +112,6 @@ async function logTime(type){
     if(!data[name]) data[name] = [];
 
     if(type==='open'){
-      // if last session still open, prevent duplicate open
       const arr = data[name];
       if(arr.length && !arr[arr.length-1].end){
         alert('You already have an active session. Please CLOSE first.');
@@ -117,12 +128,13 @@ async function logTime(type){
       last.end = now.toISOString();
       const hrs = (new Date(last.end) - new Date(last.start)) / 36e5;
       last.hours = parseFloat(hrs.toFixed(2));
-      const perHour = salaryRate / 12; // proportional
+      const perHour = salaryRate / 12; 
       last.pay = parseFloat((perHour * hrs).toFixed(2));
     }
 
-    await docRef.set(data, { merge: true }); // ensure we don't wipe other users
-    document.getElementById('latestEntry').innerText = `${name} - ${now.toLocaleString()}`;
+    await docRef.set(data, { merge: true });
+    document.getElementById('latestEntry').innerText = 
+      `${name} - ${now.toLocaleString('en-IN', { dateStyle: 'short', timeStyle: 'medium' })}`;
   } catch(e){
     console.error(e);
     alert('Firestore write failed. Check rules or network.');
@@ -180,18 +192,22 @@ function listenRealtimeUpdates(){
       return;
     }
     const data = docSnap.data() || {};
-
-    // Sort workers alphabetically for stable view
     const names = Object.keys(data).sort((a,b)=>a.localeCompare(b));
+
     names.forEach(name => {
       const sessions = (data[name] || []).slice().sort((a,b)=> (a.start||'').localeCompare(b.start||''));
       let totalH = 0, totalP = 0;
       let rows = sessions.map(s => {
-        const start = s.start ? s.start.replace('T',' ').slice(0,19) : '';
-        const end   = s.end   ? s.end.replace('T',' ').slice(0,19)   : '';
+        const start = s.start ? new Date(s.start).toLocaleString('en-IN', { dateStyle: 'short', timeStyle: 'medium' }) : '';
+        const end   = s.end   ? new Date(s.end).toLocaleString('en-IN', { dateStyle: 'short', timeStyle: 'medium' })   : '';
         totalH += Number(s.hours||0);
         totalP += Number(s.pay||0);
-        return `<tr><td>${start}</td><td>${end}</td><td>${(s.hours||0).toFixed? s.hours.toFixed(2): Number(s.hours||0).toFixed(2)}</td><td>${(s.pay||0).toFixed? s.pay.toFixed(2): Number(s.pay||0).toFixed(2)}</td></tr>`;
+        return `<tr>
+                  <td>${start}</td>
+                  <td>${end}</td>
+                  <td>${(s.hours||0).toFixed(2)}</td>
+                  <td>${(s.pay||0).toFixed(2)}</td>
+                </tr>`;
       }).join('');
 
       const card = document.createElement('div');
@@ -202,7 +218,8 @@ function listenRealtimeUpdates(){
           <tr><th>Start</th><th>End</th><th>Hours</th><th>Pay</th></tr>
           ${rows || ''}
         </table>
-        <p><strong>Total Hours:</strong> ${totalH.toFixed(2)} &nbsp; | &nbsp; <strong>Total Pay:</strong> ${totalP.toFixed(2)}</p>
+        <p><strong>Total Hours:</strong> ${totalH.toFixed(2)} &nbsp; | &nbsp; 
+        <strong>Total Pay:</strong> ${totalP.toFixed(2)}</p>
         ${sessions.length && !sessions[sessions.length-1].end ? '<p class="small">⏳ Active session running...</p>' : ''}
       `;
       container.appendChild(card);
@@ -212,5 +229,6 @@ function listenRealtimeUpdates(){
     container.innerHTML = `<div class="card" style="color:red;">Listener error: ${err.message}</div>`;
   });
 }
-</script></body>
+</script>
+</body>
 </html>
