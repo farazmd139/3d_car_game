@@ -1,160 +1,234 @@
-<!doctype html>
-<html lang="hi">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>✨ Faraz Remini Enhancer ✨</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Work App - Firebase Realtime</title>
 <style>
-  /* Gradient background */
-  body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
-    margin: 0;
-    padding: 0;
-    display: flex;
-    justify-content: center;
-    min-height: 100vh;
-    align-items: center;
-  }
-
-  .container {
-    background: rgba(255,255,255,0.95);
-    border-radius: 20px;
-    padding: 30px;
-    max-width: 700px;
-    width: 90%;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-    text-align: center;
-  }
-
-  h2 {
-    color: #ff6f61;
-    font-size: 2em;
-    margin-bottom: 10px;
-  }
-
-  .muted {
-    color: #666;
-    margin-bottom: 20px;
-  }
-
-  input[type="file"] {
-    display: none;
-  }
-
-  label {
-    padding: 12px 20px;
-    background: #ff6f61;
-    color: #fff;
-    font-weight: bold;
-    border-radius: 12px;
-    cursor: pointer;
-    display: inline-block;
-    margin-bottom: 15px;
-    transition: background 0.3s ease;
-  }
-
-  label:hover {
-    background: #ff856f;
-  }
-
-  .btn {
-    padding: 12px 25px;
-    background: #0b74de;
-    color: #fff;
-    font-weight: bold;
-    border: none;
-    border-radius: 12px;
-    cursor: pointer;
-    margin-top: 10px;
-    transition: background 0.3s ease;
-  }
-
-  .btn:hover {
-    background: #186cd9;
-  }
-
-  .preview, #resultImg {
-    max-width: 100%;
-    border-radius: 15px;
-    margin: 15px 0;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-    transition: transform 0.3s ease;
-  }
-
-  .preview:hover, #resultImg:hover {
-    transform: scale(1.02);
-  }
-
-  #status {
-    font-size: 0.95em;
-    color: #333;
-    margin-top: 10px;
-  }
-
+body { font-family: Arial, sans-serif; background: #f0f0f0; margin: 0; padding: 20px; }
+h1 { text-align: center; color: #333; }
+.screen { display: none; }
+.card { background: #fff; padding: 15px; border-radius: 15px; box-shadow: 0 8px 15px rgba(0,0,0,0.1); margin-bottom: 20px; }
+.btn { padding: 12px 25px; border: none; border-radius: 12px; font-size: 16px; font-weight: bold; cursor: pointer; box-shadow: 0 6px #999; }
+.btn:active { box-shadow: 0 3px #666; transform: translateY(3px); }
+.btn-open { background-color: #28a745; color: #fff; }
+.btn-close { background-color: #dc3545; color: #fff; }
+.worker-card { background: linear-gradient(135deg, #a1c4fd, #c2e9fb); padding: 15px; border-radius: 15px; margin-bottom: 15px; box-shadow: 0 6px 12px rgba(0,0,0,0.2); }
+.table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+.table th, .table td { border: 1px solid #ccc; padding: 8px; text-align: center; }
+.small { color:#666; font-size: 13px; }
 </style>
 </head>
 <body>
-<div class="container">
-  <h2>✨ Faraz Remini Enhancer ✨</h2>
-  <p class="muted">Photo choose karo aur turant enhance karo!</p>
-
-  <!-- File input -->
-  <label for="fileInput">Choose Image</label>
-  <input id="fileInput" type="file" accept="image/*" />
-
-  <br/>
-  <button id="uploadBtn" class="btn">Enhance Image</button>
-  <div id="status" class="muted"></div>
-
-  <h3>Original</h3>
-  <img id="origPreview" class="preview" src="" alt="Original preview" />
-
-  <h3>Enhanced</h3>
-  <img id="resultImg" src="" alt="Enhanced result" />
+<h1>My Work App - Firebase Realtime</h1>
+<div style="text-align:center; margin-bottom:20px;">
+  <button onclick="showScreen('worker')" class="btn" style="margin-right:10px;">Worker</button>
+  <button onclick="showScreen('owner')" class="btn">Owner</button>
 </div>
 
+<!-- Worker Screen -->
+<div id="workerScreen" class="screen" style="display:block;">
+  <div class="card">
+    <label>Name:</label><br>
+    <input type="text" id="workerName" placeholder="Enter your name" style="padding:8px; width:80%; border-radius:8px; border:1px solid #ccc;">
+  </div>
+  <div class="card" style="text-align:center;">
+    <button class="btn btn-open" onclick="logTime('open')">OPEN</button>
+    <button class="btn btn-close" onclick="logTime('close')" style="margin-left:15px;">CLOSE</button>
+  </div>
+  <div class="card">
+    <h3>Latest Entry (This Device):</h3>
+    <div id="latestEntry">—</div>
+  </div>
+</div>
+
+<!-- Owner Screen -->
+<div id="ownerScreen" class="screen">
+  <div class="card">
+    <label>Enter Owner Code:</label><br>
+    <input type="password" id="ownerCode" placeholder="Enter code" style="padding:8px; width:60%; border-radius:8px; border:1px solid #ccc;">
+    <button class="btn btn-open" onclick="ownerLogin()" style="margin-left:10px;">Login</button>
+    <button class="btn" onclick="togglePassword()" style="margin-left:10px;">Show/Hide</button>
+    <p id="authMsg" style="color:red; display:none;">Wrong code!</p>
+  </div>
+  <div id="ownerPanel" style="display:none;">
+    <div class="card">
+      <label>12-hour Salary Amount:</label><br>
+      <input type="number" id="salaryRate" placeholder="350" style="padding:8px; width:60%; border-radius:8px; border:1px solid #ccc;">
+      <button class="btn btn-open" onclick="saveSalaryRate()" style="margin-left:10px;">Save Rate</button>
+      <p class="small">Rate applies proportionally. Example: 12h = 350 → 1h = 29.17.</p>
+    </div>
+    <div class="card">
+      <button class="btn btn-close" onclick="deleteMonthHistory()">Delete This Month History</button>
+    </div>
+    <div id="workerHistory"></div>
+  </div>
+</div>
+
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 <script>
-const fileInput = document.getElementById('fileInput');
-const origPreview = document.getElementById('origPreview');
-const uploadBtn = document.getElementById('uploadBtn');
-const status = document.getElementById('status');
-const resultImg = document.getElementById('resultImg');
+// ---------------- Firebase Init ----------------
+const firebaseConfig = {
+  apiKey: "AIzaSyCQZjF8KrXcjB2Fkkvu9NGpjp2lAfepac8",
+  authDomain: "dil-ki-aawaz.firebaseapp.com",
+  projectId: "dil-ki-aawaz",
+  storageBucket: "dil-ki-aawaz.appspot.com",
+  messagingSenderId: "538419616399",
+  appId: "1:538419616399:web:4fc76e6d58f00d90792efa"
+};
 
-// Tumhari DeepAI API key
-const DEEPAI_API_KEY = "e971ff43-c7c2-4b35-b1c9-304fefb9f341";
-
-fileInput.addEventListener('change', e => {
-  const file = e.target.files[0];
-  if (!file) return;
-  origPreview.src = URL.createObjectURL(file);
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+let salaryRate = Number(localStorage.getItem('salaryRate')) || 350;
+document.addEventListener('DOMContentLoaded', ()=>{
+  const sr = document.getElementById('salaryRate');
+  if(sr) sr.value = salaryRate;
 });
 
-uploadBtn.addEventListener('click', async () => {
-  const file = fileInput.files[0];
-  if (!file) { alert('Pehle image choose karo'); return; }
+// Helper to get month key like 2025-08
+function monthKeyFromDate(d){
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+}
 
-  status.textContent = 'Uploading & enhancing...';
-  resultImg.src = '';
+function showScreen(screen){
+  document.getElementById('workerScreen').style.display = screen==='worker'?'block':'none';
+  document.getElementById('ownerScreen').style.display = screen==='owner'?'block':'none';
+}
 
-  const form = new FormData();
-  form.append('image', file);
+// -------------- Worker: OPEN/CLOSE --------------
+async function logTime(type){
+  const name = document.getElementById('workerName').value.trim();
+  if(!name){ alert('Enter your name'); return; }
+
+  const now = new Date();
+  const mKey = monthKeyFromDate(now);
+  const docRef = db.collection('workData').doc(mKey);
 
   try {
-    const resp = await fetch('https://api.deepai.org/api/torch-srgan', {
-      method: 'POST',
-      headers: { 'api-key': DEEPAI_API_KEY },
-      body: form
+    const docSnap = await docRef.get();
+    let data = docSnap.exists ? docSnap.data() : {};
+    if(!data[name]) data[name] = [];
+
+    if(type==='open'){
+      const arr = data[name];
+      if(arr.length && !arr[arr.length-1].end){
+        alert('You already have an active session. Please CLOSE first.');
+        return;
+      }
+      data[name].push({ start: now.toISOString(), end: null, hours: 0, pay: 0 });
+    } else {
+      const arr = data[name];
+      if(arr.length===0 || arr[arr.length-1].end){
+        alert('No active session to CLOSE.');
+        return;
+      }
+      const last = arr[arr.length-1];
+      last.end = now.toISOString();
+      const hrs = (new Date(last.end) - new Date(last.start)) / 36e5;
+      last.hours = parseFloat(hrs.toFixed(2));
+      const perHour = salaryRate / 12; 
+      last.pay = parseFloat((perHour * hrs).toFixed(2));
+    }
+
+    await docRef.set(data, { merge: true });
+    document.getElementById('latestEntry').innerText = 
+      `${name} - ${now.toLocaleString('en-IN', { dateStyle: 'short', timeStyle: 'medium' })}`;
+  } catch(e){
+    console.error(e);
+    alert('Firestore write failed. Check rules or network.');
+  }
+}
+
+// -------------- Owner: Auth + Live View --------------
+function ownerLogin(){
+  const code = document.getElementById('ownerCode').value.trim();
+  if(code==='Faraz_09'){
+    document.getElementById('ownerPanel').style.display='block';
+    document.getElementById('authMsg').style.display='none';
+    listenRealtimeUpdates();
+  } else {
+    document.getElementById('authMsg').style.display='block';
+  }
+}
+
+function togglePassword(){
+  const pass = document.getElementById('ownerCode');
+  pass.type = pass.type === 'password' ? 'text' : 'password';
+}
+
+function saveSalaryRate(){
+  const val = parseFloat(document.getElementById('salaryRate').value);
+  if(!isNaN(val) && val>0){
+    salaryRate = val;
+    localStorage.setItem('salaryRate', String(val));
+    alert('Salary Rate Saved');
+  }
+}
+
+async function deleteMonthHistory(){
+  if(!confirm('Delete ALL records of this month for ALL workers?')) return;
+  const now = new Date();
+  const mKey = monthKeyFromDate(now);
+  try{
+    await db.collection('workData').doc(mKey).set({});
+    alert('Month history deleted');
+  }catch(e){
+    console.error(e);
+    alert('Delete failed. Check rules/network.');
+  }
+}
+
+function listenRealtimeUpdates(){
+  const now = new Date();
+  const mKey = monthKeyFromDate(now);
+  const container = document.getElementById('workerHistory');
+
+  db.collection('workData').doc(mKey).onSnapshot(docSnap => {
+    container.innerHTML = '';
+    if(!docSnap.exists){
+      container.innerHTML = '<div class="card">No data yet for this month.</div>';
+      return;
+    }
+    const data = docSnap.data() || {};
+    const names = Object.keys(data).sort((a,b)=>a.localeCompare(b));
+
+    names.forEach(name => {
+      const sessions = (data[name] || []).slice().sort((a,b)=> (a.start||'').localeCompare(b.start||''));
+      let totalH = 0, totalP = 0;
+      let rows = sessions.map(s => {
+        const start = s.start ? new Date(s.start).toLocaleString('en-IN', { dateStyle: 'short', timeStyle: 'medium' }) : '';
+        const end   = s.end   ? new Date(s.end).toLocaleString('en-IN', { dateStyle: 'short', timeStyle: 'medium' })   : '';
+        totalH += Number(s.hours||0);
+        totalP += Number(s.pay||0);
+        return `<tr>
+                  <td>${start}</td>
+                  <td>${end}</td>
+                  <td>${(s.hours||0).toFixed(2)}</td>
+                  <td>${(s.pay||0).toFixed(2)}</td>
+                </tr>`;
+      }).join('');
+
+      const card = document.createElement('div');
+      card.className = 'worker-card';
+      card.innerHTML = `
+        <h3>${name}</h3>
+        <table class="table">
+          <tr><th>Start</th><th>End</th><th>Hours</th><th>Pay</th></tr>
+          ${rows || ''}
+        </table>
+        <p><strong>Total Hours:</strong> ${totalH.toFixed(2)} &nbsp; | &nbsp; 
+        <strong>Total Pay:</strong> ${totalP.toFixed(2)}</p>
+        ${sessions.length && !sessions[sessions.length-1].end ? '<p class="small">⏳ Active session running...</p>' : ''}
+      `;
+      container.appendChild(card);
     });
-
-    const data = await resp.json();
-    if (!resp.ok) { status.textContent = 'Error: ' + (data.error || JSON.stringify(data)); return; }
-
-    const outUrl = data.output_url || data.output?.[0] || data.output_image || data.result || null;
-    if (outUrl) { resultImg.src = outUrl; status.textContent = 'Enhancement complete!'; }
-    else { console.log('DeepAI response:', data); status.textContent = 'Check console for response'; }
-  } catch (err) { console.error(err); status.textContent = 'Server error: ' + err; }
-});
+  }, err => {
+    console.error(err);
+    container.innerHTML = `<div class="card" style="color:red;">Listener error: ${err.message}</div>`;
+  });
+}
 </script>
 </body>
 </html>
