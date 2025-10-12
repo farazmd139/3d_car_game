@@ -15,9 +15,9 @@ html { scroll-behavior: smooth; }
 body {
     font-family: 'Noto Nastaliq Urdu', 'Amiri', serif;
     margin: 0;
-    padding: 0; /* Padding اب main-content میں ہے */
+    padding: 0;
     direction: rtl;
-    overflow: hidden; /* اسکرولنگ کو روکنے کے لیے */
+    overflow: hidden;
     color: var(--text-primary);
     background: linear-gradient(-45deg, #0d121a, #1a2c42, #2c3e50, #4a235a);
     background-size: 400% 400%;
@@ -33,7 +33,7 @@ body {
 }
 
 .main-content {
-    height: calc(100vh - 70px); /* نیویگیشن بار کی اونچائی مائنس کریں */
+    height: calc(100vh - 70px);
     overflow-y: auto;
     padding: 15px;
 }
@@ -83,7 +83,7 @@ body {
 .icon-label { font-size: 1rem; font-weight: bold; color: var(--text-primary); margin: 0; }
 
 /* قرآن پیج اسٹائل */
-#quranPage { padding: 0; } /* قرآن پیج سے اضافی پیڈنگ ہٹا دیں */
+#quranPage { padding: 0; }
 .aura-container { position: relative; padding: 20px; margin-bottom: 20px; text-align: center; }
 .aura-container::before, .aura-container::after {
     content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
@@ -199,112 +199,6 @@ body {
 @keyframes gradient-flow { 0% { background-position: 0% 50%; } 100% { background-position: 100% 50%; } }
 .time-display { font-family: monospace; font-size: 0.9rem; color: #bdc3c7; text-shadow: 0 1px 2px rgba(0,0,0,0.5); text-align: center; min-width: 90px; }
 
-/* ======================================== */
-/* AI چیٹ پیج کا نیا اسٹائل */
-/* ======================================== */
-#aiPage {
-    padding: 0;
-    height: calc(100vh - 70px); /* پورے ویو پورٹ کی اونچائی مائنس نیویگیشن بار */
-    display: flex;
-    flex-direction: column;
-}
-.chat-container {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    background-image: url('https://i.imgur.com/U5s4a1j.jpeg'); /* اسلامی پس منظر */
-    background-size: cover;
-    background-position: center;
-    position: relative;
-}
-.chat-container::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background-color: rgba(13, 18, 26, 0.7); /* پس منظر کو تھوڑا گہرا کرنے کے لیے */
-    z-index: 1;
-}
-.chat-messages, .chat-input-area {
-    position: relative;
-    z-index: 2;
-}
-.chat-messages {
-    flex-grow: 1;
-    padding: 15px;
-    overflow-y: auto;
-    direction: rtl;
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-.message {
-    padding: 12px 18px;
-    border-radius: 20px;
-    max-width: 85%;
-    line-height: 1.8;
-    font-family: 'Noto Nastaliq Urdu', sans-serif;
-    font-size: 1.1rem;
-    color: #e0e0e0;
-    text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-}
-.user-message {
-    background-color: rgba(42, 59, 71, 0.8);
-    backdrop-filter: blur(5px);
-    align-self: flex-start;
-    margin-right: auto;
-    border-bottom-left-radius: 5px;
-}
-.ai-message {
-    background-color: rgba(50, 61, 73, 0.8);
-    backdrop-filter: blur(5px);
-    align-self: flex-end;
-    margin-left: auto;
-    border-bottom-right-radius: 5px;
-}
-.message .material-symbols-outlined {
-    font-size: 1.5rem;
-    color: var(--highlight-glow);
-}
-.chat-input-area {
-    display: flex;
-    padding: 10px;
-    border-top: 1px solid rgba(255,255,255,0.1);
-    background-color: rgba(22, 27, 34, 0.8);
-    backdrop-filter: blur(10px);
-}
-#chat-input {
-    flex-grow: 1;
-    padding: 12px 20px;
-    border-radius: 25px;
-    border: 1px solid #444;
-    font-size: 1rem;
-    background-color: #323d49;
-    color: white;
-    font-family: 'Noto Nastaliq Urdu', sans-serif;
-    direction: rtl; /* ان پٹ میں بھی دائیں سے بائیں لکھیں */
-}
-#send-chat-button {
-    width: 50px;
-    height: 50px;
-    margin-left: 10px;
-    border-radius: 50%;
-    border: none;
-    background-color: var(--glow-color1);
-    color: white;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background-color 0.3s;
-}
-#send-chat-button:hover {
-    background-color: var(--glow-color2);
-}
-
 /* نیچے والا نیویگیشن بار */
 .bottom-nav {
     position: fixed; bottom: 0; left: 0; right: 0; height: 70px;
@@ -323,7 +217,6 @@ body {
 
 /* میڈیا کے لیے ایڈجسٹمنٹ */
 @media (max-width: 768px) {
-    body { padding: 0; } /* موبائل پر فل سکرین کے لیے */
     .main-content { padding: 10px 10px 85px 10px; }
     #bismillah-text { font-size: 2.2rem; }
     .home-header h2 { font-size: 2rem; }
