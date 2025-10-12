@@ -1,9 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // --- DOM Elements ---
     const pages = document.querySelectorAll('.page');
     const navButtons = document.querySelectorAll('.nav-button');
 
-    // --- Navigation Logic ---
     window.showPage = (pageId) => {
         pages.forEach(page => page.classList.remove('active'));
         navButtons.forEach(btn => btn.classList.remove('active'));
@@ -28,6 +26,5 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // --- Initial App Load ---
     showPage('homePage');
 });
