@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const navButtons = document.querySelectorAll('.nav-button');
     
     // Quran Page Elements
-    const quranHomePage = document.getElementById('quranHomePage'); // قرآن کا ہوم پیج
+    const quranPage = document.getElementById('quranPage');
     const mainMenuContainer = document.getElementById('main-menu');
     const surahPagesContainer = document.getElementById('surah-pages-container');
 
@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (activePage) activePage.classList.add('active');
         if (activeButton) activeButton.classList.add('active');
 
-        // اگر قرآن پیج دکھایا جائے تو اس کا مواد لوڈ کریں
+        // اگر قرآن پیج دکھایا جائے اور وہ خالی ہو تو اس کا مواد لوڈ کریں
         if (pageId === 'quranPage' && !mainMenuContainer.hasChildNodes()) {
             generateQuranMenu();
         }
@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // کسی بھی دوسرے پیج پر جانے سے آڈیو روک دیں
         const allAudioPlayers = document.querySelectorAll('audio');
         allAudioPlayers.forEach(player => {
-            if (!player.paused) {
+            if (player && !player.paused) {
                 player.pause();
             }
         });
@@ -87,7 +87,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     window.showSurahPage = (pageId) => {
-        document.getElementById('quranPage').style.display = 'none';
+        // Hide all main pages
+        pages.forEach(p => p.style.display = 'none');
+        // Show the specific surah page
         const targetPage = document.getElementById(pageId);
         if (targetPage) {
             targetPage.style.display = 'block';
