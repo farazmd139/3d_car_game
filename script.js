@@ -2,9 +2,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- DOM Elements ---
     const pages = document.querySelectorAll('.page');
     const navButtons = document.querySelectorAll('.nav-button');
-    
-    // Quran Page Elements
-    const quranPage = document.getElementById('quranPage');
     const mainMenuContainer = document.getElementById('main-menu');
     const surahPagesContainer = document.getElementById('surah-pages-container');
 
@@ -13,7 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
         button.addEventListener('click', (e) => {
             e.preventDefault();
             const pageId = button.dataset.page;
-            showPage(pageId);
+            window.showPage(pageId); // اسے بھی گلوبل کال پر تبدیل کر دیں
         });
     });
 
@@ -32,9 +29,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (activePage) {
             activePage.classList.add('active');
-        } else if (pageId === 'quranHomePage') {
-            // اگر ہوم بٹن (قرآن کے اندر) دبایا جائے
-            document.getElementById('quranPage').classList.add('active');
         }
         
         if (activeButton) {
@@ -63,10 +57,12 @@ document.addEventListener('DOMContentLoaded', () => {
     ];
 
     function generateQuranMenu() {
+        if (mainMenuContainer.hasChildNodes()) return; // اگر پہلے سے بھرا ہے تو دوبارہ نہ بھریں
         for (let i = 1; i <= 114; i++) {
             const menuBox = document.createElement('div');
             menuBox.className = `menu-box menu-box-${(i % 8) + 1}`;
-            menuBox.onclick = () => showSurahPage(`surah${i}Page`);
+            // *** یہاں تبدیلی کی گئی ہے ***
+            menuBox.onclick = () => window.showSurahPage(`surah${i}Page`);
             menuBox.innerHTML = `<div class="menu-title">سورة ${surahNames[i-1]}</div>`;
             mainMenuContainer.appendChild(menuBox);
 
@@ -75,7 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
             surahPage.className = 'surah-page';
             const audioSurahNumber = String(i).padStart(3, '0');
             surahPage.innerHTML = `
-                <button class="back-button" onclick="showPage('quranPage')">⇦ تمام سورتیں</button>
+                <button class="back-button" onclick="window.showPage('quranPage')">⇦ تمام سورتیں</button>
                 <header class="header">
                     ${i !== 1 && i !== 9 ? '<h1>بِسْمِ اللّٰهِ الرَّحْمٰنِ الرَّحِيْمِ</h1>' : ''}
                     <h1>سورة ${surahNames[i-1]}</h1>
@@ -92,10 +88,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // *** یہاں تبدیلی کی گئی ہے ***
     window.showSurahPage = (pageId) => {
-        // Hide all main pages
         pages.forEach(p => p.classList.remove('active'));
-        // Show the specific surah page
+        const allSurahPages = document.querySelectorAll('.surah-page');
+        allSurahPages.forEach(p => p.style.display = 'none');
+        
         const targetPage = document.getElementById(pageId);
         if (targetPage) {
             targetPage.style.display = 'block';
@@ -203,5 +201,5 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- Initial Load ---
-    showPage('homePage');
+    window.showPage('homePage');
 });
