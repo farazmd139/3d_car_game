@@ -14,7 +14,7 @@
 <body>
 
     <main class="main-content">
-        <!-- =========== ہوم پیج =========== -->
+        <!-- =========== ہوم پیج (خالی لوگو والا) =========== -->
         <div id="homePage" class="page active">
             <div class="home-grid-container">
                 <div class="icon-box" style="--glow-color: #42a5f5;"><div class="icon-circle"><span class="material-symbols-outlined">vpn_key</span></div><p class="icon-label">کلمے</p></div>
@@ -32,16 +32,28 @@
             </div>
         </div>
 
-        <!-- =========== قرآن پیج =========== -->
+        <!-- =========== قرآن پیج (یہاں قرآن کا مواد آئے گا) =========== -->
         <div id="quranPage" class="page">
-            <div class="content-placeholder"><span class="material-symbols-outlined">menu_book</span><p>قرآن سیکشن یہاں آئے گا۔</p></div>
+            <!-- قرآن کا ہوم پیج (سورتوں کی فہرست) -->
+            <div id="quranHomePage">
+                <div class="aura-container">
+                    <div class="home-header">
+                        <h2>قرآن شریف</h2>
+                        <div class="typing-container">
+                            <h1 id="bismillah-text">بِسْمِ اللّٰهِ الرَّحْمٰنِ الرَّحِيْمِ</h1>
+                        </div>
+                    </div>
+                </div>
+                <div id="main-menu" class="menu-container"></div>
+            </div>
+            <!-- ہر سورت کا تفصیلی صفحہ یہاں بنے گا -->
+            <div id="surah-pages-container"></div>
         </div>
         
-        <!-- =========== AI پیج (نیا ڈیزائن یہاں شامل کیا گیا ہے) =========== -->
+        <!-- =========== AI پیج (یہاں AI چیٹ کا مواد آئے گا) =========== -->
         <div id="aiPage" class="page">
             <div class="chat-container">
                 <div class="chat-messages" id="chat-messages">
-                    <!-- پہلا پیغام -->
                     <div class="message ai-message">
                         <span class="material-symbols-outlined">smart_toy</span>
                         <p>السلام علیکم! میں آپ کا اسلامی AI اسسٹنٹ ہوں۔ آپ مجھ سے کوئی بھی اسلامی سوال پوچھ سکتے ہیں۔</p>
