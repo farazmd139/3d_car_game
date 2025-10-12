@@ -102,9 +102,8 @@ body {
     margin: 0;
 }
 
-/* --- Bottom Navigation Bar (اپڈیٹ شدہ اسٹائل) --- */
 .bottom-nav {
-    position: fixed; bottom: 0; left: 0; right: 0; height: 70px; /* اونچائی بڑھا دی گئی */
+    position: fixed; bottom: 0; left: 0; right: 0; height: 70px;
     background-color: var(--nav-bg);
     border-top: 1px solid rgba(255, 255, 255, 0.1);
     display: flex; justify-content: space-around; align-items: center;
@@ -113,10 +112,9 @@ body {
 }
 .nav-button { background: none; border: none; color: var(--text-secondary); display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; transition: color 0.3s, transform 0.3s; flex-grow: 1; height: 100%; }
 .nav-button.active { color: var(--highlight-glow); transform: translateY(-5px); }
-.nav-button .material-symbols-outlined { font-size: 32px; /* آئیکن کا سائز بڑا کیا گیا */ }
-.nav-label { font-size: 0.8rem; /* لیبل کا سائز بڑا کیا گیا */ margin-top: 3px; font-family: Arial, sans-serif; }
+.nav-button .material-symbols-outlined { font-size: 32px; }
+.nav-label { font-size: 0.8rem; margin-top: 3px; font-family: Arial, sans-serif; }
 
-/* --- AI Chat Icon --- */
-.ai-icon-container { width: 32px; height: 32px; /* آئیکن کا سائز بڑا کیا گیا */ border-radius: 5px; overflow: hidden; position: relative; background: #000; }
+.ai-icon-container { width: 32px; height: 32px; border-radius: 5px; overflow: hidden; position: relative; background: #000; }
 .ai-icon-container::before { content: ''; position: absolute; top: 0; left: 0; width: 300%; height: 100%; background: linear-gradient(90deg, #ff00ff, #00ffff, #ffff00, #ff00ff); animation: liquid-flow 4s linear infinite; }
 @keyframes liquid-flow { from { transform: translateX(0%); } to { transform: translateX(-66.66%); } }
