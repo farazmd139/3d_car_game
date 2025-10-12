@@ -18,6 +18,14 @@ body {
     background: linear-gradient(-45deg, #0d121a, #1a2c42, #2c3e50, #4a235a);
     background-size: 400% 400%;
     animation: gradient-animation 15s ease infinite;
+
+    /* ======================================== */
+    /* نئی تبدیلی: ٹیکسٹ سلیکشن کو بند کرنا */
+    /* ======================================== */
+    user-select: none; /* Standard syntax */
+    -webkit-user-select: none; /* Safari */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
 }
 
 @keyframes gradient-animation {
