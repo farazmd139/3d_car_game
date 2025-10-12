@@ -15,9 +15,9 @@ html { scroll-behavior: smooth; }
 body {
     font-family: 'Noto Nastaliq Urdu', 'Amiri', serif;
     margin: 0;
-    padding: 0;
+    padding: 15px 15px 85px 15px;
     direction: rtl;
-    overflow: hidden;
+    overflow-x: hidden;
     color: var(--text-primary);
     background: linear-gradient(-45deg, #0d121a, #1a2c42, #2c3e50, #4a235a);
     background-size: 400% 400%;
@@ -30,12 +30,6 @@ body {
     0% { background-position: 0% 50%; }
     50% { background-position: 100% 50%; }
     100% { background-position: 0% 50%; }
-}
-
-.main-content {
-    height: calc(100vh - 70px);
-    overflow-y: auto;
-    padding: 15px;
 }
 
 .page { display: none; animation: pageFadeIn 0.5s ease; }
@@ -53,7 +47,7 @@ body {
 .content-placeholder .material-symbols-outlined { font-size: 5rem; opacity: 0.5; margin-bottom: 15px; }
 .content-placeholder p { font-size: 1.2rem; }
 
-/* ہوم اسکرین لوگو اسٹائل */
+/* ہوم اسکرین کے لوگو کا اسٹائل */
 .home-grid-container {
     display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
     gap: 20px; padding: 20px 0;
@@ -82,8 +76,7 @@ body {
 }
 .icon-label { font-size: 1rem; font-weight: bold; color: var(--text-primary); margin: 0; }
 
-/* قرآن پیج اسٹائل */
-#quranPage { padding: 0; }
+/* قرآن پیج کے لیے نیا اسٹائل */
 .aura-container { position: relative; padding: 20px; margin-bottom: 20px; text-align: center; }
 .aura-container::before, .aura-container::after {
     content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
@@ -108,7 +101,7 @@ body {
 .menu-container {
     width: 100%; max-width: 1200px; margin: 0 auto;
     display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 25px; font-family: 'Noto Nastaliq Urdu', sans-serif; padding: 0 15px;
+    gap: 25px; font-family: 'Noto Nastaliq Urdu', sans-serif;
 }
 .menu-box {
     padding: 35px; border-radius: 20px; cursor: pointer;
@@ -133,7 +126,7 @@ body {
 .menu-box-8 { background: linear-gradient(145deg, #e67e22, #d35400); }
 
 /* سورتوں کی تفصیلات والے صفحے کا اسٹائل */
-.surah-page { display: none; padding: 20px; box-sizing: border-box; height: calc(100vh - 70px); overflow-y: auto; }
+.surah-page { display: none; padding-top: 20px; }
 .surah-page .header { text-align: center; margin-bottom: 20px; }
 .surah-page .header h1 { font-size: 3rem; color: #ecf0f1; text-shadow: 0px 2px 5px rgba(0,0,0,0.5); font-weight: 700; }
 .surah-container { display: grid; grid-template-columns: 1fr; gap: 30px; padding-top: 20px; }
@@ -155,9 +148,16 @@ body {
     animation: box-color-change 18s linear infinite;
 }
 .ayah-box.visible { opacity: 1; transform: translateY(0); }
+
+/* ======================================== */
+/* نئی تبدیلی: آیت کے ٹیکسٹ کا فونٹ */
+/* ======================================== */
 .ayah-text {
-    font-family: 'Amiri', serif; font-size: 2.2rem; line-height: 2.9; 
-    text-align: center; font-weight: 700;
+    font-family: 'Amiri', serif; /* یہ لائن فونٹ کو تبدیل کرے گی */
+    font-size: 2.2rem; 
+    line-height: 2.9; 
+    text-align: center; 
+    font-weight: 700;
     text-shadow: 0px 1px 1px rgba(0, 0, 0, 0.2), 0px 2px 2px rgba(0, 0, 0, 0.4), 0px 4px 6px rgba(0, 0, 0, 0.4);
 }
 .ayah-number { display: inline-block; font-size: 1.5rem; padding-left: 10px; opacity: 0.7; }
@@ -217,7 +217,7 @@ body {
 
 /* میڈیا کے لیے ایڈجسٹمنٹ */
 @media (max-width: 768px) {
-    .main-content { padding: 10px 10px 85px 10px; }
+    body { padding: 10px 10px 85px 10px; }
     #bismillah-text { font-size: 2.2rem; }
     .home-header h2 { font-size: 2rem; }
     .menu-title { font-size: 1.8rem; }
@@ -226,3 +226,12 @@ body {
     .ayah-text { font-size: 1.8rem; }
     .back-button { font-size: 1rem; padding: 10px 15px; }
 }
+
+
+
+
+
+
+
+
+
