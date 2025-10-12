@@ -4,7 +4,6 @@
     --text-primary: #ecf0f1;
     --text-secondary: #aaa;
     --highlight-glow: #f39c12;
-    --glow-color1: #0ebeff;
 }
 
 html { scroll-behavior: smooth; }
@@ -39,13 +38,67 @@ body {
     color: var(--text-secondary);
     text-align: center;
 }
-.content-placeholder .material-symbols-outlined {
-    font-size: 5rem;
-    opacity: 0.5;
-    margin-bottom: 15px;
+.content-placeholder .material-symbols-outlined { font-size: 5rem; opacity: 0.5; margin-bottom: 15px; }
+.content-placeholder p { font-size: 1.2rem; }
+
+/* ======================================== */
+/* نیا فیچر: ہوم اسکرین لوگو گرڈ اسٹائل */
+/* ======================================== */
+.home-grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 25px;
+    padding: 20px 0;
 }
-.content-placeholder p {
-    font-size: 1.2rem;
+.icon-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+.icon-box:hover {
+    transform: translateY(-10px);
+}
+.icon-circle {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 15px;
+    position: relative;
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0));
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3), 
+                inset 0 2px 2px rgba(255, 255, 255, 0.1),
+                inset 0 -2px 2px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+.icon-circle::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    border-radius: 50%;
+    box-shadow: 0 0 20px 5px var(--glow-color, #fff);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: -1;
+}
+.icon-box:hover .icon-circle::before {
+    opacity: 0.5;
+}
+.icon-circle .material-symbols-outlined {
+    font-size: 40px;
+    color: #fff;
+    text-shadow: 0 0 10px var(--glow-color, #fff);
+}
+.icon-label {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: var(--text-primary);
+    margin: 0;
 }
 
 /* --- Bottom Navigation Bar --- */
@@ -57,40 +110,12 @@ body {
     z-index: 1000; box-shadow: 0 -5px 15px rgba(0,0,0,0.3);
     direction: ltr;
 }
-.nav-button { 
-    background: none; 
-    border: none; 
-    color: var(--text-secondary); 
-    display: flex; 
-    flex-direction: column; 
-    align-items: center; 
-    justify-content: center; 
-    cursor: pointer; 
-    transition: color 0.3s, transform 0.3s; 
-    flex-grow: 1; 
-    height: 100%; 
-}
-.nav-button.active { 
-    color: var(--highlight-glow); 
-    transform: translateY(-5px);
-}
+.nav-button { background: none; border: none; color: var(--text-secondary); display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; transition: color 0.3s, transform 0.3s; flex-grow: 1; height: 100%; }
+.nav-button.active { color: var(--highlight-glow); transform: translateY(-5px); }
 .nav-button .material-symbols-outlined { font-size: 28px; }
 .nav-label { font-size: 0.7rem; margin-top: 2px; font-family: Arial, sans-serif; }
 
 /* --- AI Chat Icon --- */
-.ai-icon-container { 
-    width: 28px; height: 28px; 
-    border-radius: 5px; 
-    overflow: hidden; 
-    position: relative; 
-    background: #000; 
-}
-.ai-icon-container::before { 
-    content: ''; 
-    position: absolute; 
-    top: 0; left: 0; 
-    width: 300%; height: 100%; 
-    background: linear-gradient(90deg, #ff00ff, #00ffff, #ffff00, #ff00ff); 
-    animation: liquid-flow 4s linear infinite; 
-}
+.ai-icon-container { width: 28px; height: 28px; border-radius: 5px; overflow: hidden; position: relative; background: #000; }
+.ai-icon-container::before { content: ''; position: absolute; top: 0; left: 0; width: 300%; height: 100%; background: linear-gradient(90deg, #ff00ff, #00ffff, #ffff00, #ff00ff); animation: liquid-flow 4s linear infinite; }
 @keyframes liquid-flow { from { transform: translateX(0%); } to { transform: translateX(-66.66%); } }
