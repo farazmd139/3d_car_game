@@ -2,9 +2,9 @@
 <html lang="ur">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>اسلامی ایپ</title>
-    <meta name="theme-color" content="#161b22">
+    <meta name="theme-color" content="#0d121a">
     <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -16,74 +16,68 @@
     <main class="main-content">
         <!-- =========== ہوم پیج =========== -->
         <div id="homePage" class="page active">
-            <div class="page-header"><h1>اسلامی واقعات</h1></div>
-            <div id="stories-container">
-                <!-- واقعہ یہاں JavaScript سے لوڈ ہوگا -->
+            <div class="page-header">
+                <h1>ہوم</h1>
+            </div>
+            <div class="content-placeholder">
+                <span class="material-symbols-outlined">cottage</span>
+                <p>ہوم اسکرین کا مواد یہاں آئے گا۔</p>
             </div>
         </div>
 
         <!-- =========== قرآن پیج =========== -->
         <div id="quranPage" class="page">
-            <div class="page-header"><h1>القرآن الكريم</h1></div>
-            <ul id="surah-list"></ul>
+            <div class="page-header">
+                <h1>القرآن الكريم</h1>
+            </div>
+            <div class="content-placeholder">
+                <span class="material-symbols-outlined">menu_book</span>
+                <p>قرآن کی سورتوں کی فہرست یہاں آئے گی۔</p>
+            </div>
         </div>
 
         <!-- =========== AI پیج =========== -->
         <div id="aiPage" class="page">
-            <div class="chat-container">
-                <div class="chat-messages" id="chat-messages">
-                    <div class="message ai-message">السلام علیکم! میں آپ کا اسلامی AI اسسٹنٹ ہوں۔ آپ مجھ سے کوئی بھی اسلامی سوال پوچھ سکتے ہیں۔</div>
-                </div>
-                <div class="chat-input-area">
-                    <input type="text" id="chat-input" placeholder="یہاں سوال لکھیں...">
-                    <button id="send-chat-button"><span class="material-symbols-outlined">send</span></button>
-                </div>
+            <div class="page-header">
+                <h1>Faraz AI</h1>
+            </div>
+            <div class="content-placeholder">
+                <span class="material-symbols-outlined">smart_toy</span>
+                <p>AI چیٹ کا فیچر یہاں آئے گا۔</p>
             </div>
         </div>
 
-        <!-- =========== دعا پیج =========== -->
-        <div id="duaPage" class="page">
-            <div class="page-header"><h1>دعائیں اور اذکار</h1></div>
-            <div id="dua-categories">
-                <!-- کیٹیگری بٹن یہاں JavaScript سے لوڈ ہوں گے -->
+        <!-- =========== تاریخِ اسلام پیج =========== -->
+        <div id="tarikhPage" class="page">
+            <div class="page-header">
+                <h1>تاریخِ اسلام</h1>
             </div>
-            <div id="content-display-area">
-                <!-- مواد یہاں JavaScript سے لوڈ ہوگا -->
+            <div class="content-placeholder">
+                <span class="material-symbols-outlined">history_edu</span>
+                <p>اسلامی واقعات یہاں آئیں گے۔</p>
             </div>
         </div>
         
-        <!-- =========== سوال جواب پیج =========== -->
-        <div id="sawalJawabPage" class="page">
+        <!-- =========== تعلیم الاسلام پیج =========== -->
+        <div id="talimPage" class="page">
             <div class="page-header">
-                <button class="back-button" onclick="showPage('duaPage')">⇦ واپس</button>
-                <h1>اسلامی سوال جواب</h1>
+                <h1>تعلیم الاسلام</h1>
             </div>
-            <div id="sawal-jawab-container">
-                 <!-- سوال جواب یہاں JavaScript سے لوڈ ہوں گے -->
+            <div class="content-placeholder">
+                <span class="material-symbols-outlined">quiz</span>
+                <p>اسلامی سوال و جواب یہاں آئیں گے۔</p>
             </div>
-        </div>
-
-        <!-- =========== سورہ کی تفصیلات کا پیج =========== -->
-        <div id="surahDetailPage" class="page">
-             <button class="back-button" onclick="showPage('quranPage')">⇦ تمام سورتیں</button>
-             <header id="surahHeader" class="header"></header>
-             <div id="audio-player-container"><audio id="mainAudioPlayer" controls preload="metadata"></audio></div>
-             <main id="surahContainer" class="surah-container"></main>
         </div>
     </main>
 
     <!-- =========== نیچے والا نیویگیشن بار =========== -->
     <nav class="bottom-nav">
-        <button class="nav-button active" data-page="homePage"><span class="material-symbols-outlined">home</span><span class="nav-label">ہوم</span></button>
         <button class="nav-button" data-page="quranPage"><span class="material-symbols-outlined">menu_book</span><span class="nav-label">قرآن</span></button>
-        <button class="nav-button" data-page="aiPage"><div class="ai-icon-container"></div><span class="nav-label">AI</span></button>
-        <button class="nav-button" data-page="duaPage"><span class="material-symbols-outlined">spa</span><span class="nav-label">دعائیں</span></button>
-        <button class="nav-button" onclick="openModal('names-modal')"><span class="material-symbols-outlined">apps</span><span class="nav-label">اللہ کے نام</span></button>
+        <button class="nav-button" data-page="aiPage"><div class="ai-icon-container"></div><span class="nav-label">Faraz AI</span></button>
+        <button class="nav-button active" data-page="homePage"><span class="material-symbols-outlined">home</span><span class="nav-label">ہوم</span></button>
+        <button class="nav-button" data-page="tarikhPage"><span class="material-symbols-outlined">history_edu</span><span class="nav-label">تاریخ</span></button>
+        <button class="nav-button" data-page="talimPage"><span class="material-symbols-outlined">quiz</span><span class="nav-label">تعلیم</span></button>
     </nav>
-
-    <!-- =========== موڈل (پاپ اپ ونڈوز) =========== -->
-    <div id="story-modal" class="modal"><div class="modal-content"></div></div>
-    <div id="names-modal" class="modal"><div class="modal-content"></div></div>
 
     <script src="script.js"></script>
 </body>
