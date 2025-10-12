@@ -7,19 +7,34 @@
 }
 
 html { scroll-behavior: smooth; }
+
 body {
     font-family: 'Noto Nastaliq Urdu', 'Amiri', serif;
-    background-color: var(--bg-color);
     margin: 0;
     padding: 15px 15px 85px 15px;
     direction: rtl;
     overflow-x: hidden;
     color: var(--text-primary);
-    background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,0.1) 1px, transparent 0);
-    background-size: 25px 25px;
-    animation: background-pan 50s linear infinite;
+    
+    /* ======================================== */
+    /* نیا فیچر: متحرک (Animated) بیک گراؤنڈ */
+    /* ======================================== */
+    background: linear-gradient(-45deg, #0d121a, #1a2c42, #2c3e50, #4a235a);
+    background-size: 400% 400%;
+    animation: gradient-animation 15s ease infinite;
 }
-@keyframes background-pan { from { background-position: 0% 0%; } to { background-position: 100% 100%; } }
+
+@keyframes gradient-animation {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
 
 .page { display: none; animation: pageFadeIn 0.5s ease; }
 .page.active { display: block; }
@@ -41,9 +56,7 @@ body {
 .content-placeholder .material-symbols-outlined { font-size: 5rem; opacity: 0.5; margin-bottom: 15px; }
 .content-placeholder p { font-size: 1.2rem; }
 
-/* ======================================== */
-/* نیا فیچر: ہوم اسکرین لوگو گرڈ اسٹائل */
-/* ======================================== */
+/* --- ہوم اسکرین لوگو گرڈ اسٹائل --- */
 .home-grid-container {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
@@ -116,6 +129,19 @@ body {
 .nav-label { font-size: 0.7rem; margin-top: 2px; font-family: Arial, sans-serif; }
 
 /* --- AI Chat Icon --- */
-.ai-icon-container { width: 28px; height: 28px; border-radius: 5px; overflow: hidden; position: relative; background: #000; }
-.ai-icon-container::before { content: ''; position: absolute; top: 0; left: 0; width: 300%; height: 100%; background: linear-gradient(90deg, #ff00ff, #00ffff, #ffff00, #ff00ff); animation: liquid-flow 4s linear infinite; }
+.ai-icon-container { 
+    width: 28px; height: 28px; 
+    border-radius: 5px; 
+    overflow: hidden; 
+    position: relative; 
+    background: #000; 
+}
+.ai-icon-container::before { 
+    content: ''; 
+    position: absolute; 
+    top: 0; left: 0; 
+    width: 300%; height: 100%; 
+    background: linear-gradient(90deg, #ff00ff, #00ffff, #ffff00, #ff00ff); 
+    animation: liquid-flow 4s linear infinite; 
+}
 @keyframes liquid-flow { from { transform: translateX(0%); } to { transform: translateX(-66.66%); } }
