@@ -1,7 +1,4 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // --- Global Variables & API Key ---
-    const GEMINI_API_KEY = 'AIzaSyBzReLO6a1AYx2B471lNLHqU-Rd_C_umdQ'; // یہ آپ کی پرانی فائل سے لی گئی ہے
-
     // --- DOM Elements ---
     const pages = document.querySelectorAll('.page');
     const navButtons = document.querySelectorAll('.nav-button');
@@ -10,11 +7,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const quranPage = document.getElementById('quranPage');
     const mainMenuContainer = document.getElementById('main-menu');
     const surahPagesContainer = document.getElementById('surah-pages-container');
-
-    // AI Page Elements
-    const chatMessages = document.getElementById('chat-messages');
-    const chatInput = document.getElementById('chat-input');
-    const sendChatButton = document.getElementById('send-chat-button');
 
     // --- Navigation Logic ---
     navButtons.forEach(button => {
@@ -25,15 +17,29 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    function showPage(pageId) {
+    // گلوبل فنکشن تاکہ HTML سے کال کیا جا سکے
+    window.showPage = (pageId) => {
+        // تمام سورتوں کے صفحات کو چھپائیں
+        const allSurahPages = document.querySelectorAll('.surah-page');
+        allSurahPages.forEach(p => p.style.display = 'none');
+
+        // تمام مرکزی صفحات کو غیر فعال کریں
         pages.forEach(page => page.classList.remove('active'));
         navButtons.forEach(btn => btn.classList.remove('active'));
 
         const activePage = document.getElementById(pageId);
         const activeButton = document.querySelector(`.nav-button[data-page="${pageId}"]`);
 
-        if (activePage) activePage.classList.add('active');
-        if (activeButton) activeButton.classList.add('active');
+        if (activePage) {
+            activePage.classList.add('active');
+        } else if (pageId === 'quranHomePage') {
+            // اگر ہوم بٹن (قرآن کے اندر) دبایا جائے
+            document.getElementById('quranPage').classList.add('active');
+        }
+        
+        if (activeButton) {
+            activeButton.classList.add('active');
+        }
 
         // اگر قرآن پیج دکھایا جائے اور وہ خالی ہو تو اس کا مواد لوڈ کریں
         if (pageId === 'quranPage' && !mainMenuContainer.hasChildNodes()) {
@@ -88,7 +94,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     window.showSurahPage = (pageId) => {
         // Hide all main pages
-        pages.forEach(p => p.style.display = 'none');
+        pages.forEach(p => p.classList.remove('active'));
         // Show the specific surah page
         const targetPage = document.getElementById(pageId);
         if (targetPage) {
@@ -194,67 +200,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         player.closest('.surah-page').appendChild(audio);
         audio.style.display = 'none';
-    }
-
-    // ========================================
-    // AI CHAT SECTION LOGIC
-    // ========================================
-    if (chatInput && sendChatButton) {
-        chatInput.addEventListener('keypress', (event) => {
-            if (event.key === 'Enter') sendMessage();
-        });
-        sendChatButton.addEventListener('click', sendMessage);
-    }
-
-    function sendMessage() {
-        const question = chatInput.value.trim();
-        if (question === '') return;
-        addMessageToChat(question, 'user');
-        chatInput.value = '';
-        askGoogleAI(question);
-    }
-
-    function addMessageToChat(message, sender, isTyping = false) {
-        const messageElement = document.createElement('div');
-        messageElement.classList.add('message', sender === 'user' ? 'user-message' : 'ai-message');
-        if (isTyping) {
-            messageElement.innerHTML = `
-                <span class="material-symbols-outlined">smart_toy</span>
-                <div class="typing-indicator"><span></span><span></span><span></span></div>`;
-        } else {
-            const iconHtml = sender === 'ai' ? '<span class="material-symbols-outlined">smart_toy</span>' : '';
-            const textPara = `<p>${message}</p>`;
-            messageElement.innerHTML = iconHtml + textPara;
-        }
-        chatMessages.appendChild(messageElement);
-        chatMessages.scrollTop = chatMessages.scrollHeight;
-        return messageElement;
-    }
-
-    async function askGoogleAI(question) {
-        const typingMessage = addMessageToChat('', 'ai', true);
-        const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${GEMINI_API_KEY}`;
-        const requestData = {
-            contents: [{ parts: [{ text: `You are "Islamic AI," a knowledgeable and respectful Islamic assistant. Your knowledge is based on the Quran, authentic Hadith (Sahih Bukhari, Sahih Muslim, etc.), and the consensus of early scholars. Always answer in the same language the user asks (Urdu, Roman Urdu, or English). Be concise and clear. If you cite a source, mention it briefly. User's question: "${question}"` }] }]
-        };
-
-        try {
-            const response = await fetch(API_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(requestData) });
-            if (!response.ok) throw new Error(`Network response was not ok. Status: ${response.status}`);
-            const data = await response.json();
-            if (data.candidates && data.candidates.length > 0 && data.candidates[0].content.parts.length > 0) {
-                const aiResponse = data.candidates[0].content.parts[0].text;
-                typingMessage.remove();
-                addMessageToChat(aiResponse, 'ai');
-            } else {
-                typingMessage.remove();
-                addMessageToChat("معافی چاہتا ہوں، مجھے کوئی جواب نہیں ملا۔ براہ کرم دوبارہ کوشش کریں۔", 'ai');
-            }
-        } catch (error) {
-            console.error("AI API Error:", error);
-            typingMessage.remove();
-            addMessageToChat("معافی چاہتا ہوں، اس وقت تکنیکی خرابی کی وجہ سے میں جواب نہیں دے سکتا۔ براہ کرم اپنا انٹرنیٹ کنکشن چیک کریں اور دوبارہ کوشش کریں۔", 'ai');
-        }
     }
 
     // --- Initial Load ---
