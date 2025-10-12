@@ -33,7 +33,7 @@ body {
     animation: gradient-animation 15s ease infinite;
     user-select: none;
     -webkit-user-select: none;
-    display: flex; /* Flex added for centered chat on standalone view */
+    display: flex;
     justify-content: center;
     min-height: 100vh;
 }
@@ -48,7 +48,6 @@ body {
     width: 100%;
     max-width: 600px;
     position: relative;
-    /* transition: all 0.5s ease-in-out; */
 }
 
 .page {
@@ -58,9 +57,8 @@ body {
     left: 0;
     width: 100%;
     min-height: 100%;
-    /* padding-bottom: 70px; */
     animation: fadeIn 0.5s ease-out;
-    padding-bottom: 75px; /* Bottom padding for content above nav */
+    padding-bottom: 75px; 
     padding-top: 15px;
 }
 
@@ -88,7 +86,7 @@ body {
     font-family: 'Amiri', serif;
 }
 
-/* Home Page Grid */
+/* Home Page Grid & Content Styles */
 .home-grid-container {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -135,7 +133,7 @@ body {
     font-size: 0.9rem;
     margin: 0;
     color: var(--text-primary);
-    font-family: 'Amiri', serif; /* Use Amiri font */
+    font-family: 'Amiri', serif; 
 }
 
 /* Search Bar on Home */
@@ -167,177 +165,8 @@ body {
     font-size: 24px;
     cursor: pointer;
 }
+/* ... (Other existing styles like list-item, surah-content, tasbih, etc.) ... */
 
-/* Generic List Item Styles */
-.list-container {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-
-.list-item {
-    padding: 15px;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 10px;
-    border-right: 5px solid var(--highlight-glow);
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
-    cursor: pointer;
-    transition: background 0.2s;
-    font-family: 'Amiri', serif;
-}
-.list-item:hover {
-    background: rgba(255, 255, 255, 0.1);
-}
-
-.list-item h3 {
-    margin: 0 0 5px 0;
-    font-size: 1.2rem;
-    color: var(--highlight-glow);
-}
-
-.list-item p {
-    margin: 0;
-    font-size: 0.9rem;
-    color: var(--text-secondary);
-}
-
-/* Surah Content Styles */
-.surah-content {
-    /* Styles for the entire surah view */
-}
-
-.surah-header-bar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-    padding-bottom: 10px;
-}
-
-.surah-header-bar h2 {
-    margin: 0;
-    font-size: 1.4rem;
-    color: var(--highlight-glow);
-    font-family: 'Amiri', serif;
-}
-
-.back-button, .audio-button {
-    background: none;
-    border: none;
-    color: var(--highlight-glow);
-    cursor: pointer;
-    padding: 5px;
-    display: flex;
-    align-items: center;
-}
-
-.surah-text-content {
-    font-family: 'Noto Nastaliq Urdu', serif;
-    font-size: 1.5rem;
-    line-height: 2.5;
-    text-align: justify;
-    padding: 10px;
-    background: rgba(255, 255, 255, 0.03);
-    border-radius: 10px;
-}
-
-/* Dua, Kalme, Sahaba, Sawal Jawab Styles */
-.dua-list-container, .story-text-content {
-    font-family: 'Amiri', serif;
-}
-.dua-item h3 { color: #2ecc71; } /* Dua specific highlight */
-.dua-item p { font-family: 'Noto Nastaliq Urdu', serif; font-size: 1.2rem; }
-.story-text-content { font-size: 1.1rem; line-height: 2; padding: 15px; background: rgba(255, 255, 255, 0.05); border-radius: 10px; }
-
-/* Tasbih Styles */
-.tasbih-controls {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-    padding: 10px;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 10px;
-}
-#tasbih-select {
-    padding: 10px;
-    border-radius: 8px;
-    background: var(--nav-bg);
-    color: var(--text-primary);
-    border: 1px solid var(--highlight-glow);
-    font-family: 'Amiri', serif;
-}
-.target-display {
-    color: var(--highlight-glow);
-    font-size: 1.1rem;
-    font-family: 'Amiri', serif;
-}
-.tasbih-bead-area {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 250px;
-    margin: 30px 0;
-}
-.tasbih-bead {
-    width: 200px;
-    height: 200px;
-    border-radius: 50%;
-    background: #34495e;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 3rem;
-    font-weight: bold;
-    color: #fff;
-    box-shadow: 0 0 30px rgba(243, 156, 18, 0.7), inset 0 0 20px rgba(0, 0, 0, 0.5);
-    cursor: pointer;
-    transition: transform 0.1s;
-    font-family: 'Amiri', serif;
-}
-.tasbih-bead:active {
-    transform: scale(0.95);
-}
-.action-button {
-    width: 100%;
-    padding: 15px;
-    border: none;
-    border-radius: 10px;
-    background: var(--highlight-glow);
-    color: var(--bg-color);
-    font-size: 1.1rem;
-    font-weight: 700;
-    cursor: pointer;
-    transition: background 0.2s;
-    font-family: 'Amiri', serif;
-}
-
-/* Names Page */
-.name-card {
-    padding: 10px;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 8px;
-    border-left: 3px solid var(--glow-color2);
-    text-align: center;
-}
-.name-arabic { font-size: 1.4rem; color: var(--glow-color2); margin: 0 0 5px 0; font-family: 'Amiri', serif; }
-.name-translation { font-size: 0.8rem; color: var(--text-secondary); margin: 0; }
-
-/* Placeholder for empty content */
-.content-placeholder {
-    text-align: center;
-    padding: 50px 20px;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 15px;
-    margin-top: 30px;
-    color: var(--text-secondary);
-}
-.content-placeholder .material-symbols-outlined {
-    font-size: 48px;
-    margin-bottom: 10px;
-    color: var(--highlight-glow);
-}
 
 /* Bottom Navigation - Aapke original styles */
 .bottom-nav {
@@ -346,7 +175,7 @@ body {
     left: 0;
     right: 0;
     height: 70px;
-    max-width: 630px; /* Adjust based on max-width of main-content + padding */
+    max-width: 630px; 
     margin: 0 auto;
     background: var(--nav-bg);
     border-top: 1px solid rgba(255, 255, 255, 0.1);
@@ -371,7 +200,7 @@ body {
     transition: color 0.3s, transform 0.3s; 
     flex-grow: 1; 
     height: 100%; 
-    padding-top: 5px; /* Adjust padding for better look */
+    padding-top: 5px; 
 }
 .nav-button.active { 
     color: var(--highlight-glow); 
@@ -385,10 +214,10 @@ body {
 .ai-icon-container { 
     width: 32px; 
     height: 32px; 
-    border-radius: 50%; /* Changed to circle for AI avatar look */
+    border-radius: 50%; 
     overflow: hidden; 
     position: relative; 
-    background: var(--highlight-glow); /* Background color for the icon */
+    background: var(--highlight-glow); 
     display: flex;
     justify-content: center;
     align-items: center;
@@ -398,7 +227,7 @@ body {
 }
 .ai-icon-container::before { 
     content: '🌙'; /* Crescent Moon icon */
-    font-family: 'Arial', sans-serif; /* Use standard font for emoji/unicode */
+    font-family: 'Arial', sans-serif;
     position: absolute; 
     top: 50%;
     left: 50%;
@@ -411,30 +240,77 @@ body {
     50% { transform: translate(-50%, -50%) translateY(-3px); }
 }
 
+/* ============================================== */
+/* NEW STYLES FOR ISLAMIC AI CHAT MODAL (Floating) */
+/* ============================================== */
 
-/* ======================================= */
-/* NEW STYLES FOR ISLAMIC AI CHAT (aiPage) */
-/* ======================================= */
-
-#aiPage {
-    /* Ensures AI page stretches vertically */
-    display: flex;
-    flex-direction: column;
-    min-height: calc(100vh - 85px); /* Full height minus body padding/nav height */
+.ai-chat-modal {
+    display: none; /* HIDDEN BY DEFAULT */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8); /* Dark overlay */
+    z-index: 10000; /* Above all other elements */
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    padding: 15px;
+    animation: modalFadeIn 0.3s ease-out;
 }
 
-.chat-main-content {
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
+@keyframes modalFadeIn {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+.ai-chat-box {
+    width: 95%;
+    max-width: 500px;
+    height: 90%;
+    max-height: 700px;
     background-color: var(--ai-chat-bg);
-    border-radius: 15px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+    display: flex;
+    flex-direction: column;
     overflow: hidden;
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
-    margin-bottom: 15px; /* Space above input area */
+    border: 2px solid var(--ai-accent);
 }
 
-/* Message Display Area */
+.ai-chat-header {
+    background: var(--nav-bg);
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--ai-accent);
+}
+
+.ai-chat-title {
+    margin: 0;
+    font-size: 1.3rem;
+    color: var(--ai-accent);
+    font-family: 'Amiri', serif;
+}
+
+.close-button {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: color 0.2s;
+}
+.close-button:hover {
+    color: #fff;
+}
+.close-button .material-symbols-outlined {
+    font-size: 28px;
+}
+
+/* Message Display Area (Inside Modal) */
 .messages {
     flex-grow: 1;
     overflow-y: auto;
@@ -442,8 +318,7 @@ body {
     display: flex;
     flex-direction: column;
     gap: 15px;
-    direction: ltr; /* Messages flow from LTR for chat bubbles */
-    /* Custom Scrollbar for a sleek look */
+    direction: ltr; 
     scrollbar-width: none;
     -ms-overflow-style: none;
 }
@@ -451,53 +326,37 @@ body {
     display: none;
 }
 
-/* Individual Message Styles */
+/* Individual Message Styles (Inside Modal) */
 .message {
     display: flex;
-    align-items: flex-end; /* Align avatars and text at the bottom */
-    direction: rtl; /* Message container maintains RTL for overall layout */
+    align-items: flex-end; 
+    direction: rtl; 
 }
-
-.ai-message {
-    justify-content: flex-start;
-    direction: rtl;
-}
-
-.user-message {
-    justify-content: flex-end;
-    direction: rtl;
-}
+.ai-message { justify-content: flex-start; direction: rtl; }
+.user-message { justify-content: flex-end; direction: rtl; }
 
 .avatar {
-    width: 35px;
-    height: 35px;
-    min-width: 35px;
+    width: 35px; height: 35px; min-width: 35px;
     border-radius: 50%;
     margin: 0 8px;
     display: flex;
-    justify-content: center;
-    align-items: center;
+    justify-content: center; align-items: center;
     font-size: 1.5rem;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
     overflow: hidden;
 }
-
 .ai-avatar {
     background: var(--ai-accent);
     color: var(--bg-color);
     border: 2px solid var(--ai-accent);
     font-size: 1.2rem;
     padding-top: 3px;
-    transform: rotateY(180deg); /* Flip the crescent moon for RTL context */
+    transform: rotateY(180deg);
 }
-
 .user-avatar {
     background: var(--user-bubble-bg);
     color: #fff;
     border: 2px solid var(--user-bubble-bg);
-}
-.user-avatar span {
-    font-family: 'Arial', sans-serif;
 }
 
 .message-content {
@@ -507,8 +366,8 @@ body {
     font-size: 1rem;
     line-height: 1.5;
     word-wrap: break-word;
-    font-family: 'Amiri', serif; /* Amiri font for chat text */
-    direction: rtl; /* Text within bubble is RTL */
+    font-family: 'Amiri', serif;
+    direction: rtl;
 }
 
 .ai-message .message-content {
@@ -525,7 +384,7 @@ body {
     text-align: right;
 }
 
-/* Input Area */
+/* Input Area (Inside Modal) */
 .input-area {
     padding: 15px;
     background: var(--input-bg);
@@ -569,9 +428,7 @@ body {
 }
 
 /* Loading Indicator */
-.loading-message {
-    direction: rtl;
-}
+.loading-message { direction: rtl; }
 .loading-content {
     background: var(--ai-bubble-bg);
     color: var(--text-secondary);
@@ -579,16 +436,14 @@ body {
     font-family: 'Amiri', serif;
 }
 
+@media (max-width: 480px) {
+    .ai-chat-box {
+        width: 100%;
+        height: 100%;
+        max-height: none;
+        border-radius: 0;
+    }
+}
 /* General Amiri Font Use */
 strong { font-family: 'Amiri', serif; }
 h1, h2, h3 { font-family: 'Amiri', serif; }
-
-/* Media Queries - Aapke original styles */
-@media (max-width: 480px) {
-    body { padding-left: 10px; padding-right: 10px; }
-    .bottom-nav { padding: 0 5px; }
-    .nav-label { font-size: 0.7rem; }
-    .icon-box { padding: 10px; }
-    .icon-circle { width: 40px; height: 40px; }
-    .icon-circle .material-symbols-outlined { font-size: 24px; }
-}
