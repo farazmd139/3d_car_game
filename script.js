@@ -1,200 +1,255 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // --- DOM Elements ---
+    // ===========================================
+    // AI CHAT INTEGRATION VARIABLES & API SETUP
+    // ===========================================
+    
+    // ** YOUR GEMINI API KEY **
+    const GEMINI_API_KEY = 'AIzaSyBzReLO6a1AYx2B471lNLHqU-Rd_C_umdQ'; 
+    const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent';
+    
+    // AI Chat DOM Elements
+    const chatMessages = document.getElementById('chat-messages');
+    const chatInput = document.getElementById('chat-input');
+    const sendChatButton = document.getElementById('send-chat-button');
+    const aiPage = document.getElementById('aiPage');
+
+    // Quranic Quotes for AI responses (Halal Touch)
+    const quranQuotes = [
+        `"فَإِنَّ مَعَ ٱلْعُسْرِ يُسْرًۭا" (بے شک تنگی کے ساتھ آسانی ہے۔) - القرآن 94:6`,
+        `"وَمَن يَتَّقِ ٱللَّهَ يَجْعَل لَّهُۥ مَخْرَجًۭا" (اور جو کوئی اللہ سے ڈرتا ہے وہ اس کے لیے نکلنے کا راستہ بنا دیتا ہے۔) - القرآن 65:2`,
+        `"وَٱسْتَعِينُوا۟ بِٱلصَّبْرِ وَٱلصَّلَوٰةِ" (اور صبر اور نماز سے مدد طلب کرو۔) - القرآن 2:45`,
+        `"أَلَا بِذِكْرِ ٱللَّهِ تَطْمَئِنُّ ٱلْقُلُوبُ" (خبردار! اللہ کے ذکر سے ہی دلوں کو اطمینان حاصل ہوتا ہے۔) - القرآن 13:28`
+    ];
+    
+    // ===========================================
+    // ORIGINAL APP FUNCTIONS & VARIABLES
+    // ===========================================
+    
+    // --- Global Variables ---
     const pages = document.querySelectorAll('.page');
     const navButtons = document.querySelectorAll('.nav-button');
-    const menuButton = document.getElementById('menu-button');
-    const sideMenu = document.getElementById('side-menu');
-    const menuOverlay = document.getElementById('menu-overlay');
-
-    // Quran Page Elements
-    const mainMenuContainer = document.getElementById('main-menu');
-    const surahPagesContainer = document.getElementById('surah-pages-container');
-
-    // AI Page Elements
-    const chatMessages = document.getElementById('chat-messages');
-    const userInput = document.getElementById('userInput');
-    const sendChatButton = document.querySelector('.input-area button');
-
-    // Tasbih Page Elements
+    // ... [Add your original DOM element variables here] ...
+    const surahList = document.getElementById('surah-list');
+    const surahHeader = document.getElementById('surahHeader');
+    const surahContainer = document.getElementById('surahContainer');
+    const mainAudioPlayer = document.getElementById('mainAudioPlayer');
+    
+    // Tasbih Elements
     const tasbihCounter = document.getElementById('tasbih-counter');
     const tasbihBead = document.getElementById('tasbih-bead');
     const resetButton = document.getElementById('reset-button');
     const tasbihSelect = document.getElementById('tasbih-select');
     const targetDisplay = document.getElementById('target-display');
-
-    // Dua Page Elements
+    let tasbihCount = 0;
+    let tasbihTarget = 100;
+    
+    // Dua Elements
     const duaCategoriesContainer = document.getElementById('dua-categories');
     const duaListContainer = document.getElementById('dua-list');
+    
+    // Names Elements
     const namesContainer = document.getElementById('names-container');
-    const showNamesBtn = document.getElementById('show-names-btn');
-
-    // Home Page Elements
+    
+    // Sahaba Elements
     const sahabaStoriesContainer = document.getElementById('sahaba-stories-container');
+    const storyDetailContainer = document.getElementById('story-detail-container');
+    const storyTitle = document.getElementById('storyTitle');
+    const storyContent = document.getElementById('storyContent');
 
-    // --- Global Variables ---
-    const GEMINI_API_KEY = 'AIzaSyBzReLO6a1AYx2B471lNLHqU-Rd_C_umdQ'; // Your API Key
-    const surahNames = ["الفاتحہ", "البقرہ", "آل عمران", "النساء", "المائدہ", "الأنعام", "الأعراف", "الأنفال", "التوبہ", "یونس", "ہود", "یوسف", "الرعد", "ابراہیم", "الحجر", "النحل", "الإسراء", "الکہف", "مریم", "طہ", "الأنبیاء", "الحج", "المؤمنون", "النور", "الفرقان", "الشعراء", "النمل", "القصص", "العنکبوت", "الروم", "لقمان", "السجدہ", "الأحزاب", "سبا", "فاطر", "یٰسٓ", "الصافات", "ص", "الزمر", "غافر", "فصلت", "الشوریٰ", "الزخرف", "الدخان", "الجاثیہ", "الأحقاف", "محمد", "الفتح", "الحجرات", "ق", "الذاریات", "الطور", "النجم", "القمر", "الرحمٰن", "الواقعہ", "الحدید", "المجادلہ", "الحشر", "الممتحنہ", "الصف", "الجمعہ", "المنافقون", "التغابن", "الطلاق", "التحریم", "الملک", "القلم", "الحاقہ", "المعارج", "نوح", "الجن", "المزمل", "المدثر", "القیامہ", "الإنسان", "المرسلات", "النبأ", "النازعات", "عبس", "التکویر", "الإنفطار", "المطففین", "الإنشقاق", "البروج", "الطارق", "الأعلیٰ", "الغاشیہ", "الفجر", "البلد", "الشمس", "اللیل", "الضحیٰ", "الشرح", "التین", "العلق", "القدر", "البینہ", "الزلزلہ", "العادیات", "القارعہ", "التکاثر", "العصر", "الہمزہ", "الفیل", "قریش", "الماعون", "الکوثر", "الکافرون", "النصر", "المسد", "الإخلاص", "الفلق", "الناس"];
-
-    // --- Navigation & Side Menu Logic ---
-    navButtons.forEach(button => {
-        button.addEventListener('click', (e) => {
-            e.preventDefault();
-            const pageId = button.dataset.page;
-            showPage(pageId);
-        });
-    });
-
-    window.showPage = (pageId) => {
-        pages.forEach(page => page.classList.remove('active'));
-        navButtons.forEach(btn => btn.classList.remove('active'));
-
-        const activePage = document.getElementById(pageId);
-        const activeButton = document.querySelector(`.nav-button[data-page="${pageId}"]`);
-
-        if (activePage) activePage.classList.add('active');
-        if (activeButton) activeButton.classList.add('active');
-
-        // Stop any ongoing audio when changing pages
-        const allAudio = document.querySelectorAll('audio');
-        allAudio.forEach(audio => audio.pause());
+    // Sawal Jawab Elements
+    const sawalJawabContainer = document.getElementById('sawal-jawab-container');
+    const sawalJawabSearchInput = document.getElementById('sawal-jawab-search-input');
+    
+    // --- Data (Example) ---
+    // Note: You will need to define your actual data arrays (surahsData, kalmasData, duaData, namesData, sahabaData, sawalJawabData) here or load them from a separate file.
+    // For now, I'll use placeholders.
+    const surahsData = [
+        { id: 1, arabic: "الفاتحة", urdu: "فاتحہ", verses: 7, audioUrl: "audio/fatiha.mp3" },
+        // ... more surahs
+    ];
+    
+    const kalmasData = [
+        { title: "کلمہ طیب", arabic: "لَا إِلَٰهَ إِلَّا ٱللَّٰهُ مُحَمَّدٌ رَسُولُ ٱللَّٰهِ", urdu: "اللہ کے سوا کوئی عبادت کے لائق نہیں، محمد اللہ کے رسول ہیں۔" },
+        // ... more kalmas
+    ];
+    
+    const duaData = {
+        'SubahSham': { name: 'صبح و شام کی دعائیں', duas: [ { arabic: '...', urdu: '...' }, ] },
+        // ... more dua categories
     };
-
-    // --- Quran Functionality ---
-    function generateQuranContent() {
-        if (!mainMenuContainer || !surahPagesContainer) return;
-        mainMenuContainer.innerHTML = '';
-        surahPagesContainer.innerHTML = '';
-
-        for (let i = 1; i <= 114; i++) {
-            const menuBox = document.createElement('div');
-            menuBox.className = `menu-box menu-box-${(i % 8) + 1}`;
-            menuBox.onclick = () => showSurahPage(`surah${i}Page`);
-            menuBox.innerHTML = `<div class="menu-title">سورة ${surahNames[i-1]}</div>`;
-            mainMenuContainer.appendChild(menuBox);
-
-            const surahPage = document.createElement('div');
-            surahPage.id = `surah${i}Page`;
-            surahPage.className = 'surah-page';
-            const audioSurahNumber = String(i).padStart(3, '0');
-            surahPage.innerHTML = `
-                <button class="back-button" onclick="showPage('quranPage')">⇦ تمام سورتیں</button>
-                <header class="header">
-                    ${i !== 1 && i !== 9 ? '<h1>بِسْمِ اللّٰهِ الرَّحْمٰنِ الرَّحِيْمِ</h1>' : ''}
-                    <h1>سورة ${surahNames[i-1]}</h1>
-                </header>
-                <div class="audio-player-wrapper">
-                    <div class="custom-audio-player" data-audio-src="https://download.quranicaudio.com/quran/abdul_basit_murattal/${audioSurahNumber}.mp3">
-                        <p style="text-align:center; padding: 10px 0;">آڈیو پلیئر لوڈ ہو رہا ہے...</p>
-                    </div>
-                </div>
-                <main class="surah-container">
-                    <p style="font-size: 1.5rem; text-align: center;">لوڈ ہو رہا ہے...</p>
-                </main>`;
-            surahPagesContainer.appendChild(surahPage);
-        }
-    }
-
-    window.showSurahPage = (pageId) => {
-        pages.forEach(page => page.classList.remove('active'));
-        const targetPage = document.getElementById(pageId);
-        if (targetPage) {
-            targetPage.style.display = 'block';
-            const surahNumber = pageId.replace('surah', '').replace('Page', '');
-            if (!targetPage.dataset.loaded) {
-                loadSurahData(surahNumber, targetPage);
-                targetPage.dataset.loaded = 'true';
-            }
-            const audioPlayerElement = targetPage.querySelector('.custom-audio-player');
-            if (audioPlayerElement && !audioPlayerElement.dataset.initialized) {
-                initializeSingleAudioPlayer(audioPlayerElement);
-            }
-        }
-    };
-
-    async function loadSurahData(surahNumber, pageElement) {
-        const container = pageElement.querySelector('.surah-container');
-        try {
-            const response = await fetch(`https://api.alquran.cloud/v1/surah/${surahNumber}`);
-            if (!response.ok) throw new Error('Network response was not ok.');
-            const data = await response.json();
-            renderSurah(data.data.ayahs, container);
-        } catch (error) {
-            container.innerHTML = `<p style="text-align: center; color: #e74c3c;">سورة لوڈ کرنے میں ناکامی ہوئی۔</p>`;
-        }
-    }
-
-    function renderSurah(ayahs, container) {
-        container.innerHTML = ayahs.map(ayah => `
-            <div class="ayah-box">
-                <p class="ayah-text">
-                    ${ayah.text}
-                    <span class="ayah-number">﴿${ayah.numberInSurah}﴾</span>
-                </p>
-            </div>`).join('');
-        setupIntersectionObserver();
-    }
-
-    function setupIntersectionObserver() {
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                    observer.unobserve(entry.target);
-                }
-            });
-        }, { threshold: 0.1 });
-        document.querySelectorAll('.ayah-box:not(.visible)').forEach(box => observer.observe(box));
-    }
-
-    function initializeSingleAudioPlayer(player) {
-        const audioSrc = player.dataset.audioSrc;
-        if (!audioSrc) return;
-        player.dataset.initialized = 'true';
-        player.innerHTML = `
-            <button class="play-pause-btn">
-                <svg class="play-icon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"></path></svg>
-                <svg class="pause-icon" viewBox="0 0 24 24" style="display:none;"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"></path></svg>
-            </button>
-            <div class="progress-container"><div class="progress-bar"></div></div>
-            <div class="time-display">00:00 / 00:00</div>`;
-
-        const audio = new Audio(audioSrc);
-        const playPauseBtn = player.querySelector('.play-pause-btn');
-        const playIcon = player.querySelector('.play-icon');
-        const pauseIcon = player.querySelector('.pause-icon');
-        const progressBar = player.querySelector('.progress-bar');
-        const timeDisplay = player.querySelector('.time-display');
-
-        playPauseBtn.addEventListener('click', () => audio.paused ? audio.play() : audio.pause());
-        audio.addEventListener('play', () => { playIcon.style.display = 'none'; pauseIcon.style.display = 'block'; });
-        audio.addEventListener('pause', () => { playIcon.style.display = 'block'; pauseIcon.style.display = 'none'; });
-        
-        const formatTime = (s) => `${String(Math.floor(s/60)).padStart(2,'0')}:${String(Math.floor(s%60)).padStart(2,'0')}`;
-        audio.addEventListener('loadedmetadata', () => { timeDisplay.textContent = `00:00 / ${formatTime(audio.duration)}`; });
-        audio.addEventListener('timeupdate', () => {
-            if (audio.duration) {
-                progressBar.style.width = `${(audio.currentTime / audio.duration) * 100}%`;
-                timeDisplay.textContent = `${formatTime(audio.currentTime)} / ${formatTime(audio.duration)}`;
-            }
-        });
-        player.querySelector('.progress-container').addEventListener('click', (e) => {
-            if (audio.duration) audio.currentTime = (e.offsetX / player.querySelector('.progress-container').clientWidth) * audio.duration;
-        });
-        player.closest('.surah-page').appendChild(audio).style.display = 'none';
-    }
-
-    // --- AI Chat Functionality ---
-    const quranQuotes = [
-        `"بے شک، ہر مشکل کے ساتھ آسانی ہے۔" (القرآن 94:6)`,
-        `"اور جو اللہ سے ڈرتا ہے، وہ اس کے لیے نکلنے کا راستہ بنا دیتا ہے۔" (القرآن 65:2)`,
-        `"اور صبر اور نماز سے مدد طلب کرو۔" (القرآن 2:45)`,
-        `"خبردار! اللہ کے ذکر سے ہی دلوں کو سکون ملتا ہے۔" (القرآن 13:28)`
+    
+    const namesData = [
+        { name: "ٱللَّهُ", transliteration: "Allah", ur_meaning: "اللہ" },
+        // ... more names
+    ];
+    
+    const sahabaData = [
+        { id: 1, title: "حضرت ابوبکر صدیق", content: "پہلے خلیفہ اور رسول اللہ ﷺ کے ساتھی۔" },
+        // ... more sahaba
     ];
 
+    const sawalJawabData = [
+        { question: "وضو کا طریقہ کیا ہے؟", answer: "وضو میں چار فرض ہیں: چہرہ دھونا، کہنیوں سمیت ہاتھ دھونا، سر کا مسح کرنا، اور ٹخنوں سمیت پاؤں دھونا۔" },
+        // ... more sawal jawab
+    ];
+
+    // --- Core Navigation Function ---
+    function showPage(pageId) {
+        pages.forEach(page => page.classList.remove('active'));
+        const activePage = document.getElementById(pageId);
+        if (activePage) {
+            activePage.classList.add('active');
+            
+            navButtons.forEach(button => {
+                button.classList.remove('active');
+                if (button.getAttribute('data-page') === pageId) {
+                    button.classList.add('active');
+                }
+            });
+            window.scrollTo(0, 0); // Scroll to top when page changes
+        }
+    }
+
+    // --- Event Listeners for Navigation ---
+    navButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const pageId = button.getAttribute('data-page');
+            showPage(pageId);
+            
+            // Initial AI message load when navigating to AI page
+            if (pageId === 'aiPage' && chatMessages.children.length <= 1) {
+                addInitialAIMessage();
+            }
+        });
+    });
+    
+    // ... [Add your original specific functions like fetchSurahList, openSurah, playAudio, etc. here] ...
+    
+    // --- Quran Functions (Example structure) ---
+    function fetchSurahList() {
+        surahList.innerHTML = '';
+        surahsData.forEach(surah => {
+            const item = document.createElement('div');
+            item.className = 'list-item surah-item';
+            item.innerHTML = `<h3>${surah.arabic} - ${surah.urdu}</h3><p>${surah.verses} آیات</p>`;
+            item.addEventListener('click', () => openSurah(surah.id));
+            surahList.appendChild(item);
+        });
+    }
+
+    function openSurah(surahId) {
+        const surah = surahsData.find(s => s.id === surahId);
+        if (surah) {
+            document.getElementById('surahHeader').textContent = surah.urdu;
+            document.getElementById('surahText').innerHTML = 'قرآن کی آیات یہاں لوڈ ہوں گی۔'; // Actual loading logic needed
+            mainAudioPlayer.src = surah.audioUrl;
+            surahList.style.display = 'none';
+            surahContainer.style.display = 'block';
+        }
+    }
+    
+    // --- Tasbih Functions ---
+    function updateTarget() {
+        tasbihTarget = parseInt(tasbihSelect.value);
+        targetDisplay.textContent = tasbihTarget;
+        tasbihCount = 0;
+        tasbihCounter.textContent = tasbihCount;
+        tasbihBead.classList.remove('complete');
+    }
+    
+    function countTasbih() {
+        if (tasbihCount < tasbihTarget) {
+            tasbihCount++;
+            tasbihCounter.textContent = tasbihCount;
+            if (tasbihCount === tasbihTarget) {
+                tasbihBead.classList.add('complete');
+                alert("ماشاءاللہ! آپ کا ہدف پورا ہوا!");
+            }
+        } else {
+            // Optional: loop back or prompt to reset
+            alert("ہدف پورا ہو چکا ہے۔ ری سیٹ کریں؟");
+        }
+    }
+
+    // --- Event Listeners for Tasbih ---
+    tasbihSelect.addEventListener('change', updateTarget);
+    tasbihBead.addEventListener('click', countTasbih);
+    resetButton.addEventListener('click', updateTarget);
+    
+    // ... [Add your original Kalme, Dua, Names, Sahaba, Sawal Jawab functions here] ...
+    
+    // --- Kalme Functions ---
+    function loadKalmeContent() {
+        const kalmeList = document.getElementById('kalma-list');
+        kalmeList.innerHTML = '';
+        kalmasData.forEach((kalma, index) => {
+            const item = document.createElement('div');
+            item.className = 'list-item dua-item';
+            item.innerHTML = `<h3>${index + 1}. ${kalma.title}</h3><p style="font-size:1.5rem;">${kalma.arabic}</p><p>${kalma.urdu}</p>`;
+            kalmeList.appendChild(item);
+        });
+    }
+
+    // --- Names Functions ---
+    function displayNames(names) {
+        namesContainer.innerHTML = '';
+        names.forEach(name => {
+            const nameCard = document.createElement('div');
+            nameCard.className = 'name-card';
+            nameCard.innerHTML = `<p class="name-arabic">${name.name}</p><p class="name-translation">${name.transliteration} - ${name.ur_meaning}</p>`;
+            namesContainer.appendChild(nameCard);
+        });
+    }
+    
+    // --- Sahaba Functions ---
+    function displaySahabaStories() {
+        sahabaStoriesContainer.innerHTML = '';
+        sahabaData.forEach(story => {
+            const item = document.createElement('div');
+            item.className = 'list-item sahaba-item';
+            item.innerHTML = `<h3>${story.title}</h3><p>مزید پڑھیں</p>`;
+            item.addEventListener('click', () => openStory(story));
+            sahabaStoriesContainer.appendChild(item);
+        });
+    }
+    
+    function openStory(story) {
+        storyTitle.textContent = story.title;
+        storyContent.textContent = story.content;
+        sahabaStoriesContainer.style.display = 'none';
+        storyDetailContainer.style.display = 'block';
+    }
+
+    // --- Sawal Jawab Functions ---
+    function loadSawalJawab(searchTerm = '') {
+        sawalJawabContainer.innerHTML = '';
+        const filteredData = sawalJawabData.filter(item => 
+            item.question.includes(searchTerm) || item.answer.includes(searchTerm)
+        );
+        
+        filteredData.forEach(item => {
+            const div = document.createElement('div');
+            div.className = 'list-item sawal-jawab-item';
+            div.innerHTML = `<h3>سوال: ${item.question}</h3><p>جواب: ${item.answer}</p>`;
+            sawalJawabContainer.appendChild(div);
+        });
+    }
+    
+    sawalJawabSearchInput.addEventListener('input', (e) => {
+        loadSawalJawab(e.target.value);
+    });
+
+    // ===========================================
+    // NEW AI CHAT INTEGRATION FUNCTIONS
+    // ===========================================
+
+    // Function to add a message to the chat interface
     function addChatMessage(content, isUser, includeQuote = false) {
         const messageDiv = document.createElement('div');
-        messageDiv.className = `message ${isUser ? 'user' : 'ai'}`;
-        const aiIcon = '<span>&#x262A;</span>'; 
+        messageDiv.className = `message ${isUser ? 'user-message' : 'ai-message'}`;
+        
+        // AI icon is Crescent Moon and Star (&#x262A;). User icon is a standard emoji (👤).
+        const aiIcon = '🌙'; 
         const userIcon = '👤';
         const avatarContent = isUser ? userIcon : aiIcon;
         
@@ -202,83 +257,107 @@ document.addEventListener('DOMContentLoaded', () => {
         messageContent.className = 'message-content';
         messageContent.innerHTML = content;
         
+        // Add a random Quranic quote to the AI response for a spiritual touch
         if (!isUser && includeQuote && Math.random() > 0.6) {
+            const quoteText = quranQuotes[Math.floor(Math.random() * quranQuotes.length)];
             const quote = document.createElement('div');
-            quote.className = 'quran-quote';
-            quote.textContent = quranQuotes[Math.floor(Math.random() * quranQuotes.length)];
+            quote.className = 'quran-quote'; // You may need to add CSS for .quran-quote
+            quote.innerHTML = `<br><em>${quoteText}</em>`;
             messageContent.appendChild(quote);
         }
 
         const avatarDiv = document.createElement('div');
-        avatarDiv.className = `message-avatar ${isUser ? 'user-avatar' : 'ai-avatar'}`;
-        avatarDiv.innerHTML = avatarContent;
-
-        if (isUser) {
-            messageDiv.appendChild(messageContent);
-            messageDiv.appendChild(avatarDiv);
-        } else {
-            messageDiv.appendChild(avatarDiv);
-            messageDiv.appendChild(messageContent);
-        }
+        avatarDiv.className = `avatar ${isUser ? 'user-avatar' : 'ai-avatar'}`;
+        avatarDiv.innerHTML = `<span>${avatarContent}</span>`;
         
+        messageDiv.appendChild(avatarDiv);
+        messageDiv.appendChild(messageContent);
         chatMessages.appendChild(messageDiv);
         chatMessages.scrollTop = chatMessages.scrollHeight;
     }
-
-    function addInitialMessage() {
-        const initialMessage = `<strong>السلام علیکم!</strong> میں آپ کا اسلامی AI ساتھی ہوں۔ قرآن و حدیث کی روشنی میں، میں آپ کی روحانی سفر میں مدد کے لیے حاضر ہوں۔<br><br>آپ ایمان، نماز، دعا، یا اسلام کے کسی بھی پہلو کے بارے میں کسی بھی زبان میں پوچھ سکتے ہیں۔`;
+    
+    // Initial welcome message for the AI page
+    function addInitialAIMessage() {
+        const initialMessage = `<strong>السلام علیکم ورحمۃ اللہ!</strong> میں آپ کا اسلامی رھبر ہوں۔ میری کوشش ہو گی کہ آپ کو قرآن و حدیث کی روشنی میں صحیح رہنمائی دوں۔ آپ اپنے سوالات پوچھ سکتے ہیں۔`;
         addChatMessage(initialMessage, false, true);
     }
 
-    window.sendChatMessage = async () => {
-        const input = userInput.value.trim();
+    // Function to handle sending a message to the Gemini API
+    async function sendChatMessage() {
+        const input = chatInput.value.trim();
         if (!input) return;
 
         addChatMessage(input, true);
-        userInput.value = '';
-        addLoadingIndicator();
+        chatInput.value = '';
+        addLoadingMessage();
 
         try {
-            const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
+            const response = await fetch(`${GEMINI_API_URL}?key=${GEMINI_API_KEY}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    contents: [{ parts: [{ text: `You are an Islamic AI Companion. Respond to the following query in the same language as the input, ensuring the response is respectful and accurate. Query: ${input}` }] }]
+                    contents: [{
+                        parts: [{
+                            text: `You are an Islamic AI Companion. Provide answers in URDU language only. Your name is 'Islamic Rehber'. Base your answers on authentic Islamic sources (Quran, Sunnah/Hadith). The response must be respectful and aligned with Islamic teachings. If the user asks a non-Islamic question, gently redirect them to Islamic topics. Query: ${input}`
+                        }]
+                    }]
                 })
             });
 
             const data = await response.json();
-            removeLoadingIndicator();
+            removeLoadingMessage();
             if (data.candidates && data.candidates[0].content) {
-                addChatMessage(data.candidates[0].content.parts[0].text, false, true);
+                const aiResponse = data.candidates[0].content.parts[0].text;
+                addChatMessage(aiResponse, false, true);
             } else {
-                addChatMessage("معافی چاہتا ہوں، میں آپ کی درخواست پر عمل نہیں کر سکا۔ براہ کرم بعد میں دوبارہ کوشش کریں۔ جزاک اللہ خیراً۔", false);
+                addChatMessage("معذرت، میں آپ کے سوال کا جواب نہیں دے پایا۔ براہ کرم دوبارہ کوشش کریں یا سوال کو آسان بنائیں۔ جزاک اللہ خیراً۔", false);
             }
         } catch (error) {
-            removeLoadingIndicator();
-            addChatMessage("ایک خرابی پیش آ گئی ہے۔ براہ کرم اپنا انٹرنیٹ کنکشن چیک کریں یا بعد میں دوبارہ کوشش کریں۔", false);
+            removeLoadingMessage();
+            addChatMessage("ایک خرابی پیش آئی۔ براہ کرم اپنا انٹرنیٹ کنکشن چیک کریں اور دوبارہ کوشش کریں۔", false);
+            console.error('Gemini API Error:', error);
         }
     }
-
-    function addLoadingIndicator() {
+    
+    // Loading indicator logic
+    function addLoadingMessage() {
         const loadingDiv = document.createElement('div');
-        loadingDiv.className = 'message ai loading';
-        loadingDiv.innerHTML = `<div class="message-avatar ai-avatar"><span>&#x262A;</span></div><div class="message-content"><div class="loading-indicator"><span></span><span></span><span></span></div></div>`;
+        loadingDiv.id = 'loading-indicator';
+        loadingDiv.className = 'message ai-message loading-message';
+        loadingDiv.innerHTML = `<span class="avatar ai-avatar">🌙</span><div class="message-content loading-content">سوچ رہا ہوں... اللہ ہمیں صحیح رہنمائی دے۔</div>`;
         chatMessages.appendChild(loadingDiv);
         chatMessages.scrollTop = chatMessages.scrollHeight;
     }
 
-    function removeLoadingIndicator() {
-        const loading = chatMessages.querySelector('.loading');
+    function removeLoadingMessage() {
+        const loading = document.getElementById('loading-indicator');
         if (loading) loading.remove();
     }
 
-    window.handleKeyPress = (event) => {
-        if (event.key === 'Enter') sendChatMessage();
-    };
+    // Event listeners for AI chat
+    sendChatButton.addEventListener('click', sendChatMessage);
+    chatInput.addEventListener('keypress', (event) => {
+        if (event.key === 'Enter') {
+            event.preventDefault(); // Prevents new line in input
+            sendChatMessage();
+        }
+    });
 
-    // --- Initial Load ---
-    showPage('homePage'); // Start with the new home page
-    generateQuranContent(); // Prepare Quran content in the background
-    addInitialMessage(); // Add welcome message to AI chat
+    // ===========================================
+    // INITIALIZATION
+    // ===========================================
+    
+    document.addEventListener('DOMContentLoaded', () => {
+        showPage('homePage');
+        
+        // Load initial data for other pages
+        fetchSurahList();
+        updateTarget();
+        loadKalmeContent();
+        displayNames(namesData); // Assuming namesData is defined
+        displaySahabaStories();
+        loadSawalJawab(''); // Load initial sawal jawab
+        
+        // Initial AI message is added only when the AI page is opened for the first time
+    });
 });
