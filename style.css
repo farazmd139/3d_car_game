@@ -1,0 +1,107 @@
+:root {
+    --bg-color: #0d121a;
+    --card-bg: rgba(22, 27, 34, 0.8);
+    --nav-bg: #161b22;
+    --text-primary: #ecf0f1;
+    --text-secondary: #aaa;
+    --highlight-glow: #f39c12;
+    --glow-color1: #0ebeff;
+}
+
+html { scroll-behavior: smooth; }
+body {
+    font-family: 'Noto Nastaliq Urdu', 'Amiri', serif;
+    background-color: var(--bg-color);
+    margin: 0;
+    padding: 15px 15px 85px 15px;
+    direction: rtl;
+    overflow-x: hidden;
+    color: var(--text-primary);
+    background: url('https://i.imgur.com/gC5574a.jpeg') no-repeat center center fixed;
+    background-size: cover;
+}
+body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: linear-gradient(to top, var(--bg-color) 30%, rgba(13, 18, 26, 0.7));
+    z-index: -1;
+}
+
+.page { display: none; animation: pageFadeIn 0.5s ease; }
+.page.active { display: block; }
+@keyframes pageFadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+.page-header { text-align: center; margin-bottom: 20px; position: relative; }
+.page-header h1 { font-size: 2.5rem; color: var(--highlight-glow); text-shadow: 0 0 10px var(--highlight-glow); margin: 0; }
+
+.bottom-nav {
+    position: fixed; bottom: 0; left: 0; right: 0; height: 65px;
+    background-color: var(--nav-bg);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex; justify-content: space-around; align-items: center;
+    z-index: 1000; box-shadow: 0 -5px 15px rgba(0,0,0,0.3);
+    direction: ltr;
+}
+.nav-button { background: none; border: none; color: var(--text-secondary); display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; transition: color 0.3s; flex-grow: 1; height: 100%; }
+.nav-button.active { color: var(--highlight-glow); }
+.nav-button .material-symbols-outlined { font-size: 28px; }
+.nav-label { font-size: 0.7rem; margin-top: 2px; font-family: Arial, sans-serif; }
+
+.ai-icon-container { width: 28px; height: 28px; border-radius: 5px; overflow: hidden; position: relative; background: #000; }
+.ai-icon-container::before { content: ''; position: absolute; top: 0; left: 0; width: 300%; height: 100%; background: linear-gradient(90deg, #ff00ff, #00ffff, #ffff00, #ff00ff); animation: liquid-flow 4s linear infinite; }
+@keyframes liquid-flow { from { transform: translateX(0%); } to { transform: translateX(-66.66%); } }
+
+/* --- ہوم اور دعا پیج کے کارڈز --- */
+.card {
+    background: rgba(22, 27, 34, 0.7);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+}
+.card-title { font-size: 1.8rem; font-weight: 700; color: var(--highlight-glow); margin: 0 0 10px 0; }
+.card-arabic { font-size: 1.6rem; line-height: 2; }
+.card-translation { font-size: 1rem; color: #ccc; margin-top: 10px; }
+.card-reference { font-size: 0.8rem; color: var(--text-secondary); margin-top: 15px; text-align: left; }
+
+/* --- سوال جواب سیکشن --- */
+#dua-categories { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; justify-content: center; }
+.category-button { background-color: #323d49; border: 1px solid transparent; border-radius: 20px; padding: 8px 15px; color: var(--text-primary); cursor: pointer; font-family: 'Noto Nastaliq Urdu'; }
+.category-button.active { background-color: var(--highlight-glow); color: black; font-weight: bold; }
+
+/* --- قرآن پیج --- */
+#surah-list { list-style: none; padding: 0; }
+.surah-list-item { background-color: var(--card-bg); backdrop-filter: blur(5px); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 15px; cursor: pointer; transition: background-color 0.3s, transform 0.3s; display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.surah-list-item:hover { background-color: rgba(255,255,255,0.1); transform: translateY(-5px); }
+.surah-info { display: flex; align-items: center; text-align: left; direction: ltr; }
+.surah-number { background-color: rgba(0,0,0,0.2); width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 5px; margin-right: 15px; font-size: 1rem; font-weight: bold; flex-shrink: 0; }
+.surah-name-details h3 { margin: 0; font-size: 1.5rem; color: white; }
+.surah-name-details p { margin: 0; opacity: 0.7; font-size: 0.9rem; }
+.surah-arabic-name { font-size: 1.8rem; color: var(--glow-color2); }
+.back-button { position: absolute; top: 10px; left: 10px; background: none; border: none; color: white; font-size: 2rem; cursor: pointer; z-index: 10; }
+#audio-player-container audio { width: 100%; margin-top: 15px; }
+.ayah-box { padding: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+.ayah-text { font-size: 2rem; line-height: 2.5; text-align: center; }
+.ayah-number { font-size: 1rem; opacity: 0.7; padding-right: 10px; }
+
+/* --- AI Chat Page --- */
+#aiPage { height: calc(100vh - 85px); padding: 0; }
+.chat-container { width: 100%; height: 100%; display: flex; flex-direction: column; }
+.chat-messages { flex-grow: 1; padding: 15px; overflow-y: auto; direction: rtl; display: flex; flex-direction: column; gap: 15px; }
+.message { padding: 12px 18px; border-radius: 20px; max-width: 85%; line-height: 1.7; font-size: 1.1rem; }
+.user-message { background-color: #2a3b47; align-self: flex-start; margin-right: auto; border-bottom-left-radius: 5px; }
+.ai-message { background-color: #323d49; align-self: flex-end; margin-left: auto; border-bottom-right-radius: 5px; }
+.chat-input-area { display: flex; padding: 15px; border-top: 1px solid rgba(255,255,255,0.1); background-color: var(--nav-bg); }
+#chat-input { flex-grow: 1; padding: 12px 20px; border-radius: 25px; border: 1px solid #444; font-size: 1rem; background-color: #323d49; color: white; direction: ltr; }
+#send-chat-button { width: 50px; height: 50px; margin-left: 10px; border-radius: 50%; border: none; background-color: var(--glow-color1); color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+
+/* --- Modals --- */
+.modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.7); backdrop-filter: blur(5px); align-items: center; justify-content: center; }
+.modal-content { background-color: #1e2732; border: 1px solid rgba(255, 255, 255, 0.2); padding: 25px; border-radius: 15px; width: 90%; max-width: 500px; position: relative; max-height: 80vh; display: flex; flex-direction: column; }
+.modal-content .close-button { position: absolute; top: 10px; left: 20px; font-size: 32px; font-weight: bold; cursor: pointer; }
+.modal-content h2 { color: var(--highlight-glow); text-align: center; margin-top: 0; }
+.modal-body { overflow-y: auto; text-align: right; line-height: 2; }
