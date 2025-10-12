@@ -1,75 +1,80 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // بنیادی ایپ کے DOM عناصر
+    // --- DOM Elements ---
     const pages = document.querySelectorAll('.page');
     const navButtons = document.querySelectorAll('.nav-button');
+    const menuButton = document.getElementById('menu-button');
+    const sideMenu = document.getElementById('side-menu');
+    const menuOverlay = document.getElementById('menu-overlay');
 
-    // قرآن سیکشن کے لیے نئے DOM عناصر
-    const quranPage = document.getElementById('quranPage');
+    // Quran Page Elements
     const mainMenuContainer = document.getElementById('main-menu');
     const surahPagesContainer = document.getElementById('surah-pages-container');
 
-    // =================================================
-    // 1. بنیادی پیج نیویگیشن کا فنکشن
-    // =================================================
+    // AI Page Elements
+    const chatMessages = document.getElementById('chat-messages');
+    const userInput = document.getElementById('userInput');
+    const sendChatButton = document.querySelector('.input-area button');
+
+    // Tasbih Page Elements
+    const tasbihCounter = document.getElementById('tasbih-counter');
+    const tasbihBead = document.getElementById('tasbih-bead');
+    const resetButton = document.getElementById('reset-button');
+    const tasbihSelect = document.getElementById('tasbih-select');
+    const targetDisplay = document.getElementById('target-display');
+
+    // Dua Page Elements
+    const duaCategoriesContainer = document.getElementById('dua-categories');
+    const duaListContainer = document.getElementById('dua-list');
+    const namesContainer = document.getElementById('names-container');
+    const showNamesBtn = document.getElementById('show-names-btn');
+
+    // Home Page Elements
+    const sahabaStoriesContainer = document.getElementById('sahaba-stories-container');
+
+    // --- Global Variables ---
+    const GEMINI_API_KEY = 'AIzaSyBzReLO6a1AYx2B471lNLHqU-Rd_C_umdQ'; // Your API Key
+    const surahNames = ["الفاتحہ", "البقرہ", "آل عمران", "النساء", "المائدہ", "الأنعام", "الأعراف", "الأنفال", "التوبہ", "یونس", "ہود", "یوسف", "الرعد", "ابراہیم", "الحجر", "النحل", "الإسراء", "الکہف", "مریم", "طہ", "الأنبیاء", "الحج", "المؤمنون", "النور", "الفرقان", "الشعراء", "النمل", "القصص", "العنکبوت", "الروم", "لقمان", "السجدہ", "الأحزاب", "سبا", "فاطر", "یٰسٓ", "الصافات", "ص", "الزمر", "غافر", "فصلت", "الشوریٰ", "الزخرف", "الدخان", "الجاثیہ", "الأحقاف", "محمد", "الفتح", "الحجرات", "ق", "الذاریات", "الطور", "النجم", "القمر", "الرحمٰن", "الواقعہ", "الحدید", "المجادلہ", "الحشر", "الممتحنہ", "الصف", "الجمعہ", "المنافقون", "التغابن", "الطلاق", "التحریم", "الملک", "القلم", "الحاقہ", "المعارج", "نوح", "الجن", "المزمل", "المدثر", "القیامہ", "الإنسان", "المرسلات", "النبأ", "النازعات", "عبس", "التکویر", "الإنفطار", "المطففین", "الإنشقاق", "البروج", "الطارق", "الأعلیٰ", "الغاشیہ", "الفجر", "البلد", "الشمس", "اللیل", "الضحیٰ", "الشرح", "التین", "العلق", "القدر", "البینہ", "الزلزلہ", "العادیات", "القارعہ", "التکاثر", "العصر", "الہمزہ", "الفیل", "قریش", "الماعون", "الکوثر", "الکافرون", "النصر", "المسد", "الإخلاص", "الفلق", "الناس"];
+
+    // --- Navigation & Side Menu Logic ---
+    navButtons.forEach(button => {
+        button.addEventListener('click', (e) => {
+            e.preventDefault();
+            const pageId = button.dataset.page;
+            showPage(pageId);
+        });
+    });
+
     window.showPage = (pageId) => {
-        // تمام صفحات کو چھپائیں
         pages.forEach(page => page.classList.remove('active'));
-        // تمام سورتوں کے صفحات کو بھی چھپائیں
-        document.querySelectorAll('.surah-page').forEach(page => page.style.display = 'none');
-        
-        // نیویگیشن بٹن سے 'active' کلاس ہٹائیں
         navButtons.forEach(btn => btn.classList.remove('active'));
 
         const activePage = document.getElementById(pageId);
         const activeButton = document.querySelector(`.nav-button[data-page="${pageId}"]`);
-        
-        if (activePage) {
-            activePage.classList.add('active');
-        }
-        if (activeButton) {
-            activeButton.classList.add('active');
-        }
-        
-        // اگر کوئی سورت چل رہی ہو تو اسے روک دیں
-        const playingAudio = document.querySelector('#surah-pages-container audio.playing');
-        if(playingAudio) {
-            playingAudio.pause();
-        }
+
+        if (activePage) activePage.classList.add('active');
+        if (activeButton) activeButton.classList.add('active');
+
+        // Stop any ongoing audio when changing pages
+        const allAudio = document.querySelectorAll('audio');
+        allAudio.forEach(audio => audio.pause());
     };
 
-    // نیویگیشن بٹنوں پر ایونٹ لسنر
-    navButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            const pageId = button.dataset.page;
-            if (pageId) {
-                showPage(pageId);
-            }
-        });
-    });
-
-    // =================================================
-    // 2. قرآن سیکشن کی مکمل فعالیت
-    // =================================================
-    const surahNames = [
-        "الفاتحہ", "البقرہ", "آل عمران", "النساء", "المائدہ", "الأنعام", "الأعراف", "الأنفال", "التوبہ", "یونس", "ہود", "یوسف", "الرعد", "ابراہیم", "الحجر", "النحل", "الإسراء", "الکہف", "مریم", "طہ", "الأنبیاء", "الحج", "المؤمنون", "النور", "الفرقان", "الشعراء", "النمل", "القصص", "العنکبوت", "الروم", "لقمان", "السجدہ", "الأحزاب", "سبا", "فاطر", "یٰسٓ", "الصافات", "ص", "الزمر", "غافر", "فصلت", "الشوریٰ", "الزخرف", "الدخان", "الجاثیہ", "الأحقاف", "محمد", "الفتح", "الحجرات", "ق", "الذاریات", "الطور", "النجم", "القمر", "الرحمٰن", "الواقعہ", "الحدید", "المجادلہ", "الحشر", "الممتحنہ", "الصف", "الجمعہ", "المنافقون", "التغابن", "الطلاق", "التحریم", "الملک", "القلم", "الحاقہ", "المعارج", "نوح", "الجن", "المزمل", "المدثر", "القیامہ", "الإنسان", "المرسلات", "النبأ", "النازعات", "عبس", "التکویر", "الإنفطار", "المطففین", "الإنشقاق", "البروج", "الطارق", "الأعلیٰ", "الغاشیہ", "الفجر", "البلد", "الشمس", "اللیل", "الضحیٰ", "الشرح", "التین", "العلق", "القدر", "البینہ", "الزلزلہ", "العادیات", "القارعہ", "التکاثر", "العصر", "الہمزہ", "الفیل", "قریش", "الماعون", "الکوثر", "الکافرون", "النصر", "المسد", "الإخلاص", "الفلق", "الناس"
-    ];
-
-    // سورتوں کی فہرست اور ان کے صفحات بنانے کا فنکشن
+    // --- Quran Functionality ---
     function generateQuranContent() {
-        if (!mainMenuContainer) return; // اگر قرآن پیج پر نہیں تو کچھ نہ کریں
-        
+        if (!mainMenuContainer || !surahPagesContainer) return;
+        mainMenuContainer.innerHTML = '';
+        surahPagesContainer.innerHTML = '';
+
         for (let i = 1; i <= 114; i++) {
-            // سورتوں کی فہرست کے لیے مینو باکس
             const menuBox = document.createElement('div');
             menuBox.className = `menu-box menu-box-${(i % 8) + 1}`;
             menuBox.onclick = () => showSurahPage(`surah${i}Page`);
             menuBox.innerHTML = `<div class="menu-title">سورة ${surahNames[i-1]}</div>`;
             mainMenuContainer.appendChild(menuBox);
 
-            // ہر سورت کے لیے ایک الگ صفحہ
             const surahPage = document.createElement('div');
             surahPage.id = `surah${i}Page`;
-            surahPage.className = 'surah-page'; // یہ کلاس اسے ابتدائی طور پر چھپا دے گی
+            surahPage.className = 'surah-page';
             const audioSurahNumber = String(i).padStart(3, '0');
             surahPage.innerHTML = `
                 <button class="back-button" onclick="showPage('quranPage')">⇦ تمام سورتیں</button>
@@ -78,34 +83,27 @@ document.addEventListener('DOMContentLoaded', () => {
                     <h1>سورة ${surahNames[i-1]}</h1>
                 </header>
                 <div class="audio-player-wrapper">
-                    <div class="custom-audio-player" data-audio-src="https://server7.mp3quran.net/basit/murattal/${audioSurahNumber}.mp3">
+                    <div class="custom-audio-player" data-audio-src="https://download.quranicaudio.com/quran/abdul_basit_murattal/${audioSurahNumber}.mp3">
                         <p style="text-align:center; padding: 10px 0;">آڈیو پلیئر لوڈ ہو رہا ہے...</p>
                     </div>
                 </div>
                 <main class="surah-container">
-                    <p style="font-size: 1.5rem; text-align: center;">آیات لوڈ ہو رہی ہیں...</p>
+                    <p style="font-size: 1.5rem; text-align: center;">لوڈ ہو رہا ہے...</p>
                 </main>`;
             surahPagesContainer.appendChild(surahPage);
         }
     }
 
-    // کسی خاص سورت کا صفحہ دکھانے کا فنکشن
     window.showSurahPage = (pageId) => {
-        // تمام بنیادی صفحات کو چھپائیں
         pages.forEach(page => page.classList.remove('active'));
-        
         const targetPage = document.getElementById(pageId);
         if (targetPage) {
             targetPage.style.display = 'block';
             const surahNumber = pageId.replace('surah', '').replace('Page', '');
-            
-            // اگر ڈیٹا پہلے لوڈ نہیں ہوا تو API سے لوڈ کریں
             if (!targetPage.dataset.loaded) {
                 loadSurahData(surahNumber, targetPage);
                 targetPage.dataset.loaded = 'true';
             }
-            
-            // اگر آڈیو پلیئر پہلے نہیں بنا تو اسے بنائیں
             const audioPlayerElement = targetPage.querySelector('.custom-audio-player');
             if (audioPlayerElement && !audioPlayerElement.dataset.initialized) {
                 initializeSingleAudioPlayer(audioPlayerElement);
@@ -113,7 +111,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // API سے سورت کا ڈیٹا لوڈ کرنے کا فنکشن
     async function loadSurahData(surahNumber, pageElement) {
         const container = pageElement.querySelector('.surah-container');
         try {
@@ -122,28 +119,21 @@ document.addEventListener('DOMContentLoaded', () => {
             const data = await response.json();
             renderSurah(data.data.ayahs, container);
         } catch (error) {
-            console.error('Failed to fetch surah data:', error);
-            container.innerHTML = `<p style="text-align: center; color: #e74c3c;">سورة لوڈ کرنے میں ناکامی ہوئی۔ براہ کرم اپنا انٹرنیٹ کنکشن چیک کریں۔</p>`;
+            container.innerHTML = `<p style="text-align: center; color: #e74c3c;">سورة لوڈ کرنے میں ناکامی ہوئی۔</p>`;
         }
     }
 
-    // آیات کو صفحے پر دکھانے کا فنکشن
     function renderSurah(ayahs, container) {
-        let surahHTML = '';
-        ayahs.forEach(ayah => {
-            surahHTML += `
-                <div class="ayah-box">
-                    <p class="ayah-text">
-                        ${ayah.text}
-                        <span class="ayah-number">﴿${ayah.numberInSurah}﴾</span>
-                    </p>
-                </div>`;
-        });
-        container.innerHTML = surahHTML;
+        container.innerHTML = ayahs.map(ayah => `
+            <div class="ayah-box">
+                <p class="ayah-text">
+                    ${ayah.text}
+                    <span class="ayah-number">﴿${ayah.numberInSurah}﴾</span>
+                </p>
+            </div>`).join('');
         setupIntersectionObserver();
     }
-    
-    // آیات کو اسکرول پر ظاہر کرنے کا فنکشن
+
     function setupIntersectionObserver() {
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
@@ -153,12 +143,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             });
         }, { threshold: 0.1 });
-        document.querySelectorAll('.ayah-box:not(.visible)').forEach(box => {
-            observer.observe(box);
-        });
+        document.querySelectorAll('.ayah-box:not(.visible)').forEach(box => observer.observe(box));
     }
 
-    // آڈیو پلیئر بنانے کا فنکشن
     function initializeSingleAudioPlayer(player) {
         const audioSrc = player.dataset.audioSrc;
         if (!audioSrc) return;
@@ -172,31 +159,15 @@ document.addEventListener('DOMContentLoaded', () => {
             <div class="time-display">00:00 / 00:00</div>`;
 
         const audio = new Audio(audioSrc);
-        audio.preload = 'metadata';
         const playPauseBtn = player.querySelector('.play-pause-btn');
         const playIcon = player.querySelector('.play-icon');
         const pauseIcon = player.querySelector('.pause-icon');
-        const progressContainer = player.querySelector('.progress-container');
         const progressBar = player.querySelector('.progress-bar');
         const timeDisplay = player.querySelector('.time-display');
 
-        playPauseBtn.addEventListener('click', () => {
-            if (audio.paused) audio.play(); else audio.pause();
-        });
-        audio.addEventListener('play', () => { 
-            // دوسری تمام آڈیوز کو روک دیں
-            document.querySelectorAll('#surah-pages-container audio').forEach(a => {
-                if (a !== audio) a.pause();
-            });
-            audio.classList.add('playing');
-            playIcon.style.display = 'none'; 
-            pauseIcon.style.display = 'block'; 
-        });
-        audio.addEventListener('pause', () => { 
-            audio.classList.remove('playing');
-            playIcon.style.display = 'block'; 
-            pauseIcon.style.display = 'none'; 
-        });
+        playPauseBtn.addEventListener('click', () => audio.paused ? audio.play() : audio.pause());
+        audio.addEventListener('play', () => { playIcon.style.display = 'none'; pauseIcon.style.display = 'block'; });
+        audio.addEventListener('pause', () => { playIcon.style.display = 'block'; pauseIcon.style.display = 'none'; });
         
         const formatTime = (s) => `${String(Math.floor(s/60)).padStart(2,'0')}:${String(Math.floor(s%60)).padStart(2,'0')}`;
         audio.addEventListener('loadedmetadata', () => { timeDisplay.textContent = `00:00 / ${formatTime(audio.duration)}`; });
@@ -206,18 +177,108 @@ document.addEventListener('DOMContentLoaded', () => {
                 timeDisplay.textContent = `${formatTime(audio.currentTime)} / ${formatTime(audio.duration)}`;
             }
         });
-        progressContainer.addEventListener('click', (e) => {
-            if (audio.duration) audio.currentTime = (e.offsetX / progressContainer.clientWidth) * audio.duration;
+        player.querySelector('.progress-container').addEventListener('click', (e) => {
+            if (audio.duration) audio.currentTime = (e.offsetX / player.querySelector('.progress-container').clientWidth) * audio.duration;
         });
-        player.closest('.surah-page').appendChild(audio);
-        audio.style.display = 'none';
+        player.closest('.surah-page').appendChild(audio).style.display = 'none';
     }
-    
-    // =================================================
-    // 3. ایپ کا ابتدائی لوڈ
-    // =================================================
-    generateQuranContent(); // قرآن کا مواد تیار کریں
-    showPage('homePage'); // سب سے پہلے ہوم پیج دکھائیں
-});
 
-          
+    // --- AI Chat Functionality ---
+    const quranQuotes = [
+        `"بے شک، ہر مشکل کے ساتھ آسانی ہے۔" (القرآن 94:6)`,
+        `"اور جو اللہ سے ڈرتا ہے، وہ اس کے لیے نکلنے کا راستہ بنا دیتا ہے۔" (القرآن 65:2)`,
+        `"اور صبر اور نماز سے مدد طلب کرو۔" (القرآن 2:45)`,
+        `"خبردار! اللہ کے ذکر سے ہی دلوں کو سکون ملتا ہے۔" (القرآن 13:28)`
+    ];
+
+    function addChatMessage(content, isUser, includeQuote = false) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message ${isUser ? 'user' : 'ai'}`;
+        const aiIcon = '<span>&#x262A;</span>'; 
+        const userIcon = '👤';
+        const avatarContent = isUser ? userIcon : aiIcon;
+        
+        const messageContent = document.createElement('div');
+        messageContent.className = 'message-content';
+        messageContent.innerHTML = content;
+        
+        if (!isUser && includeQuote && Math.random() > 0.6) {
+            const quote = document.createElement('div');
+            quote.className = 'quran-quote';
+            quote.textContent = quranQuotes[Math.floor(Math.random() * quranQuotes.length)];
+            messageContent.appendChild(quote);
+        }
+
+        const avatarDiv = document.createElement('div');
+        avatarDiv.className = `message-avatar ${isUser ? 'user-avatar' : 'ai-avatar'}`;
+        avatarDiv.innerHTML = avatarContent;
+
+        if (isUser) {
+            messageDiv.appendChild(messageContent);
+            messageDiv.appendChild(avatarDiv);
+        } else {
+            messageDiv.appendChild(avatarDiv);
+            messageDiv.appendChild(messageContent);
+        }
+        
+        chatMessages.appendChild(messageDiv);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    function addInitialMessage() {
+        const initialMessage = `<strong>السلام علیکم!</strong> میں آپ کا اسلامی AI ساتھی ہوں۔ قرآن و حدیث کی روشنی میں، میں آپ کی روحانی سفر میں مدد کے لیے حاضر ہوں۔<br><br>آپ ایمان، نماز، دعا، یا اسلام کے کسی بھی پہلو کے بارے میں کسی بھی زبان میں پوچھ سکتے ہیں۔`;
+        addChatMessage(initialMessage, false, true);
+    }
+
+    window.sendChatMessage = async () => {
+        const input = userInput.value.trim();
+        if (!input) return;
+
+        addChatMessage(input, true);
+        userInput.value = '';
+        addLoadingIndicator();
+
+        try {
+            const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    contents: [{ parts: [{ text: `You are an Islamic AI Companion. Respond to the following query in the same language as the input, ensuring the response is respectful and accurate. Query: ${input}` }] }]
+                })
+            });
+
+            const data = await response.json();
+            removeLoadingIndicator();
+            if (data.candidates && data.candidates[0].content) {
+                addChatMessage(data.candidates[0].content.parts[0].text, false, true);
+            } else {
+                addChatMessage("معافی چاہتا ہوں، میں آپ کی درخواست پر عمل نہیں کر سکا۔ براہ کرم بعد میں دوبارہ کوشش کریں۔ جزاک اللہ خیراً۔", false);
+            }
+        } catch (error) {
+            removeLoadingIndicator();
+            addChatMessage("ایک خرابی پیش آ گئی ہے۔ براہ کرم اپنا انٹرنیٹ کنکشن چیک کریں یا بعد میں دوبارہ کوشش کریں۔", false);
+        }
+    }
+
+    function addLoadingIndicator() {
+        const loadingDiv = document.createElement('div');
+        loadingDiv.className = 'message ai loading';
+        loadingDiv.innerHTML = `<div class="message-avatar ai-avatar"><span>&#x262A;</span></div><div class="message-content"><div class="loading-indicator"><span></span><span></span><span></span></div></div>`;
+        chatMessages.appendChild(loadingDiv);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    function removeLoadingIndicator() {
+        const loading = chatMessages.querySelector('.loading');
+        if (loading) loading.remove();
+    }
+
+    window.handleKeyPress = (event) => {
+        if (event.key === 'Enter') sendChatMessage();
+    };
+
+    // --- Initial Load ---
+    showPage('homePage'); // Start with the new home page
+    generateQuranContent(); // Prepare Quran content in the background
+    addInitialMessage(); // Add welcome message to AI chat
+});
