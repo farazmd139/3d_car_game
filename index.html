@@ -2,117 +2,152 @@
 <html lang="ur">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>القرآن الكريم - Faraz AI</title>
-    <meta name="theme-color" content="#161b22">
-    <link rel="manifest" href="manifest.json">
-    <link rel="icon" href="favicon.png" type="image/png">
-    <link rel="stylesheet" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>اسلامی ایپ</title>
+    <meta name="theme-color" content="#0d121a">
+    <link rel="stylesheet" href="style.css"> 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Poppins:wght@300;400;600&family=Noto+Nastaliq+Urdu:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@700&family=Noto+Nastaliq+Urdu:wght@700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
 </head>
 <body>
 
-    <button id="menu-button" class="menu-button-floating"><span class="material-symbols-outlined">more_vert</span></button>
-
-    <div id="side-menu" class="side-menu">
-        <a href="#" onclick="openModal('credits-modal'); return false;">ہمارے بارے میں</a>
-        <a href="https://telegra.ph/Privacy-Policy-for-%D8%A7%D9%84%D9%82%D8%B1%D8%A2%D9%86-%D8%A7%D9%84%D9%83%D8%B1%D9%8A%D9%85---Faraz-AI-08-01" target="_blank">پرائیویسی پالیسی</a>
-    </div>
-    <div id="menu-overlay" class="menu-overlay"></div>
-
     <main class="main-content">
-        <div id="homeCustomPage" class="page active">
-            <div class="home-screen-container">
-                <div id="sahaba-stories-container">
-                    <!-- واقعات یہاں JS سے لوڈ ہوں گے -->
-                </div>
+        <div id="homePage" class="page active">
+            <div class="home-grid-container">
+                <div class="icon-box" style="--glow-color: #42a5f5;" data-page="kalmePage"><div class="icon-circle"><span class="material-symbols-outlined">vpn_key</span></div><p class="icon-label">کلمے</p></div>
+                <div class="icon-box" style="--glow-color: #f39c12;" data-page="tasbihPage"><div class="icon-circle"><span class="material-symbols-outlined">gesture</span></div><p class="icon-label">تسبیح</p></div>
+                <div class="icon-box" style="--glow-color: #2ecc71;" data-page="duaPage"><div class="icon-circle"><span class="material-symbols-outlined">person_praying</span></div><p class="icon-label">دعائیں</p></div>
+                <div class="icon-box" style="--glow-color: #9b59b6;" data-page="namesPage"><div class="icon-circle"><span class="material-symbols-outlined">auto_awesome</span></div><p class="icon-label">اللہ کے نام</p></div>
+                <div class="icon-box" style="--glow-color: #e74c3c;" data-page="sahabaPage"><div class="icon-circle"><span class="material-symbols-outlined">group</span></div><p class="icon-label">صحابہ کرام</p></div>
+                <div class="icon-box" style="--glow-color: #1abc9c;" data-page="sawalJawabPage"><div class="icon-circle"><span class="material-symbols-outlined">quiz</span></div><p class="icon-label">فقہی سوال و جواب</p></div>
+            </div>
+            <div class="home-grid-container" id="home-search-container">
+                <input type="text" id="home-search-input" placeholder="قرآن، حدیث یا موضوع تلاش کریں...">
+                <span class="material-symbols-outlined search-icon">search</span>
             </div>
         </div>
+
         <div id="quranPage" class="page">
-            <div class="page-header"><h1>القرآن الكريم</h1></div>
-            <ul id="surah-list"></ul>
+            <div class="page-header"><h1>قرآن مجید</h1></div>
+            <div id="surah-list" class="list-container">
+                </div>
+            <div id="surahContainer" class="surah-content" style="display: none;">
+                <div class="surah-header-bar">
+                    <button id="backToSurahList" class="back-button"><span class="material-symbols-outlined">arrow_back</span></button>
+                    <h2 id="surahHeader"></h2>
+                    <button id="playAudio" class="audio-button"><span class="material-symbols-outlined">play_circle</span></button>
+                </div>
+                <p id="surahText" class="surah-text-content"></p>
+                <audio id="mainAudioPlayer" controls style="display: none;"></audio>
+            </div>
         </div>
 
-        <!-- =========== AI پیج (نیا ڈیزائن یہاں شامل کیا گیا ہے) =========== -->
         <div id="aiPage" class="page">
-            <div class="chat-container">
-                <div class="ai-header">
-                    Islamic AI
-                </div>
+            <div class="page-header"><h1>اسلامی AI</h1></div>
+            
+            <div class="chat-main-content">
                 <div class="messages" id="chat-messages">
-                    <!-- پیغامات یہاں JS سے لوڈ ہوں گے -->
+                    <div class="message ai-message">
+                        <span class="avatar ai-avatar">🌙</span>
+                        <div class="message-content">
+                            <p><strong>السلام علیکم ورحمۃ اللہ!</strong> میں آپ کا اسلامی رھبر ہوں۔ آپ قرآن، حدیث، یا کسی بھی اسلامی مسئلے کے بارے میں پوچھ سکتے ہیں۔</p>
+                        </div>
+                    </div>
                 </div>
                 <div class="input-area">
-                    <input type="text" id="userInput" placeholder="یہاں سوال لکھیں..." onkeypress="handleKeyPress(event)">
-                    <button onclick="sendChatMessage()">بھیجیں</button>
+                    <input type="text" id="chat-input" placeholder="اپنا سوال یہاں پوچھیں..." onkeypress="handleChatKeyPress(event)">
+                    <button id="send-chat-button" onclick="sendChatMessage()">ارسال</button>
                 </div>
             </div>
+        </div>
+        
+        <div id="kalmePage" class="page">
+            <div class="page-header"><h1>6 کلمے</h1></div>
+            <div id="kalma-list" class="dua-list-container">
+                </div>
         </div>
 
         <div id="tasbihPage" class="page">
-            <div class="tasbih-header"><select id="tasbih-select"></select></div>
-            <div class="tasbih-container">
-                <div class="tasbih-counter-ring"><div class="tasbih-counter" id="tasbih-counter">0</div></div>
-                <div class="tasbih-bead-wrapper"><button class="tasbih-bead" id="tasbih-bead"></button></div>
-                <div class="tasbih-controls">
-                    <button class="reset-button" id="reset-button"><span class="material-symbols-outlined">restart_alt</span></button>
-                    <div class="target-display" id="target-display">/ 33</div>
+            <div class="page-header"><h1>تسبیح و اذکار</h1></div>
+            <div class="tasbih-controls">
+                <select id="tasbih-select">
+                    <option value="100">درود شریف (100 بار)</option>
+                    <option value="33">سبحان اللہ (33 بار)</option>
+                    <option value="33">الحمد للہ (33 بار)</option>
+                    <option value="34">اللہ اکبر (34 بار)</option>
+                    <option value="100">کلمہ طیب (100 بار)</option>
+                </select>
+                <div class="target-display">ہدف: <span id="target-display">100</span></div>
+            </div>
+            <div class="tasbih-bead-area">
+                <div id="tasbih-bead" class="tasbih-bead">
+                    <span id="tasbih-counter">0</span>
                 </div>
             </div>
+            <button id="reset-button" class="action-button">ری سیٹ کریں</button>
         </div>
+
         <div id="duaPage" class="page">
-            <div class="page-header">
-                <h1>دعائیں اور اذکار</h1>
-                <button id="show-names-btn">اللہ کے 99 نام</button>
+            <div class="page-header"><h1>مسنون دعائیں</h1></div>
+            <div id="dua-categories" class="list-container">
+                </div>
+            <div id="dua-list" class="dua-list-container" style="display: none;">
+                <button id="backToDuaCategories" class="back-button"><span class="material-symbols-outlined">arrow_back</span></button>
+                <h2 id="duaListHeader"></h2>
+                </div>
+        </div>
+
+        <div id="namesPage" class="page">
+            <div class="page-header"><h1>اللہ کے 99 نام</h1></div>
+            <div id="names-container" class="home-grid-container">
+                </div>
+        </div>
+
+        <div id="sahabaPage" class="page">
+            <div class="page-header"><h1>صحابہ کرامؓ</h1></div>
+            <div id="sahaba-stories-container" class="list-container">
+                </div>
+            <div id="story-detail-container" style="display: none;">
+                <button id="backToSahabaList" class="back-button"><span class="material-symbols-outlined">arrow_back</span></button>
+                <h2 id="storyTitle"></h2>
+                <p id="storyContent" class="story-text-content"></p>
             </div>
-            <div id="dua-categories"></div>
-            <div id="dua-list"></div>
         </div>
-        <div id="surahDetailPage" class="page">
-             <button class="back-button" onclick="showPage('quranPage')">⇦ تمام سورتیں</button>
-             <header id="surahHeader" class="header"></header>
-             <div id="audio-player-container"><audio id="mainAudioPlayer" controls preload="metadata"></audio></div>
-             <main id="surahContainer" class="surah-container"></main>
+
+        <div id="sawalJawabPage" class="page">
+            <div class="page-header"><h1>فقہی سوال و جواب</h1></div>
+            <div class="home-grid-container" id="sawal-jawab-search-bar">
+                <input type="text" id="sawal-jawab-search-input" placeholder="سوال تلاش کریں...">
+                <span class="material-symbols-outlined search-icon" id="sawal-jawab-search-icon">search</span>
+            </div>
+            <div id="sawal-jawab-container" class="list-container">
+                </div>
         </div>
+
+        <div id="tarikhPage" class="page">
+            <div class="page-header"><h1>تاریخِ اسلام</h1></div>
+            <div class="content-placeholder"><span class="material-symbols-outlined">auto_stories</span><p>اسلامی واقعات جلد ہی یہاں آئیں گے۔</p></div>
+        </div>
+
+        <div id="talimPage" class="page">
+            <div class="page-header"><h1>تعلیم الاسلام</h1></div>
+            <div class="content-placeholder"><span class="material-symbols-outlined">school</span><p>اسلامی سوال و جواب اور بنیادی تعلیمات جلد ہی یہاں آئیں گی۔</p></div>
+        </div>
+
     </main>
 
     <nav class="bottom-nav">
-        <button class="nav-button" data-page="quranPage"><span class="material-symbols-outlined">menu_book</span><span class="nav-label">Quran</span></button>
-        <button class="nav-button" data-page="aiPage"><div class="ai-icon-container"></div><span class="nav-label">Faraz AI</span></button>
-        <button class="nav-button active" data-page="homeCustomPage"><span class="material-symbols-outlined">home</span><span class="nav-label">Home</span></button>
-        <button class="nav-button" data-page="tasbihPage"><span class="material-symbols-outlined">counter_1</span><span class="nav-label">Tasbih</span></button>
-        <button class="nav-button" data-page="duaPage"><span class="material-symbols-outlined">spa</span><span class="nav-label">Dua</span></button>
+        <button class="nav-button" data-page="quranPage"><span class="material-symbols-outlined">menu_book</span><span class="nav-label">قرآن</span></button>
+        <button class="nav-button" data-page="aiPage"><div class="ai-icon-container"></div><span class="nav-label">Islamic AI</span></button>
+        <button class="nav-button active" data-page="homePage"><span class="material-symbols-outlined">home</span><span class="nav-label">ہوم</span></button>
+        <button class="nav-button" data-page="tarikhPage"><span class="material-symbols-outlined">auto_stories</span><span class="nav-label">تاریخ</span></button>
+        <button class="nav-button" data-page="talimPage"><span class="material-symbols-outlined">school</span><span class="nav-label">تعلیم</span></button>
     </nav>
-        
-    <div id="credits-modal" class="modal">
-        <div class="modal-content">
-            <span class="close-button" onclick="closeAllModals()">&times;</span>
-            <h2>ہمارے بارے میں اور شکریہ</h2>
-            <p style="text-align: right; margin-bottom: 20px;">
-                یہ ایپ قرآن کی تعلیم کو آسان، جدید اور ہر ایک کے لیے قابلِ رسائی بنانے کے مقصد سے بنائی گئی ہے۔ یہ پروجیکٹ دین کی خدمت میں ایک چھوٹی سی کوشش ہے۔
-            </p>
-            <div class="credits-section">
-                <p><b>قرآنی متن اور API:</b><br>قرآن کا عربی متن، تراجم اور سورہ کی معلومات کے لئے ہم <a href="https://quran.com" target="_blank">Quran.com</a> کے انتہائی شکر گزار ہیں۔</p>
-                <p><b>آڈیو تلاوت:</b><br>اس ایپ میں دل کو چھو لینے والی تلاوت <b>الشیخ مشاری بن راشد العفاسی</b> کی ہے۔ آڈیو فائلیں Quran.com API کے ذریعے حاصل کی گئی ہیں۔</p>
-                <p><b>AI اسسٹنٹ "Islamic AI":</b><br>اسلامی سوالات کے جوابات دینے کے لئے <b>Google's Gemini AI</b> ماڈل کا استعمال کیا گیا ہے۔</p>
-            </div>
-        </div>
-    </div>
-    <div id="names-modal" class="modal"><div class="modal-content"><span class="close-button" onclick="closeAllModals()">×</span><h2>اللہ کے 99 نام</h2><div id="names-container"></div></div></div>
-    
-    <script src="script.js"></script>
     
     <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/sw.js')
-                    .then(registration => console.log('ServiceWorker registration successful.'))
-                    .catch(err => console.log('ServiceWorker registration failed: ', err));
-            });
-        }
+        // NEXT bolne par yahan JavaScript paste karein
     </script>
 </body>
 </html>
